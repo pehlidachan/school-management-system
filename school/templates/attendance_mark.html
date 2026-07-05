@@ -1,0 +1,76 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Mark Attendance{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">Mark Attendance — {{ grade.name }}</h1>
+        <p class="text-muted mb-0">Date: <strong>{{ selected_date }}</strong></p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'attendance_dashboard' %}" class="btn btn-outline-dark rounded-pill fw-bold">Back</a>
+        <a href="{% url 'attendance_report' %}" class="btn btn-dark rounded-pill fw-bold">Reports</a>
+    </div>
+</div>
+
+<form method="POST">
+    {% csrf_token %}
+    <div class="hub-card p-4 mb-4">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Attendance Date</label>
+                <input type="date" name="attendance_date" value="{{ selected_date|date:'Y-m-d' }}" class="form-control rounded-pill">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Note</label>
+                <input type="text" name="note" value="{% if session %}{{ session.note }}{% endif %}" class="form-control rounded-pill" placeholder="Optional note">
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-success rounded-pill fw-bold w-100">Save Attendance</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="hub-table-card">
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in rows %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="hub-avatar" style="width:38px;height:38px;font-size:.95rem;">{{ row.student.name|slice:":1"|upper }}</div>
+                                <div>
+                                    <div class="fw-bold">{{ row.student.name }}</div>
+                                    <div class="small text-muted">ID: {{ row.student.id }} • {{ row.student.guardian_name }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="min-width: 180px;">
+                            <select name="status_{{ row.student.id }}" class="form-select rounded-pill">
+                                {% for value, label in status_options %}
+                                <option value="{{ value }}" {% if row.status == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td><input type="text" name="remarks_{{ row.student.id }}" value="{{ row.remarks }}" class="form-control rounded-pill" placeholder="Optional remarks"></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="text-center text-muted py-5">No active students found in this class.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="p-3 border-top text-end">
+            <button type="submit" class="btn btn-success rounded-pill fw-bold">Save Attendance</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
