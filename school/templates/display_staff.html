@@ -1,67 +1,80 @@
-{% extends 'layout.html' %}
+{% extends 'dashboard_base.html' %}
 {% load static %}
-{% block 'style' %}
-
-{% endblock %}
-{% block 'title' %} Students {% endblock %}
+{% block 'title' %}Teachers / Staff{% endblock %}
 {% block 'content' %}
-    <div class="container-fluid">
-        <div class="container my-5 d-flex align-items-center justify-content-between">
-            <h1>Staff</h1>
-            <a href="{% url 'add_staff' %}" class="btn btn-success">Add Staff</a>
-        </div>
-        <table class="table table-striped text-center">
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">All Teachers / Staff List</h1>
+        <p class="text-muted mb-0">Teacher, HOD, Principal and Accountant records with role/status actions.</p>
+    </div>
+    <div class="d-flex gap-2 align-items-center flex-wrap">
+        <div class="hub-search" style="width: 320px;"><i class="fa-solid fa-magnifying-glass"></i><input type="search" placeholder="Search by ID, name, or subject"></div>
+        <span class="hub-filter-btn" title="Filters"><i class="fa-solid fa-filter"></i></span>
+        <a href="{% url 'add_staff' %}" class="hub-add-btn" title="Add Staff"><i class="fa-solid fa-plus"></i></a>
+    </div>
+</div>
+
+<div class="hub-table-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
             <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>Name</th>
-                    <th>Gender</th>
-                    <th>Age</th>
-                    <th>Qualification</th>
+                    <th style="width: 44px;"><input class="form-check-input" type="checkbox"></th>
+                    <th>Teacher Name</th>
+                    <th>School ID</th>
                     <th>Role</th>
                     <th>Subject</th>
-                    <th>Employment Status</th>
-                    <th>Info</th>
+                    <th>Qualification</th>
+                    <th>Employment</th>
                     <th>Status</th>
-                    <th>Edit</th>
+                    <th class="text-end">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for employ in staff %}
-                    <tr>
-                        <th>{{employ.id}}</th>
-                        <td>{{employ.name}}</td>
-                        <td>{{employ.gender}}</td>
-                        <td>{{employ.age}}</td>
-                        <td>{{employ.qualification}}</td>
-                        <td>{{employ.role}}</td>
-                        <td>{{employ.subject}}</td>
-                        <td>{{employ.employment_status}}</td>
-                        <td>
-                            <a href="{% url 'staff_details' employ.id %}">
-                                <i class="fa-solid fa-circle-info fs-4"></i>
-                            </a>
-                        </td>
-                        <td>
-                            <form action="{% url 'change_staff_status' employ.id %}" method="POST" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-link p-0 border-0 bg-transparent" title="Toggle status">
-                                    {% if employ.status %}
-                                        <i class="fa-solid fa-circle-check fs-5 text-success"></i>
-                                    {% else %}
-                                        <i class="fa-solid fa-circle-xmark text-danger"></i>
-                                    {% endif %}
-                                </button>
-                            </form>
-                        </td>
-                        <td>
-                            <a style="color: transparent;" href="{% url 'edit_staff' employ.id %}">
-                                <i class="fa-solid fa-pen fs-5 text-secondary"></i>
-                            </a>
-                        </td>
-                    </tr>
+                <tr>
+                    <td><input class="form-check-input" type="checkbox"></td>
+                    <td>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="hub-avatar" style="width:38px;height:38px;font-size:.95rem;">{{ employ.name|slice:":1"|upper }}</div>
+                            <div>
+                                <div class="fw-bold">{{ employ.name }}</div>
+                                <div class="small text-muted">{{ employ.gender }} • Age {{ employ.age }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>STF-{{ employ.id }}</td>
+                    <td>{{ employ.role }}</td>
+                    <td>{{ employ.subject|default:"—" }}</td>
+                    <td>{{ employ.qualification }}</td>
+                    <td>{{ employ.employment_status }}</td>
+                    <td>
+                        <form action="{% url 'change_staff_status' employ.id %}" method="POST" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link p-0 border-0 bg-transparent" title="Toggle status">
+                                {% if employ.status %}
+                                <span class="hub-status active"><i class="fa-solid fa-circle"></i> Active</span>
+                                {% else %}
+                                <span class="hub-status inactive"><i class="fa-solid fa-circle"></i> Inactive</span>
+                                {% endif %}
+                            </button>
+                        </form>
+                    </td>
+                    <td class="text-end">
+                        <a class="hub-action-icon" href="{% url 'staff_details' employ.id %}" title="Details"><i class="fa-solid fa-eye"></i></a>
+                        <a class="hub-action-icon" href="{% url 'edit_staff' employ.id %}" title="Edit"><i class="fa-solid fa-pen"></i></a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="9" class="text-center text-muted py-5">No staff records found.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+    <div class="d-flex justify-content-between align-items-center p-3 border-top">
+        <button class="btn btn-outline-secondary btn-sm rounded-pill" disabled>Previous</button>
+        <span class="text-muted small">Page 1</span>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill" disabled>Next</button>
+    </div>
+</div>
 {% endblock %}
