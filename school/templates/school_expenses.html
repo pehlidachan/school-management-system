@@ -1,0 +1,38 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}School Expenses{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">School Expenses</h1>
+        <p class="text-muted mb-0">Outgoing payments and operational expense ledger.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'finance_dashboard' %}" class="btn btn-outline-dark rounded-pill">Finance</a>
+        <a href="{% url 'add_school_expense' %}" class="btn btn-dark rounded-pill">+ Add Expense</a>
+    </div>
+</div>
+
+<div class="hub-table-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th>Date</th><th>Category</th><th>Expense</th><th>Quantity</th><th>Amount</th><th>Paid To</th><th>Method</th></tr></thead>
+            <tbody>
+                {% for expense in expenses %}
+                <tr>
+                    <td>{{ expense.payment_date }}</td>
+                    <td>{{ expense.category }}</td>
+                    <td>{{ expense.title }}</td>
+                    <td>{{ expense.quantity }}</td>
+                    <td>{{ expense.amount }}</td>
+                    <td>{{ expense.paid_to }}</td>
+                    <td>{{ expense.payment_method }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="text-center text-muted py-5">No expense records found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
