@@ -29,7 +29,7 @@ if not exist .requirements_installed (
     echo Installing requirements first time for this folder...
     python -m pip install -r requirements.txt
     if errorlevel 1 pause & exit /b 1
-    echo installed>%CD%\.requirements_installed
+    > ".requirements_installed" echo installed
 ) else (
     echo Requirements already installed. Skipping pip install for faster startup.
 )
