@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Gender, Grade, GuardianRelation, Student, Role, Subject, EmploymentStatus, Staff, ClassAndTiming, ClassIncharge, StudentUserProfile, ParentProfile, LoginActivity
+from .models import Gender, Grade, GuardianRelation, Student, Role, Subject, EmploymentStatus, Staff, ClassAndTiming, ClassIncharge, StudentUserProfile, ParentProfile, LoginActivity, AttendanceSession, StudentAttendance
 # Register your models here.
 
 '''
@@ -93,6 +93,23 @@ class LoginActivityAdmin(admin.ModelAdmin):
     ordering = ('-created_at',)
 
 
+class AttendanceSessionAdmin(admin.ModelAdmin):
+    list_display = ('attendance_date', 'grade', 'taken_by', 'created_at', 'updated_at')
+    list_filter = ('grade', 'attendance_date')
+    search_fields = ('grade__name', 'taken_by__username', 'note')
+    date_hierarchy = 'attendance_date'
+    ordering = ('-attendance_date',)
+
+
+class StudentAttendanceAdmin(admin.ModelAdmin):
+    list_display = ('session', 'student', 'status', 'marked_by', 'updated_at')
+    list_filter = ('status', 'session__grade', 'session__attendance_date')
+    search_fields = ('student__name', 'session__grade__name', 'remarks')
+    ordering = ('-session__attendance_date', 'student__name')
+
+
 admin.site.register(StudentUserProfile, StudentUserProfileAdmin)
 admin.site.register(ParentProfile, ParentProfileAdmin)
 admin.site.register(LoginActivity, LoginActivityAdmin)
+admin.site.register(AttendanceSession, AttendanceSessionAdmin)
+admin.site.register(StudentAttendance, StudentAttendanceAdmin)
