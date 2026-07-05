@@ -1,19 +1,45 @@
 {% extends 'dashboard_base.html' %}
 {% load static %}
 {% block 'title' %}Admin Control Panel{% endblock %}
+{% block 'style' %}
+<style>
+.analytics-grid { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:16px; }
+.analytics-box { min-height:230px; overflow:hidden; }
+.analytics-box img { width:100%; height:150px; object-fit:contain; display:block; }
+.analytics-value { font-size:2.2rem; font-weight:900; color:#2b002d; line-height:1; }
+@media (max-width:1200px){ .analytics-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+@media (max-width:700px){ .analytics-grid{ grid-template-columns:1fr; } }
+</style>
+{% endblock %}
 {% block 'content' %}
-<div class="hub-hero mb-4"><h1 class="mb-2">School Admin Control Panel</h1><p class="mb-0 text-muted">Main records and online request counters.</p></div>
+<div class="hub-hero mb-4"><h1 class="mb-2">School Admin Control Panel</h1><p class="mb-0 text-muted">Main records, online requests and Python analytics charts.</p></div>
+
 <div class="row g-4 mb-4">
     <div class="col-6 col-xl-3"><div class="hub-metric blue"><div class="label">Students</div><div class="value">{{ total_students }}</div><a href="{% url 'display_students' %}">Open students</a></div></div>
     <div class="col-6 col-xl-3"><div class="hub-metric yellow"><div class="label">Staff</div><div class="value">{{ total_staff }}</div><a href="{% url 'display_staff' %}">Open staff</a></div></div>
     <div class="col-6 col-xl-3"><div class="hub-metric purple"><div class="label">Classes</div><div class="value">{{ total_classes }}</div><a href="{% url 'display_classes' %}">Open classes</a></div></div>
     <div class="col-6 col-xl-3"><div class="hub-metric green"><div class="label">Subjects</div><div class="value">{{ total_subjects }}</div><a href="{% url 'display_subjects' %}">Open subjects</a></div></div>
 </div>
+
+<div class="hub-card p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div><h3 class="fw-bold mb-1">Right Panel Analytics</h3><p class="text-muted mb-0">Charts generated with pandas and matplotlib.</p></div>
+        <span class="badge rounded-pill text-bg-dark">Python Analytics</span>
+    </div>
+    <div class="analytics-grid">
+        <div class="hub-card-soft p-3 analytics-box"><h5 class="fw-bold mb-2">Line Graph</h5>{% if line_chart %}<img src="{{ line_chart }}" alt="Line graph">{% endif %}<div class="small text-muted">Students, staff, classes and subjects.</div></div>
+        <div class="hub-card-soft p-3 analytics-box"><h5 class="fw-bold mb-2">Bar Chart</h5>{% if bar_chart %}<img src="{{ bar_chart }}" alt="Bar chart">{% endif %}<div class="small text-muted">Complaints, admissions and jobs.</div></div>
+        <div class="hub-card-soft p-3 analytics-box"><h5 class="fw-bold mb-2">Pie Chart</h5>{% if pie_chart %}<img src="{{ pie_chart }}" alt="Pie chart">{% endif %}<div class="small text-muted">Student IDs, parent IDs and staff.</div></div>
+        <div class="hub-card-soft p-3 analytics-box"><h5 class="fw-bold mb-2">Total Online Requests</h5><div class="analytics-value">{{ analytics_total }}</div><div class="small text-muted mt-2">Parent complaints + admission forms + job applications.</div><hr><div class="small"><strong>{{ total_parent_complaints }}</strong> complaints<br><strong>{{ total_online_admissions }}</strong> admissions<br><strong>{{ total_job_applications }}</strong> job applications</div></div>
+    </div>
+</div>
+
 <div class="row g-4 mb-4">
     <div class="col-md-4"><div class="hub-card p-4"><h4 class="fw-bold">Parent Forms</h4><div class="display-5 fw-black">{{ total_parent_complaints }}</div><a href="{% url 'parent_complaint_form' %}" target="_blank">Open form</a></div></div>
     <div class="col-md-4"><div class="hub-card p-4"><h4 class="fw-bold">Admission Forms</h4><div class="display-5 fw-black">{{ total_online_admissions }}</div><a href="{% url 'online_admission_form' %}" target="_blank">Open form</a></div></div>
     <div class="col-md-4"><div class="hub-card p-4"><h4 class="fw-bold">Job Forms</h4><div class="display-5 fw-black">{{ total_job_applications }}</div><a href="{% url 'job_apply_form' %}" target="_blank">Open form</a></div></div>
 </div>
+
 <div class="row g-4">
     <div class="col-md-6"><div class="hub-card p-4"><h4 class="fw-bold">Student Logins</h4><div class="display-5 fw-black">{{ total_student_logins }}</div><a href="{% url 'account_creator_dashboard' %}">Manage IDs</a></div></div>
     <div class="col-md-6"><div class="hub-card p-4"><h4 class="fw-bold">Parent Logins</h4><div class="display-5 fw-black">{{ total_parent_logins }}</div><a href="{% url 'account_creator_dashboard' %}">Manage IDs</a></div></div>
