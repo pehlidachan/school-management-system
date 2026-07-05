@@ -4,7 +4,10 @@
 {% block 'content' %}
 <div class="hub-toolbar">
     <div><h1 class="hub-page-title">Result Summary</h1><p class="text-muted mb-0">{{ exam.name }} - {{ exam.grade }}</p></div>
-    <a href="{% url 'exam_detail' exam.id %}" class="btn btn-outline-dark rounded-pill">Back</a>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'bulk_result_cards' exam.id %}" target="_blank" class="btn btn-success rounded-pill">Print All Cards</a>
+        <a href="{% url 'exam_detail' exam.id %}" class="btn btn-outline-dark rounded-pill">Back</a>
+    </div>
 </div>
 <div class="hub-table-card">
     <div class="table-responsive">
