@@ -8,6 +8,7 @@
         <p class="text-muted mb-0">Student records, linked ID maker, status and edit actions.</p>
     </div>
     <div class="d-flex gap-2 align-items-center flex-wrap">
+        <a href="{% url 'student_promotion' %}" class="btn btn-outline-dark rounded-pill">Promotion</a>
         <div class="hub-search" style="width: 280px;"><i class="fa-solid fa-magnifying-glass"></i><input type="search" placeholder="Search by name or ID"></div>
         <span class="hub-filter-btn" title="Filters"><i class="fa-solid fa-sliders"></i></span>
         <a href="{% url 'add_student' %}" class="hub-add-btn" title="Add Student"><i class="fa-solid fa-plus"></i></a>
