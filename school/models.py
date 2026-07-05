@@ -93,9 +93,9 @@ class Staff(models.Model):
 
 
 '''
-///////////////////////
+//////////////////////////////////////
 //   Class and timing     //
-///////////////////////
+//////////////////////////////////////
 '''
 
 
@@ -141,8 +141,6 @@ class ClassAndTiming(models.Model):
 class ClassIncharge(models.Model):
     teacher = models.ForeignKey(Staff, on_delete = models.CASCADE)
     class_obj = models.ForeignKey(ClassAndTiming, on_delete = models.CASCADE)
-
-
 
 
 
@@ -206,3 +204,55 @@ class ParentProfile(models.Model):
 
     def __str__(self):
         return f"Parent login: {self.guardian_name} -> {self.user.username}"
+
+
+class LoginActivity(models.Model):
+    """Audit trail for login attempts.
+
+    This stores enough information for future Streamlit dashboards: login trend,
+    IP usage, suspicious failed attempts, role-wise access and optional geo fields.
+    Geo fields are intentionally nullable because local development uses 127.0.0.1
+    and production IP-to-location enrichment can be added later.
+    """
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="login_activities",
+    )
+    username_entered = models.CharField(max_length=150, blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    forwarded_for = models.TextField(blank=True)
+    user_agent = models.TextField(blank=True)
+    path = models.CharField(max_length=255, blank=True)
+    method = models.CharField(max_length=10, blank=True)
+    is_successful = models.BooleanField(default=False)
+    failure_reason = models.CharField(max_length=255, blank=True)
+    session_key = models.CharField(max_length=100, blank=True)
+    role_snapshot = models.CharField(max_length=255, blank=True)
+
+    # Future geo enrichment fields for Streamlit maps/reports.
+    city = models.CharField(max_length=120, blank=True)
+    region = models.CharField(max_length=120, blank=True)
+    country_code = models.CharField(max_length=10, blank=True)
+    country_name = models.CharField(max_length=120, blank=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    timezone = models.CharField(max_length=80, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["created_at"]),
+            models.Index(fields=["ip_address"]),
+            models.Index(fields=["is_successful"]),
+            models.Index(fields=["username_entered"]),
+        ]
+
+    def __str__(self):
+        status = "SUCCESS" if self.is_successful else "FAILED"
+        return f"{status} login: {self.username_entered or self.user} from {self.ip_address}"
