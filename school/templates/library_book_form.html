@@ -1,0 +1,30 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Add Library Book{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">Add Library Book</h1>
+        <p class="text-muted mb-0">Add book title, copies and shelf information.</p>
+    </div>
+    <a href="{% url 'library_dashboard' %}" class="btn btn-outline-dark rounded-pill">Back</a>
+</div>
+
+<form method="POST" class="hub-card p-4">
+    {% csrf_token %}
+    <div class="row g-3">
+        <div class="col-md-6"><label class="form-label">Book Title</label><input name="title" class="form-control rounded-pill" required></div>
+        <div class="col-md-6"><label class="form-label">Author</label><input name="author" class="form-control rounded-pill"></div>
+        <div class="col-md-4"><label class="form-label">ISBN</label><input name="isbn" class="form-control rounded-pill"></div>
+        <div class="col-md-4"><label class="form-label">Accession Number</label><input name="accession_number" class="form-control rounded-pill" required></div>
+        <div class="col-md-4"><label class="form-label">Category</label><input name="category" class="form-control rounded-pill" placeholder="Science / English / History"></div>
+        <div class="col-md-4"><label class="form-label">Publisher</label><input name="publisher" class="form-control rounded-pill"></div>
+        <div class="col-md-4"><label class="form-label">Shelf Location</label><input name="shelf_location" class="form-control rounded-pill" placeholder="A-1 / Rack 2"></div>
+        <div class="col-md-4"><label class="form-label">Total Copies</label><input type="number" min="1" name="total_copies" class="form-control rounded-pill" value="1"></div>
+        <div class="col-md-4 d-flex align-items-end">
+            <label class="form-check mb-2"><input class="form-check-input" type="checkbox" name="is_active" checked><span class="form-check-label">Active</span></label>
+        </div>
+        <div class="col-12 text-end"><button class="btn btn-success rounded-pill px-4" type="submit">Save Book</button></div>
+    </div>
+</form>
+{% endblock %}
