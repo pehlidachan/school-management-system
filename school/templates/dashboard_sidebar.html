@@ -12,7 +12,7 @@
             <a href="{% url 'display_students' %}" class="{% if request.resolver_match.url_name == 'display_students' %}active{% endif %}"><span class="icon"><i class="fa-solid fa-users"></i></span>Students</a>
             <a href="{% url 'account_creator_dashboard' %}" class="{% if request.resolver_match.url_name == 'account_creator_dashboard' %}active{% endif %}"><span class="icon"><i class="fa-solid fa-id-card"></i></span>Login IDs</a>
             <a href="{% url 'attendance_dashboard' %}" class="{% if 'attendance' in request.resolver_match.url_name %}active{% endif %}"><span class="icon"><i class="fa-solid fa-people-group"></i></span>Attendance</a>
-            <a href="#" class="disabled opacity-75"><span class="icon"><i class="fa-solid fa-circle-dollar-to-slot"></i></span>Finance</a>
+            <a href="{% url 'finance_dashboard' %}" class="{% if 'finance' in request.resolver_match.url_name or 'fee' in request.resolver_match.url_name or 'expense' in request.resolver_match.url_name %}active{% endif %}"><span class="icon"><i class="fa-solid fa-circle-dollar-to-slot"></i></span>Finance</a>
             <a href="#" class="disabled opacity-75"><span class="icon"><i class="fa-solid fa-clipboard-list"></i></span>Notice</a>
             <a href="#" class="disabled opacity-75"><span class="icon"><i class="fa-solid fa-calendar-days"></i></span>Calendar</a>
             <a href="#" class="disabled opacity-75"><span class="icon"><i class="fa-solid fa-book-open"></i></span>Library</a>
