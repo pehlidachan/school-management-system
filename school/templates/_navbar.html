@@ -14,6 +14,9 @@
                 <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'contact' %}">Contact</a></li>
 
                 {% if user.is_authenticated %}
+                {% if user.is_superuser %}
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded text-warning fw-bold" href="{% url 'portal' %}">Admin Panel</a></li>
+                {% endif %}
                 <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded text-warning fw-bold" href="{% url 'dashboard' %}">Dashboard</a></li>
                 <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{% url 'logout' %}">Logout</a></li>
                 {% else %}
