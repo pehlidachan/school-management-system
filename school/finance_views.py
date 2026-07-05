@@ -27,6 +27,15 @@ def _date(value):
         return timezone.localdate()
 
 
+def _date_or_none(value):
+    if not value:
+        return None
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+
 def _refresh_overdue():
     today = timezone.localdate()
     FeeInvoice.objects.filter(status=FeeInvoice.PENDING, due_date__lt=today, amount_paid=0).update(status=FeeInvoice.OVERDUE)
@@ -191,6 +200,38 @@ def fee_receipt(request, invoice_id):
 def school_expenses(request):
     expenses = SchoolExpense.objects.select_related("category")[:100]
     return render(request, "school_expenses.html", {"expenses": expenses})
+
+
+@finance_required
+def expense_report(request):
+    categories = ExpenseCategory.objects.filter(status=True).order_by("name")
+    category_id = request.GET.get("category") or ""
+    date_from_raw = request.GET.get("date_from") or ""
+    date_to_raw = request.GET.get("date_to") or ""
+    date_from = _date_or_none(date_from_raw)
+    date_to = _date_or_none(date_to_raw)
+
+    expenses = SchoolExpense.objects.select_related("category").order_by("-payment_date", "-created_at")
+    if category_id:
+        expenses = expenses.filter(category_id=category_id)
+    if date_from:
+        expenses = expenses.filter(payment_date__gte=date_from)
+    if date_to:
+        expenses = expenses.filter(payment_date__lte=date_to)
+
+    expense_list = list(expenses[:500])
+    total_expenses = sum((expense.amount or Decimal("0") for expense in expense_list), Decimal("0"))
+
+    return render(request, "expense_report.html", {
+        "categories": categories,
+        "expenses": expense_list,
+        "selected_category_id": str(category_id),
+        "date_from": date_from_raw,
+        "date_to": date_to_raw,
+        "expense_count": len(expense_list),
+        "total_expenses": total_expenses,
+        "print_date": timezone.localdate(),
+    })
 
 
 @finance_required
