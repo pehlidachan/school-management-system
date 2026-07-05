@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Gender, Grade, GuardianRelation, Student, Role, Subject, EmploymentStatus, Staff, ClassAndTiming, ClassIncharge, StudentUserProfile, ParentProfile, LoginActivity, AttendanceSession, StudentAttendance
 from .finance_models import FeeInvoice, ExpenseCategory, SchoolExpense
+from .notice_models import Notice
 # Register your models here.
 
 '''
@@ -130,6 +131,14 @@ class SchoolExpenseAdmin(admin.ModelAdmin):
     ordering = ('-payment_date',)
 
 
+class NoticeAdmin(admin.ModelAdmin):
+    list_display = ('publish_date', 'title', 'audience', 'priority', 'is_published', 'created_by', 'view_count')
+    list_filter = ('audience', 'priority', 'is_published', 'publish_date')
+    search_fields = ('title', 'body', 'created_by__username')
+    date_hierarchy = 'publish_date'
+    ordering = ('-publish_date', '-created_at')
+
+
 admin.site.register(StudentUserProfile, StudentUserProfileAdmin)
 admin.site.register(ParentProfile, ParentProfileAdmin)
 admin.site.register(LoginActivity, LoginActivityAdmin)
@@ -138,3 +147,4 @@ admin.site.register(StudentAttendance, StudentAttendanceAdmin)
 admin.site.register(FeeInvoice, FeeInvoiceAdmin)
 admin.site.register(ExpenseCategory, ExpenseCategoryAdmin)
 admin.site.register(SchoolExpense, SchoolExpenseAdmin)
+admin.site.register(Notice, NoticeAdmin)
