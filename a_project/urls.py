@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from school import attendance_views, dashboard_views, finance_views, login_views
+from school import attendance_views, dashboard_views, finance_views, login_views, notice_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,5 +33,8 @@ urlpatterns = [
     path('finance/fees/<int:invoice_id>/paid/', finance_views.mark_fee_paid, name='mark_fee_paid'),
     path('finance/expenses/', finance_views.school_expenses, name='school_expenses'),
     path('finance/expenses/add/', finance_views.add_school_expense, name='add_school_expense'),
+    path('notices/', notice_views.notice_board, name='notice_board'),
+    path('notices/add/', notice_views.add_notice, name='add_notice'),
+    path('notices/<int:notice_id>/', notice_views.notice_detail, name='notice_detail'),
     path('', include('school.urls')),
 ]
