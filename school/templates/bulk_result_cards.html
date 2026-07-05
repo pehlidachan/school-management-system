@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Bulk Result Cards - {{ exam.name }}</title>
+    <style>
+        :root { --purple:#2b002d; --gold:#ffe266; --line:#222; --bg:#f3f4f7; }
+        body { margin:0; background:var(--bg); font-family:'IBM Plex Sans', Helvetica, Arial, sans-serif; color:#111; }
+        .toolbar { max-width:900px; margin:18px auto; background:white; border-radius:20px; padding:16px; display:flex; justify-content:space-between; align-items:center; gap:14px; box-shadow:0 12px 34px rgba(43,0,45,.08); }
+        .toolbar h1 { margin:0; color:var(--purple); font-size:24px; }
+        .toolbar p { margin:4px 0 0; color:#777; }
+        .toolbar button, .toolbar a { border:0; border-radius:999px; padding:10px 18px; background:var(--purple); color:white; cursor:pointer; font-weight:600; text-decoration:none; }
+        .sheet { width:850px; min-height:1120px; margin:0 auto 30px; background:white; padding:34px; box-sizing:border-box; border:8px solid var(--purple); page-break-after:always; }
+        .school-head { text-align:center; border-bottom:4px solid var(--purple); padding-bottom:14px; margin-bottom:18px; }
+        .school-name { font-size:30px; font-weight:700; letter-spacing:.5px; color:var(--purple); text-transform:uppercase; }
+        .school-sub { font-size:15px; margin-top:5px; }
+        .title-box { margin:18px auto; width:max-content; padding:8px 26px; border:2px solid var(--purple); background:var(--gold); font-size:22px; font-weight:700; }
+        .meta { display:grid; grid-template-columns:1fr 1fr; gap:10px 30px; margin:18px 0 20px; font-size:15px; }
+        .meta div { border-bottom:1px solid #999; padding:6px 0; }
+        .meta b { display:inline-block; min-width:120px; color:var(--purple); font-weight:600; }
+        table { width:100%; border-collapse:collapse; margin-top:15px; font-size:15px; }
+        th, td { border:1px solid var(--line); padding:9px 10px; text-align:center; }
+        th { background:var(--purple); color:white; font-weight:700; }
+        td.subject { text-align:left; }
+        .summary { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:20px; }
+        .box { border:2px solid var(--purple); padding:10px; text-align:center; }
+        .box .label { color:#555; font-size:12px; text-transform:uppercase; }
+        .box .value { color:var(--purple); font-size:20px; font-weight:700; margin-top:4px; }
+        .signatures { display:grid; grid-template-columns:1fr 1fr 1fr; gap:30px; margin-top:80px; text-align:center; }
+        .signatures div { border-top:1px solid #222; padding-top:8px; }
+        .note { margin-top:25px; font-size:12px; color:#555; text-align:center; }
+        .empty { max-width:850px; margin:30px auto; background:white; border-radius:20px; padding:50px; text-align:center; color:#777; }
+        @media print {
+            body { background:white; }
+            .toolbar { display:none; }
+            .sheet { margin:0; width:100%; min-height:auto; border:6px solid var(--purple); }
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <div><h1>Bulk Result Cards</h1><p>{{ exam.name }} - {{ exam.grade }} | {{ result_rows|length }} student(s)</p></div>
+        <div><button onclick="window.print()">Print All</button> <a href="{% url 'exam_results' exam.id %}">Back</a></div>
+    </div>
+
+    {% for result in result_rows %}
+    <main class="sheet">
+        <header class="school-head">
+            <div class="school-name">Government Middle School Shalgah</div>
+            <div class="school-sub">Official Student Result Card</div>
+        </header>
+
+        <div class="title-box">{{ exam.name }}</div>
+
+        <section class="meta">
+            <div><b>Student Name:</b> {{ result.student.name }}</div>
+            <div><b>Class:</b> {{ exam.grade }}</div>
+            <div><b>Father/Guardian:</b> {{ result.student.guardian_name }}</div>
+            <div><b>Roll / ID:</b> {{ result.student.id }}</div>
+            <div><b>Session:</b> {{ exam.start_date }}{% if exam.end_date %} to {{ exam.end_date }}{% endif %}</div>
+            <div><b>Print Date:</b> {{ print_date }}</div>
+        </section>
+
+        <table>
+            <thead>
+                <tr><th style="width:45%;">Subject</th><th>Total Marks</th><th>Passing Marks</th><th>Obtained</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                {% for item in result.subjects %}
+                <tr>
+                    <td class="subject">{{ item.subject.name }}</td>
+                    <td>{{ item.total }}</td>
+                    <td>{{ item.passing }}</td>
+                    <td>{{ item.marks }}</td>
+                    <td>{{ item.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <section class="summary">
+            <div class="box"><div class="label">Obtained</div><div class="value">{{ result.obtained }}</div></div>
+            <div class="box"><div class="label">Total</div><div class="value">{{ result.total }}</div></div>
+            <div class="box"><div class="label">Percentage</div><div class="value">{{ result.percentage }}%</div></div>
+            <div class="box"><div class="label">Status</div><div class="value">{{ result.status }}</div></div>
+        </section>
+
+        <section class="signatures">
+            <div>Class Teacher</div>
+            <div>Exam Incharge</div>
+            <div>Principal</div>
+        </section>
+
+        <div class="note">This result card is system generated. Please verify records before official use.</div>
+    </main>
+    {% empty %}
+    <div class="empty">No active students found for this exam class.</div>
+    {% endfor %}
+</body>
+</html>
