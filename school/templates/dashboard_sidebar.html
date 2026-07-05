@@ -1,37 +1,42 @@
-<aside class="hub-sidebar">
-    <a class="hub-brand" href="{% url 'dashboard' %}">
-        <span class="hub-logo"><i class="fa-solid fa-graduation-cap"></i></span>
-        <span>SchoolHub</span>
-    </a>
+<aside class="hub-sidebar" id="hubSidebar">
+    <div class="hub-sidebar-head">
+        <a class="hub-brand" href="{% url 'dashboard' %}">
+            <span class="hub-logo"><i class="fa-solid fa-graduation-cap"></i></span>
+            <span class="hub-label">SchoolHub</span>
+        </a>
+        <button class="hub-sidebar-toggle" type="button" id="hubSidebarToggle" title="Collapse sidebar" aria-label="Collapse sidebar">
+            <i class="fa-solid fa-angles-left"></i>
+        </button>
+    </div>
 
     <div>
         <div class="hub-menu-label">Menu</div>
         <nav class="hub-nav">
-            <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"><span class="icon"><i class="fa-solid fa-house"></i></span>Dashboard</a>
-            <a href="{% url 'display_staff' %}" class="{% if request.resolver_match.url_name == 'display_staff' %}active{% endif %}"><span class="icon"><i class="fa-solid fa-user-tie"></i></span>Teachers</a>
-            <a href="{% url 'display_students' %}" class="{% if request.resolver_match.url_name == 'display_students' %}active{% endif %}"><span class="icon"><i class="fa-solid fa-users"></i></span>Students</a>
-            <a href="{% url 'account_creator_dashboard' %}" class="{% if request.resolver_match.url_name == 'account_creator_dashboard' %}active{% endif %}"><span class="icon"><i class="fa-solid fa-id-card"></i></span>Login IDs</a>
-            <a href="{% url 'attendance_dashboard' %}" class="{% if 'attendance' in request.resolver_match.url_name %}active{% endif %}"><span class="icon"><i class="fa-solid fa-people-group"></i></span>Attendance</a>
-            <a href="/exams/"><span class="icon"><i class="fa-solid fa-file-lines"></i></span>Results</a>
-            <a href="{% url 'finance_dashboard' %}" class="{% if 'finance' in request.resolver_match.url_name or 'fee' in request.resolver_match.url_name or 'expense' in request.resolver_match.url_name %}active{% endif %}"><span class="icon"><i class="fa-solid fa-circle-dollar-to-slot"></i></span>Finance</a>
-            <a href="{% url 'notice_board' %}" class="{% if 'notice' in request.resolver_match.url_name %}active{% endif %}"><span class="icon"><i class="fa-solid fa-clipboard-list"></i></span>Notice</a>
-            <a href="{% url 'calendar_dashboard' %}" class="{% if 'calendar' in request.resolver_match.url_name %}active{% endif %}"><span class="icon"><i class="fa-solid fa-calendar-days"></i></span>Calendar</a>
-            <a href="{% url 'library_dashboard' %}" class="{% if 'library' in request.resolver_match.url_name %}active{% endif %}"><span class="icon"><i class="fa-solid fa-book-open"></i></span>Library</a>
-            <a href="{% url 'message_inbox' %}" class="{% if 'message' in request.resolver_match.url_name %}active{% endif %}"><span class="icon"><i class="fa-solid fa-comments"></i></span>Message</a>
+            <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" title="Dashboard"><span class="icon"><i class="fa-solid fa-house"></i></span><span class="hub-label">Dashboard</span></a>
+            <a href="{% url 'display_staff' %}" class="{% if request.resolver_match.url_name == 'display_staff' %}active{% endif %}" title="Teachers"><span class="icon"><i class="fa-solid fa-user-tie"></i></span><span class="hub-label">Teachers</span></a>
+            <a href="{% url 'display_students' %}" class="{% if request.resolver_match.url_name == 'display_students' %}active{% endif %}" title="Students"><span class="icon"><i class="fa-solid fa-users"></i></span><span class="hub-label">Students</span></a>
+            <a href="{% url 'account_creator_dashboard' %}" class="{% if request.resolver_match.url_name == 'account_creator_dashboard' %}active{% endif %}" title="Login IDs"><span class="icon"><i class="fa-solid fa-id-card"></i></span><span class="hub-label">Login IDs</span></a>
+            <a href="{% url 'attendance_dashboard' %}" class="{% if 'attendance' in request.resolver_match.url_name %}active{% endif %}" title="Attendance"><span class="icon"><i class="fa-solid fa-people-group"></i></span><span class="hub-label">Attendance</span></a>
+            <a href="/exams/" title="Results"><span class="icon"><i class="fa-solid fa-file-lines"></i></span><span class="hub-label">Results</span></a>
+            <a href="{% url 'finance_dashboard' %}" class="{% if 'finance' in request.resolver_match.url_name or 'fee' in request.resolver_match.url_name or 'expense' in request.resolver_match.url_name %}active{% endif %}" title="Finance"><span class="icon"><i class="fa-solid fa-circle-dollar-to-slot"></i></span><span class="hub-label">Finance</span></a>
+            <a href="{% url 'notice_board' %}" class="{% if 'notice' in request.resolver_match.url_name %}active{% endif %}" title="Notice"><span class="icon"><i class="fa-solid fa-clipboard-list"></i></span><span class="hub-label">Notice</span></a>
+            <a href="{% url 'calendar_dashboard' %}" class="{% if 'calendar' in request.resolver_match.url_name %}active{% endif %}" title="Calendar"><span class="icon"><i class="fa-solid fa-calendar-days"></i></span><span class="hub-label">Calendar</span></a>
+            <a href="{% url 'library_dashboard' %}" class="{% if 'library' in request.resolver_match.url_name %}active{% endif %}" title="Library"><span class="icon"><i class="fa-solid fa-book-open"></i></span><span class="hub-label">Library</span></a>
+            <a href="{% url 'message_inbox' %}" class="{% if 'message' in request.resolver_match.url_name %}active{% endif %}" title="Message"><span class="icon"><i class="fa-solid fa-comments"></i></span><span class="hub-label">Message</span></a>
         </nav>
     </div>
 
     <div>
         <div class="hub-menu-label">Other</div>
         <nav class="hub-nav">
-            <a href="/admin/"><span class="icon"><i class="fa-solid fa-screwdriver-wrench"></i></span>Django Admin</a>
-            <a href="{% url 'home' %}"><span class="icon"><i class="fa-solid fa-globe"></i></span>Public Home</a>
-            <a href="{% url 'logout' %}"><span class="icon"><i class="fa-solid fa-right-from-bracket"></i></span>Log out</a>
+            <a href="/admin/" title="Django Admin"><span class="icon"><i class="fa-solid fa-screwdriver-wrench"></i></span><span class="hub-label">Django Admin</span></a>
+            <a href="{% url 'home' %}" title="Public Home"><span class="icon"><i class="fa-solid fa-globe"></i></span><span class="hub-label">Public Home</span></a>
+            <a href="{% url 'logout' %}" title="Log out"><span class="icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="hub-label">Log out</span></a>
         </nav>
     </div>
 
     <div class="hub-side-ad">
-        <div class="fw-bold fs-5">Let's Manage<br>Your Data Better<br>in Your Hand</div>
-        <span class="btn btn-light btn-sm rounded-pill fw-bold align-self-start">School ERP</span>
+        <div class="fw-bold fs-5 hub-label">Let's Manage<br>Your Data Better<br>in Your Hand</div>
+        <span class="btn btn-light btn-sm rounded-pill fw-bold align-self-start hub-label">School ERP</span>
     </div>
 </aside>
