@@ -31,16 +31,19 @@
                     <td>{{ invoice.balance_due }}</td>
                     <td><span class="hub-status {{ invoice.status }}">{{ invoice.get_status_display }}</span></td>
                     <td class="text-end">
-                        {% if invoice.status != 'paid' %}
-                        <form method="POST" action="{% url 'mark_fee_paid' invoice.id %}" class="d-inline">
-                            {% csrf_token %}
-                            <input type="hidden" name="amount_paid" value="{{ invoice.net_total }}">
-                            <input type="hidden" name="payment_method" value="Cash">
-                            <button type="submit" class="btn btn-sm btn-success rounded-pill">Mark Paid</button>
-                        </form>
-                        {% else %}
-                        <span class="text-muted small">Paid {{ invoice.paid_at }}</span>
-                        {% endif %}
+                        <div class="d-flex gap-2 justify-content-end flex-wrap">
+                            <a class="btn btn-sm btn-outline-dark rounded-pill" target="_blank" href="{% url 'fee_receipt' invoice.id %}">Receipt</a>
+                            {% if invoice.status != 'paid' %}
+                            <form method="POST" action="{% url 'mark_fee_paid' invoice.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="amount_paid" value="{{ invoice.net_total }}">
+                                <input type="hidden" name="payment_method" value="Cash">
+                                <button type="submit" class="btn btn-sm btn-success rounded-pill">Mark Paid</button>
+                            </form>
+                            {% else %}
+                            <span class="text-muted small align-self-center">Paid {{ invoice.paid_at }}</span>
+                            {% endif %}
+                        </div>
                     </td>
                 </tr>
                 {% empty %}
