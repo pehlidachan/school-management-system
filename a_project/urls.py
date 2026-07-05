@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from school import attendance_views, calendar_views, dashboard_views, finance_views, library_views, login_views, notice_views
+from school import attendance_views, calendar_views, dashboard_views, finance_views, library_views, login_views, message_views, notice_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -43,5 +43,9 @@ urlpatterns = [
     path('library/books/add/', library_views.add_library_book, name='add_library_book'),
     path('library/issue/', library_views.issue_library_book, name='issue_library_book'),
     path('library/issue/<int:issue_id>/return/', library_views.return_library_book, name='return_library_book'),
+    path('messages/', message_views.message_inbox, name='message_inbox'),
+    path('messages/compose/', message_views.compose_message, name='compose_message'),
+    path('messages/<int:thread_id>/', message_views.message_detail, name='message_detail'),
+    path('messages/<int:thread_id>/reply/', message_views.reply_message, name='reply_message'),
     path('', include('school.urls')),
 ]
