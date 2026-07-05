@@ -41,4 +41,4 @@ def display_students(request):
         "selected_status": status,
         "result_count": len(data),
     }
-    return render(request, "display_students.html", context)
+    return render(request, "student_filtered_list.html", context)
