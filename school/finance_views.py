@@ -1,3 +1,4 @@
+from datetime import datetime
 from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
@@ -7,7 +8,7 @@ from django.utils import timezone
 
 from .access_control import finance_required
 from .finance_models import ExpenseCategory, FeeInvoice, SchoolExpense
-from .models import Student
+from .models import Grade, Student
 
 
 def _money(value, default="0"):
@@ -21,7 +22,7 @@ def _date(value):
     if not value:
         return timezone.localdate()
     try:
-        return timezone.datetime.strptime(value, "%Y-%m-%d").date()
+        return datetime.strptime(value, "%Y-%m-%d").date()
     except ValueError:
         return timezone.localdate()
 
@@ -82,6 +83,50 @@ def add_fee_invoice(request):
         messages.success(request, "Fee invoice created successfully.")
         return redirect("fees_collection")
     return render(request, "fee_invoice_form.html", {"students": students, "today": timezone.localdate()})
+
+
+@finance_required
+def bulk_fee_invoices(request):
+    grades = Grade.objects.filter(status=True).order_by("name")
+    if request.method == "POST":
+        grade = get_object_or_404(Grade, id=request.POST.get("grade"), status=True)
+        billing_month = (request.POST.get("billing_month") or "").strip()
+        title = (request.POST.get("title") or "Monthly Fee").strip()
+        due_date = _date(request.POST.get("due_date"))
+        tuition_fee = _money(request.POST.get("tuition_fee"))
+        activities_fee = _money(request.POST.get("activities_fee"))
+        miscellaneous_fee = _money(request.POST.get("miscellaneous_fee"))
+        discount = _money(request.POST.get("discount"))
+        fine = _money(request.POST.get("fine"))
+        skip_existing = bool(request.POST.get("skip_existing"))
+        students = Student.objects.filter(grade=grade, status=True).order_by("name")
+        created_count = 0
+        skipped_count = 0
+
+        for student in students:
+            if skip_existing and FeeInvoice.objects.filter(student=student, billing_month=billing_month, title=title).exists():
+                skipped_count += 1
+                continue
+            invoice = FeeInvoice.objects.create(
+                student=student,
+                title=title,
+                billing_month=billing_month,
+                due_date=due_date,
+                tuition_fee=tuition_fee,
+                activities_fee=activities_fee,
+                miscellaneous_fee=miscellaneous_fee,
+                discount=discount,
+                fine=fine,
+                note=(request.POST.get("note") or "").strip(),
+                created_by=request.user,
+            )
+            invoice.refresh_status(save=True)
+            created_count += 1
+
+        messages.success(request, f"{created_count} invoice(s) created for {grade}. {skipped_count} skipped.")
+        return redirect("fees_collection")
+
+    return render(request, "bulk_fee_invoice_form.html", {"grades": grades, "today": timezone.localdate()})
 
 
 @finance_required
