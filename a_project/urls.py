@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import include, path
 
-from school import attendance_views, calendar_views, dashboard_views, exam_views, finance_views, library_views, login_views, message_views, notice_views, promotion_views, student_card_views
+from school import attendance_views, calendar_views, dashboard_views, exam_views, finance_views, library_views, login_views, message_views, notice_views, promotion_views, staff_list_views, student_card_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,6 +35,7 @@ urlpatterns = [
     path('messages/compose/', message_views.compose_message, name='compose_message'),
     path('messages/<int:thread_id>/', message_views.message_detail, name='message_detail'),
     path('messages/<int:thread_id>/reply/', message_views.reply_message, name='reply_message'),
+    path('staff/display/', staff_list_views.display_staff, name='display_staff'),
     path('students/promotion/', promotion_views.student_promotion, name='student_promotion'),
     path('students/id-cards/', student_card_views.bulk_student_id_cards, name='bulk_student_id_cards'),
     path('students/<int:student_id>/id-card/', student_card_views.student_id_card, name='student_id_card'),
