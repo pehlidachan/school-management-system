@@ -1,3 +1,4 @@
+from datetime import datetime
 from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
@@ -14,7 +15,7 @@ def _date_or_none(value):
     if not value:
         return None
     try:
-        return timezone.datetime.strptime(value, "%Y-%m-%d").date()
+        return datetime.strptime(value, "%Y-%m-%d").date()
     except ValueError:
         return None
 
@@ -166,6 +167,18 @@ def student_result_card(request, exam_id, student_id):
         "exam": exam,
         "student": student,
         "result": result,
+        "exam_subjects": exam_subjects,
+        "print_date": timezone.localdate(),
+    })
+
+
+@staff_required
+def bulk_result_cards(request, exam_id):
+    exam = get_object_or_404(Exam.objects.select_related("grade"), id=exam_id)
+    result_rows, exam_subjects = _build_result_rows(exam)
+    return render(request, "bulk_result_cards.html", {
+        "exam": exam,
+        "result_rows": result_rows,
         "exam_subjects": exam_subjects,
         "print_date": timezone.localdate(),
     })
