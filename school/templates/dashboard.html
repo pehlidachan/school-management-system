@@ -1,0 +1,127 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block 'style' %}
+<style>
+    .dash-hero {
+        background: linear-gradient(135deg, #0d6efd, #198754);
+        color: white;
+        border-radius: 18px;
+        padding: 28px;
+        box-shadow: 0 12px 28px rgba(0,0,0,.12);
+    }
+    .dash-card {
+        border: 0;
+        border-radius: 16px;
+        box-shadow: 0 10px 24px rgba(0,0,0,.08);
+        height: 100%;
+    }
+    .dash-card .card-body { display: flex; flex-direction: column; gap: 10px; }
+    .role-pill { font-size: .9rem; }
+</style>
+{% endblock %}
+{% block 'title' %}Dashboard{% endblock %}
+{% block 'content' %}
+<div class="container my-5">
+    <div class="dash-hero mb-4">
+        <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center">
+            <div>
+                <h1 class="mb-2">Dashboard</h1>
+                <p class="mb-0">Logged in as <strong>{{ request.user.username }}</strong>. Select the panel you want to open.</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                {% if request.user.is_superuser %}<span class="badge text-bg-light role-pill">Superuser</span>{% endif %}
+                {% if is_admin_user %}<span class="badge text-bg-warning role-pill">Admin/Principal</span>{% endif %}
+                {% if is_account_creator_user %}<span class="badge text-bg-info role-pill">Account Maker</span>{% endif %}
+                {% if is_teacher_user %}<span class="badge text-bg-light role-pill">Teacher/HOD</span>{% endif %}
+                {% if is_student_user %}<span class="badge text-bg-light role-pill">Student</span>{% endif %}
+                {% if is_parent_user %}<span class="badge text-bg-light role-pill">Parent</span>{% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if not has_any_school_area %}
+    <div class="alert alert-warning">
+        <h4 class="alert-heading">No school role/profile is attached yet</h4>
+        <p class="mb-0">This login exists, but it is not linked with Admin, Principal, Accountant, Teacher, Student or Parent access. Use Django Admin to assign a group, or use the Student/Parent Account Maker for linked IDs.</p>
+    </div>
+    {% endif %}
+
+    <div class="row g-4">
+        {% if is_admin_user %}
+        <div class="col-md-6 col-xl-4">
+            <div class="card dash-card border-primary">
+                <div class="card-body">
+                    <h4>Admin Control Panel</h4>
+                    <p class="text-muted mb-1">Students, staff, grades, subjects, classes and master records.</p>
+                    <a href="{% url 'portal' %}" class="btn btn-primary btn-lg">Open Admin Control Panel</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if is_account_creator_user %}
+        <div class="col-md-6 col-xl-4">
+            <div class="card dash-card border-success">
+                <div class="card-body">
+                    <h4>Student & Parent Login Maker</h4>
+                    <p class="text-muted mb-1">One-click create/reset IDs for students and parents.</p>
+                    <a href="{% url 'account_creator_dashboard' %}" class="btn btn-success btn-lg">Open Account Maker</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if is_teacher_user %}
+        <div class="col-md-6 col-xl-4">
+            <div class="card dash-card border-secondary">
+                <div class="card-body">
+                    <h4>Teacher / HOD Dashboard</h4>
+                    <p class="text-muted mb-1">Class incharge and teaching-side view.</p>
+                    <a href="{% url 'teacher_dashboard' %}" class="btn btn-secondary btn-lg">Open Teacher Dashboard</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if is_student_user %}
+        <div class="col-md-6 col-xl-4">
+            <div class="card dash-card border-info">
+                <div class="card-body">
+                    <h4>Student Dashboard</h4>
+                    <p class="text-muted mb-1">Student profile and class/timetable view.</p>
+                    <a href="{% url 'student_dashboard' %}" class="btn btn-info btn-lg text-white">Open Student Dashboard</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if is_parent_user %}
+        <div class="col-md-6 col-xl-4">
+            <div class="card dash-card border-warning">
+                <div class="card-body">
+                    <h4>Parent Dashboard</h4>
+                    <p class="text-muted mb-1">Linked child profile and upcoming attendance/result/fee view.</p>
+                    <a href="{% url 'parent_dashboard' %}" class="btn btn-warning btn-lg">Open Parent Dashboard</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="col-md-6 col-xl-4">
+            <div class="card dash-card">
+                <div class="card-body">
+                    <h4>Home</h4>
+                    <p class="text-muted mb-1">Return to the public home page.</p>
+                    <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg">Go Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if is_admin_user %}
+    <div class="alert alert-light border mt-4">
+        <strong>Tip:</strong> For admin work, use <a href="{% url 'portal' %}">/portal/</a> directly. If a button ever seems stuck, open <code>http://127.0.0.1:8000/dashboard/</code> manually.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
