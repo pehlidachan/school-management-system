@@ -1,0 +1,73 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Finance{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">Finance Dashboard</h1>
+        <p class="text-muted mb-0">Fees collection, pending balance and school expense ledger.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'add_fee_invoice' %}" class="btn btn-success rounded-pill">+ Fee Invoice</a>
+        <a href="{% url 'add_school_expense' %}" class="btn btn-dark rounded-pill">+ Expense</a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-6 col-xl-3"><div class="hub-metric yellow"><div class="label">Total Invoiced</div><div class="value">{{ total_invoiced }}</div></div></div>
+    <div class="col-6 col-xl-3"><div class="hub-metric green"><div class="label">Total Paid</div><div class="value">{{ total_paid }}</div></div></div>
+    <div class="col-6 col-xl-3"><div class="hub-metric purple"><div class="label">Pending Balance</div><div class="value">{{ pending_balance }}</div></div></div>
+    <div class="col-6 col-xl-3"><div class="hub-metric blue"><div class="label">School Expenses</div><div class="value">{{ total_expenses }}</div></div></div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-7">
+        <div class="hub-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div><h3 class="mb-1">Recent Fee Invoices</h3><p class="text-muted mb-0">Latest fee records.</p></div>
+                <a href="{% url 'fees_collection' %}" class="btn btn-outline-dark rounded-pill btn-sm">View All</a>
+            </div>
+            <div class="hub-table-card shadow-none border">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead><tr><th>Student</th><th>Due</th><th>Total</th><th>Paid</th><th>Status</th></tr></thead>
+                        <tbody>
+                            {% for invoice in recent_invoices %}
+                            <tr>
+                                <td>{{ invoice.student.name }}<br><span class="text-muted small">{{ invoice.student.grade }}</span></td>
+                                <td>{{ invoice.due_date }}</td>
+                                <td>{{ invoice.net_total }}</td>
+                                <td>{{ invoice.amount_paid }}</td>
+                                <td><span class="hub-status {{ invoice.status }}">{{ invoice.get_status_display }}</span></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="5" class="text-center text-muted py-4">No fee invoices yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-5">
+        <div class="hub-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div><h3 class="mb-1">Recent Expenses</h3><p class="text-muted mb-0">Latest outgoing payments.</p></div>
+                <a href="{% url 'school_expenses' %}" class="btn btn-outline-dark rounded-pill btn-sm">View All</a>
+            </div>
+            <div class="hub-mini-list">
+                {% for expense in recent_expenses %}
+                <div class="hub-mini-item">
+                    <div class="d-flex justify-content-between gap-3">
+                        <div><strong>{{ expense.title }}</strong><br><span class="text-muted small">{{ expense.category }} • {{ expense.payment_date }}</span></div>
+                        <div>{{ expense.amount }}</div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-muted">No expense records yet.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
