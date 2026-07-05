@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from school import attendance_views, calendar_views, dashboard_views, exam_views, finance_views, library_views, login_views, message_views, notice_views
+from school import attendance_views, calendar_views, dashboard_views, exam_views, finance_views, library_views, login_views, message_views, notice_views, promotion_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -48,6 +48,7 @@ urlpatterns = [
     path('messages/compose/', message_views.compose_message, name='compose_message'),
     path('messages/<int:thread_id>/', message_views.message_detail, name='message_detail'),
     path('messages/<int:thread_id>/reply/', message_views.reply_message, name='reply_message'),
+    path('students/promotion/', promotion_views.student_promotion, name='student_promotion'),
     path('exams/', exam_views.exam_dashboard, name='exam_dashboard'),
     path('exams/add/', exam_views.add_exam, name='add_exam'),
     path('exams/<int:exam_id>/', exam_views.exam_detail, name='exam_detail'),
