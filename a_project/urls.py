@@ -31,6 +31,7 @@ urlpatterns = [
     path('finance/fees/', finance_views.fees_collection, name='fees_collection'),
     path('finance/fees/add/', finance_views.add_fee_invoice, name='add_fee_invoice'),
     path('finance/fees/<int:invoice_id>/paid/', finance_views.mark_fee_paid, name='mark_fee_paid'),
+    path('finance/fees/<int:invoice_id>/receipt/', finance_views.fee_receipt, name='fee_receipt'),
     path('finance/expenses/', finance_views.school_expenses, name='school_expenses'),
     path('finance/expenses/add/', finance_views.add_school_expense, name='add_school_expense'),
     path('notices/', notice_views.notice_board, name='notice_board'),
