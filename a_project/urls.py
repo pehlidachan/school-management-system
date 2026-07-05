@@ -53,5 +53,6 @@ urlpatterns = [
     path('exams/<int:exam_id>/subjects/add/', exam_views.add_exam_subject, name='add_exam_subject'),
     path('exams/subjects/<int:exam_subject_id>/marks/', exam_views.marks_entry, name='marks_entry'),
     path('exams/<int:exam_id>/results/', exam_views.exam_results, name='exam_results'),
+    path('exams/<int:exam_id>/student/<int:student_id>/card/', exam_views.student_result_card, name='student_result_card'),
     path('', include('school.urls')),
 ]
