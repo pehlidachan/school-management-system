@@ -1,0 +1,89 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Fee Report{% endblock %}
+{% block 'style' %}
+<style>
+@media print {
+    .hub-sidebar, .hub-topbar, .no-print { display:none !important; }
+    .hub-shell { display:block !important; }
+    .hub-content-wrap { padding:0 !important; }
+    body.dashboard-body { background:white !important; }
+}
+</style>
+{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar no-print">
+    <div>
+        <h1 class="hub-page-title">Fee Report</h1>
+        <p class="text-muted mb-0">Filter fee invoices by class, month and status.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <button onclick="window.print()" class="btn btn-success rounded-pill" type="button">Print</button>
+        <a href="{% url 'fees_collection' %}" class="btn btn-outline-dark rounded-pill">Fees</a>
+    </div>
+</div>
+
+<div class="hub-card p-4 mb-4 no-print">
+    <form method="GET" class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Class</label>
+            <select name="grade" class="form-select rounded-pill">
+                <option value="">All</option>
+                {% for grade in grades %}
+                <option value="{{ grade.id }}" {% if selected_grade_id == grade.id|stringformat:'s' %}selected{% endif %}>{{ grade }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Status</label>
+            <select name="status" class="form-select rounded-pill">
+                <option value="">All</option>
+                {% for value,label in status_choices %}
+                <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Month</label>
+            <input type="text" name="billing_month" value="{{ billing_month }}" class="form-control rounded-pill" placeholder="July 2026">
+        </div>
+        <div class="col-md-3"><button type="submit" class="btn btn-success rounded-pill w-100">Filter</button></div>
+    </form>
+</div>
+
+<div class="hub-card p-4 mb-4 text-center">
+    <h2 class="hub-page-title mb-1">Government Middle School Shalgah</h2>
+    <p class="text-muted mb-3">Fee Report | {{ print_date }}</p>
+    <div class="row g-3">
+        <div class="col-md-3"><div class="hub-metric"><div class="label">Invoices</div><div class="value">{{ invoice_count }}</div></div></div>
+        <div class="col-md-3"><div class="hub-metric"><div class="label">Total</div><div class="value">{{ total_invoiced }}</div></div></div>
+        <div class="col-md-3"><div class="hub-metric"><div class="label">Paid</div><div class="value">{{ total_paid }}</div></div></div>
+        <div class="col-md-3"><div class="hub-metric"><div class="label">Balance</div><div class="value">{{ total_balance }}</div></div></div>
+    </div>
+</div>
+
+<div class="hub-table-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th>#</th><th>Student</th><th>Class</th><th>Billing</th><th>Due</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th></tr></thead>
+            <tbody>
+                {% for invoice in invoices %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><strong>{{ invoice.student.name }}</strong><br><span class="text-muted small">ID: {{ invoice.student.id }}</span></td>
+                    <td>{{ invoice.student.grade }}</td>
+                    <td>{{ invoice.title }}<br><span class="text-muted small">{{ invoice.billing_month }}</span></td>
+                    <td>{{ invoice.due_date }}</td>
+                    <td>{{ invoice.net_total }}</td>
+                    <td>{{ invoice.amount_paid }}</td>
+                    <td>{{ invoice.balance_due }}</td>
+                    <td><span class="hub-status {{ invoice.status }}">{{ invoice.get_status_display }}</span></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="9" class="text-center text-muted py-5">No records found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
