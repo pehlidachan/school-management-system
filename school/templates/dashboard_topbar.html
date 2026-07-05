@@ -4,15 +4,20 @@
         <input type="search" placeholder="Search" aria-label="Search">
     </div>
 
-    <div class="hub-userbar">
-        <button class="hub-circle-btn" type="button" title="Messages"><i class="fa-solid fa-message"></i></button>
-        <button class="hub-circle-btn" type="button" title="Notifications"><i class="fa-solid fa-bell"></i></button>
-        <div class="hub-user-card">
-            <div class="hub-avatar">{{ request.user.username|slice:":1"|upper }}</div>
-            <div class="hub-user-meta">
-                <div class="hub-user-name">{{ request.user.get_full_name|default:request.user.username }}</div>
-                <div class="hub-user-role">
-                    {% if request.user.is_superuser %}Admin{% elif request.user.is_staff %}Staff User{% else %}School User{% endif %}
+    <div class="hub-user-stack">
+        <div class="hub-bismillah-mark" aria-label="Bismillah">
+            <span>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</span>
+        </div>
+        <div class="hub-userbar">
+            <button class="hub-circle-btn" type="button" title="Messages"><i class="fa-solid fa-message"></i></button>
+            <button class="hub-circle-btn" type="button" title="Notifications"><i class="fa-solid fa-bell"></i></button>
+            <div class="hub-user-card">
+                <div class="hub-avatar">{{ request.user.username|slice:":1"|upper }}</div>
+                <div class="hub-user-meta">
+                    <div class="hub-user-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+                    <div class="hub-user-role">
+                        {% if request.user.is_superuser %}Admin{% elif request.user.is_staff %}Staff User{% else %}School User{% endif %}
+                    </div>
                 </div>
             </div>
         </div>
