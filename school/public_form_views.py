@@ -26,8 +26,8 @@ def parent_complaint_form(request):
             subject=(request.POST.get("subject") or "").strip(),
             message=(request.POST.get("message") or "").strip(),
         )
-        messages.success(request, "Your complaint has been submitted successfully.")
-        return redirect("public_form_success")
+        messages.success(request, "Complaint submitted successfully.")
+        return redirect("home")
     return render(request, "public_parent_complaint.html")
 
 
@@ -46,7 +46,7 @@ def online_admission_form(request):
             note=(request.POST.get("note") or "").strip(),
         )
         messages.success(request, "Admission application submitted successfully.")
-        return redirect("public_form_success")
+        return redirect("home")
     return render(request, "public_admission_form.html")
 
 
@@ -63,9 +63,5 @@ def job_apply_form(request):
             cover_note=(request.POST.get("cover_note") or "").strip(),
         )
         messages.success(request, "Job application submitted successfully.")
-        return redirect("public_form_success")
+        return redirect("home")
     return render(request, "public_job_apply.html")
-
-
-def public_form_success(request):
-    return render(request, "public_form_success.html")
