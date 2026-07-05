@@ -56,10 +56,14 @@ python manage.py shell -c "from django.contrib.auth.models import User; print('a
 if errorlevel 1 pause & exit /b 1
 
 echo.
-echo Server starting. Use these URLs:
+echo Server starting. Browser will open dashboard automatically...
 echo Login:     http://127.0.0.1:8000/login/
 echo Dashboard: http://127.0.0.1:8000/dashboard/
 echo Admin:     http://127.0.0.1:8000/portal/
 echo.
+
+REM Open browser after a short delay, while Django server starts in this window.
+start "" powershell -NoProfile -WindowStyle Hidden -Command "Start-Sleep -Seconds 4; Start-Process 'http://127.0.0.1:8000/dashboard/'"
+
 python manage.py runserver
 pause
