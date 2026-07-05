@@ -1,0 +1,163 @@
+/* Phase 3.4: collapsible sidebar + sticky colorful user box */
+
+.hub-shell,
+.hub-sidebar,
+.hub-content-wrap,
+.hub-label,
+.hub-menu-label,
+.hub-side-ad,
+.hub-nav a,
+.hub-sidebar-toggle i {
+    transition: all .22s ease;
+}
+
+.hub-sidebar-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.hub-sidebar-toggle {
+    width: 34px;
+    height: 34px;
+    border: 1px solid rgba(255, 226, 102, .28);
+    border-radius: 12px;
+    display: inline-grid;
+    place-items: center;
+    background: rgba(255,255,255,.08);
+    color: var(--hub-yellow);
+    cursor: pointer;
+    box-shadow: 0 10px 24px rgba(0,0,0,.16);
+}
+
+.hub-sidebar-toggle:hover {
+    background: var(--hub-yellow);
+    color: var(--hub-purple-dark);
+}
+
+.dashboard-body.sidebar-collapsed .hub-shell {
+    grid-template-columns: 92px minmax(0, 1fr);
+}
+
+.dashboard-body.sidebar-collapsed .hub-sidebar {
+    padding: 24px 14px;
+    align-items: center;
+}
+
+.dashboard-body.sidebar-collapsed .hub-sidebar-head {
+    flex-direction: column;
+}
+
+.dashboard-body.sidebar-collapsed .hub-brand {
+    justify-content: center;
+}
+
+.dashboard-body.sidebar-collapsed .hub-sidebar-toggle i {
+    transform: rotate(180deg);
+}
+
+.dashboard-body.sidebar-collapsed .hub-label,
+.dashboard-body.sidebar-collapsed .hub-menu-label,
+.dashboard-body.sidebar-collapsed .hub-side-ad {
+    opacity: 0;
+    width: 0;
+    max-width: 0;
+    height: 0;
+    max-height: 0;
+    overflow: hidden;
+    pointer-events: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.dashboard-body.sidebar-collapsed .hub-nav {
+    align-items: center;
+}
+
+.dashboard-body.sidebar-collapsed .hub-nav a {
+    width: 54px;
+    height: 48px;
+    justify-content: center;
+    gap: 0;
+    padding: 0;
+    border-radius: 16px;
+}
+
+.dashboard-body.sidebar-collapsed .hub-nav .icon {
+    width: auto;
+    font-size: 1.05rem;
+}
+
+.hub-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding: 12px 0;
+    margin-top: -12px;
+    background: linear-gradient(180deg, rgba(243,244,247,.98), rgba(243,244,247,.86));
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(74,13,79,.06);
+}
+
+.hub-user-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 210px;
+    padding: 8px 12px 8px 8px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--hub-purple-dark), var(--hub-purple-card) 58%, #9c2faa);
+    color: #ffffff;
+    border: 1px solid rgba(255, 226, 102, .24);
+    box-shadow: 0 14px 34px rgba(43, 0, 45, .22);
+}
+
+.hub-user-card .hub-avatar {
+    flex: 0 0 auto;
+    border-color: rgba(255,255,255,.78);
+    box-shadow: 0 8px 20px rgba(0,0,0,.18);
+}
+
+.hub-user-meta {
+    min-width: 0;
+    line-height: 1.12;
+}
+
+.hub-user-name {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 700;
+    letter-spacing: -.02em;
+}
+
+.hub-user-role {
+    margin-top: 3px;
+    font-size: .78rem;
+    color: var(--hub-yellow);
+    font-weight: 600;
+}
+
+@media (max-width: 992px) {
+    .hub-sidebar-toggle { display: none; }
+    .dashboard-body.sidebar-collapsed .hub-shell { grid-template-columns: 1fr; }
+    .dashboard-body.sidebar-collapsed .hub-sidebar { align-items: stretch; padding: 20px; }
+    .dashboard-body.sidebar-collapsed .hub-label,
+    .dashboard-body.sidebar-collapsed .hub-menu-label,
+    .dashboard-body.sidebar-collapsed .hub-side-ad {
+        opacity: 1;
+        width: auto;
+        max-width: none;
+        height: auto;
+        max-height: none;
+        overflow: visible;
+        pointer-events: auto;
+    }
+    .hub-topbar { top: 0; }
+    .hub-user-card { width: 100%; min-width: 0; }
+    .hub-user-name { max-width: 220px; }
+}
