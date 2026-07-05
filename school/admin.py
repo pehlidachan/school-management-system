@@ -4,6 +4,7 @@ from .finance_models import FeeInvoice, ExpenseCategory, SchoolExpense
 from .notice_models import Notice
 from .calendar_models import SchoolCalendarEvent
 from .library_models import LibraryBook, LibraryIssue
+from .message_models import MessageThread, ThreadMessage
 # Register your models here.
 
 '''
@@ -164,6 +165,21 @@ class LibraryIssueAdmin(admin.ModelAdmin):
     ordering = ('-issue_date',)
 
 
+class MessageThreadAdmin(admin.ModelAdmin):
+    list_display = ('subject', 'sender', 'recipient', 'priority', 'is_read', 'last_activity_at')
+    list_filter = ('priority', 'is_read', 'last_activity_at')
+    search_fields = ('subject', 'sender__username', 'recipient__username')
+    date_hierarchy = 'last_activity_at'
+    ordering = ('-last_activity_at',)
+
+
+class ThreadMessageAdmin(admin.ModelAdmin):
+    list_display = ('thread', 'author', 'created_at')
+    search_fields = ('thread__subject', 'author__username', 'body')
+    date_hierarchy = 'created_at'
+    ordering = ('-created_at',)
+
+
 admin.site.register(StudentUserProfile, StudentUserProfileAdmin)
 admin.site.register(ParentProfile, ParentProfileAdmin)
 admin.site.register(LoginActivity, LoginActivityAdmin)
@@ -176,3 +192,5 @@ admin.site.register(Notice, NoticeAdmin)
 admin.site.register(SchoolCalendarEvent, SchoolCalendarEventAdmin)
 admin.site.register(LibraryBook, LibraryBookAdmin)
 admin.site.register(LibraryIssue, LibraryIssueAdmin)
+admin.site.register(MessageThread, MessageThreadAdmin)
+admin.site.register(ThreadMessage, ThreadMessageAdmin)
