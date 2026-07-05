@@ -4,7 +4,7 @@ cd /d "%~dp0"
 
 echo ============================================================
 echo Carry Forward Old db.sqlite3 Into This Upgrade Folder
- echo ============================================================
+echo ============================================================
 echo This script copies your OLD project's db.sqlite3 into this new folder,
 echo then runs force migrations and role bootstrap on the carried database.
 echo.
@@ -63,16 +63,22 @@ if not exist venv\Scripts\python.exe (
 )
 call venv\Scripts\activate.bat
 
-python -m pip install -r requirements.txt
-if errorlevel 1 (
-    echo ERROR: Requirements installation failed.
-    pause
-    exit /b 1
+if not exist .requirements_installed (
+    echo Installing requirements first time for this folder...
+    python -m pip install -r requirements.txt
+    if errorlevel 1 (
+        echo ERROR: Requirements installation failed.
+        pause
+        exit /b 1
+    )
+    echo installed>%CD%\.requirements_installed
+) else (
+    echo Requirements already installed. Skipping pip install for faster startup.
 )
 
 echo.
 echo FORCE MIGRATION ON carried database...
-python manage.py migrate --run-syncdb --verbosity 2
+python manage.py migrate --run-syncdb --verbosity 0
 if errorlevel 1 (
     echo ERROR: Migration failed.
     pause
