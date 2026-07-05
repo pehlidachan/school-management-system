@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Gender, Grade, GuardianRelation, Student, Role, Subject, EmploymentStatus, Staff, ClassAndTiming, ClassIncharge, StudentUserProfile, ParentProfile, LoginActivity, AttendanceSession, StudentAttendance
+from .finance_models import FeeInvoice, ExpenseCategory, SchoolExpense
 # Register your models here.
 
 '''
@@ -108,8 +109,32 @@ class StudentAttendanceAdmin(admin.ModelAdmin):
     ordering = ('-session__attendance_date', 'student__name')
 
 
+class FeeInvoiceAdmin(admin.ModelAdmin):
+    list_display = ('id', 'student', 'title', 'billing_month', 'due_date', 'amount_paid', 'status', 'created_by')
+    list_filter = ('status', 'due_date', 'student__grade')
+    search_fields = ('student__name', 'title', 'billing_month', 'payment_method')
+    date_hierarchy = 'due_date'
+    ordering = ('-due_date',)
+
+
+class ExpenseCategoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'status')
+    search_fields = ('name',)
+
+
+class SchoolExpenseAdmin(admin.ModelAdmin):
+    list_display = ('payment_date', 'category', 'title', 'amount', 'paid_to', 'payment_method', 'created_by')
+    list_filter = ('category', 'payment_date')
+    search_fields = ('title', 'paid_to', 'payment_method', 'note')
+    date_hierarchy = 'payment_date'
+    ordering = ('-payment_date',)
+
+
 admin.site.register(StudentUserProfile, StudentUserProfileAdmin)
 admin.site.register(ParentProfile, ParentProfileAdmin)
 admin.site.register(LoginActivity, LoginActivityAdmin)
 admin.site.register(AttendanceSession, AttendanceSessionAdmin)
 admin.site.register(StudentAttendance, StudentAttendanceAdmin)
+admin.site.register(FeeInvoice, FeeInvoiceAdmin)
+admin.site.register(ExpenseCategory, ExpenseCategoryAdmin)
+admin.site.register(SchoolExpense, SchoolExpenseAdmin)
