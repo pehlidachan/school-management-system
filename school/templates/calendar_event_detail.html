@@ -1,0 +1,47 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Calendar Event{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">Calendar Event</h1>
+        <p class="text-muted mb-0">{{ event.event_date }} • {{ event.get_event_type_display }}</p>
+    </div>
+    <a href="{% url 'calendar_dashboard' %}" class="btn btn-outline-dark rounded-pill">Back to Calendar</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-8">
+        <article class="hub-card p-4">
+            <div class="d-flex gap-2 mb-3 flex-wrap">
+                <span class="hub-status {% if event.event_type == 'holiday' %}pending{% elif event.event_type == 'exam' %}inactive{% else %}active{% endif %}">{{ event.get_event_type_display }}</span>
+                <span class="hub-status">{{ event.get_audience_display }}</span>
+                {% if event.is_past %}<span class="hub-status inactive">Past</span>{% endif %}
+            </div>
+            <h1 class="mb-3">{{ event.title }}</h1>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4"><div class="text-muted small">Date</div><div>{{ event.event_date }}</div></div>
+                <div class="col-md-4"><div class="text-muted small">Time</div><div>{{ event.start_time|default:'All day' }}{% if event.end_time %} - {{ event.end_time }}{% endif %}</div></div>
+                <div class="col-md-4"><div class="text-muted small">Location</div><div>{{ event.location }}</div></div>
+            </div>
+            <hr>
+            <div style="white-space: pre-line; line-height: 1.8;">{{ event.description }}</div>
+        </article>
+    </div>
+    <div class="col-xl-4">
+        <div class="hub-card p-4">
+            <h3 class="mb-3">Other Events</h3>
+            <div class="hub-mini-list">
+                {% for item in related_events %}
+                <a class="hub-mini-item text-decoration-none text-dark" href="{% url 'calendar_event_detail' item.id %}">
+                    <strong>{{ item.title }}</strong><br>
+                    <span class="text-muted small">{{ item.event_date }} • {{ item.get_event_type_display }}</span>
+                </a>
+                {% empty %}
+                <span class="text-muted">No other events.</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
