@@ -22,6 +22,7 @@ STAFF_GROUPS = {SCHOOL_ADMIN, PRINCIPAL, HEAD_OF_DEPARTMENT, TEACHER, ACCOUNTANT
 STUDENT_GROUPS = {STUDENT}
 PARENT_GROUPS = {PARENT}
 ACCOUNT_CREATOR_GROUPS = {SCHOOL_ADMIN, PRINCIPAL, ACCOUNTANT}
+FINANCE_GROUPS = {SCHOOL_ADMIN, PRINCIPAL, ACCOUNTANT}
 
 
 def user_in_any_group(user, group_names):
@@ -44,6 +45,14 @@ def is_account_creator(user):
     return bool(
         user.is_authenticated
         and (user.is_superuser or user_in_any_group(user, ACCOUNT_CREATOR_GROUPS))
+    )
+
+
+def is_finance_user(user):
+    """Finance users include School Admin, Principal and Accountant."""
+    return bool(
+        user.is_authenticated
+        and (user.is_superuser or user_in_any_group(user, FINANCE_GROUPS))
     )
 
 
@@ -93,6 +102,11 @@ def admin_required(view_func):
 def account_creator_required(view_func):
     """Require School Admin, Principal, Accountant, or superuser."""
     return _guard(view_func, is_account_creator, "Only Principal, Accountant, or School Admin can create login IDs.")
+
+
+def finance_required(view_func):
+    """Require School Admin, Principal, Accountant, or superuser."""
+    return _guard(view_func, is_finance_user, "Only Principal, Accountant, or School Admin can access finance.")
 
 
 def staff_required(view_func):
