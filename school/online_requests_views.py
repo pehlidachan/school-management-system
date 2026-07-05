@@ -37,7 +37,7 @@ def online_admissions(request):
 def job_applications(request):
     status = request.GET.get('status') or ''
     records = _filter_status(JobApplication.objects.all(), status)[:300]
-    return render(request, 'online_job_applications.html', {
+    return render(request, 'online_jobs_admin.html', {
         'records': records,
         'selected_status': status,
         'total_records': JobApplication.objects.count(),
@@ -70,5 +70,5 @@ def update_job_status(request, record_id):
         record = get_object_or_404(JobApplication, id=record_id)
         record.status = request.POST.get('status') or record.status
         record.save(update_fields=['status'])
-        messages.success(request, 'Job application status updated.')
+        messages.success(request, 'Job request status updated.')
     return redirect('online_job_applications')
