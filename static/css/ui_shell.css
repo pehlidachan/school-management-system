@@ -102,6 +102,41 @@
     border-bottom: 1px solid rgba(74,13,79,.06);
 }
 
+.hub-user-stack {
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.hub-bismillah-mark {
+    min-width: 230px;
+    max-width: 280px;
+    text-align: center;
+    line-height: 1;
+    padding: 4px 14px 2px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(255, 226, 102, .92), rgba(255, 255, 255, .92));
+    border: 1px solid rgba(74, 13, 79, .10);
+    box-shadow: 0 10px 26px rgba(43, 0, 45, .10);
+}
+
+.hub-bismillah-mark span {
+    display: block;
+    direction: rtl;
+    color: #d90000;
+    font-family: 'Times New Roman', 'Noto Nastaliq Urdu', serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0;
+    text-shadow: 0 8px 12px rgba(43, 0, 45, .18);
+}
+
+.hub-userbar {
+    justify-content: flex-end;
+}
+
 .hub-user-card {
     display: flex;
     align-items: center;
@@ -158,6 +193,9 @@
         pointer-events: auto;
     }
     .hub-topbar { top: 0; }
+    .hub-user-stack { width: 100%; }
+    .hub-bismillah-mark { min-width: 0; width: 100%; max-width: 360px; }
+    .hub-userbar { width: 100%; justify-content: space-between; }
     .hub-user-card { width: 100%; min-width: 0; }
     .hub-user-name { max-width: 220px; }
 }
