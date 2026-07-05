@@ -1,0 +1,50 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,body{
+    height: 100%;
+    width: 100%;
+}
+
+.banner{
+    height: 80vh;
+    width: 100%;
+    background-color: #ff9900;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    text-align: center;
+    font-weight: 900;
+    padding: 3vw;
+    overflow: hidden;
+}
+
+
+.under_hero{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.under_hero img{
+    width: 45vw;
+    border-radius: 20px;
+    box-shadow: 5px 5px 25px #000;
+}
+/* flex-direction: column; */
+
+@media (max-width: 992px) {
+    .under_hero{
+        flex-direction: column;
+    }
+    
+    .under_hero img{
+        width: 100%;
+    }
+}

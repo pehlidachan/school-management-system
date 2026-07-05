@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block 'style' %}
+
+{% endblock %}
+{% block 'title' %} Class Incharges {% endblock %}
+{% block 'content' %}
+    <div class="container-fluid">
+        <div class="container my-5 d-flex align-items-center justify-content-between">
+            <h1>Class Incharges</h1>
+            <a href="{% url 'add_class_incharge' %}" class="btn btn-success">Add Class Incharge</a>
+        </div>
+        <table class="table table-striped text-center">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Teacher</th>
+                    <th>Class</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for incharge in data %}
+                    <tr>
+                        <th>{{incharge.id}}</th>
+                        <td>{{incharge.teacher.name}}</td> 
+                        <td>{{incharge.class_obj.class_name}}</td> 
+                        <td>
+                            <a href="{% url 'edit_class_incharge' incharge.id %}">
+                                <i class="fa-solid fa-pen fs-5 text-secondary"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

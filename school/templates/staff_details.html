@@ -1,0 +1,72 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block 'style' %}
+
+{% endblock %}
+{% block 'title' %} Staff Details {% endblock %}
+{% block 'content' %}
+<div class="container">
+    <div class="d-flex align-items-center justify-content-between ">
+        <h1 class="my-5">Employ details</h1>
+        <a href="{% url 'display_staff' %}" class="btn btn-primary">Display Staff</a>
+    </div>
+    <span class="fs-2 fw-medium">Id:</span>
+    <span class="ms-5 fs-2">{{staff.id}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Name:</span>
+    <span class="ms-5 fs-2">{{staff.name}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Age:</span>
+    <span class="ms-5 fs-2">{{staff.age}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Date of Birth:</span>
+    <span class="ms-5 fs-2">{{staff.dob}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Gender:</span>
+    <span class="ms-5 fs-2">{{staff.gender}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Qualification:</span>
+    <span class="ms-5 fs-2">{{staff.qualification}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Experience:</span>
+    <span class="ms-5 fs-2">{{staff.experience}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Role:</span>
+    <span class="ms-5 fs-2">{{staff.role}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Subject:</span>
+    <span class="ms-5 fs-2">{{staff.subject}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Email:</span>
+    <span class="ms-5 fs-2">{{staff.email}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Phone:</span>
+    <span class="ms-5 fs-2">{{staff.phone}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Emergency Phone:</span>
+    <span class="ms-5 fs-2">{{staff.emergency_phone}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Address:</span>
+    <span class="ms-5 fs-2">{{staff.address}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Joining Date:</span>
+    <span class="ms-5 fs-2">{{staff.joining_date}}</span>
+    <hr>
+    <hr>
+    <span class="fs-2 fw-medium">Salary:</span>
+    <span class="ms-5 fs-2">{{staff.salary}}</span>
+    <hr>
+    <hr>
+    <span class="fs-2 fw-medium">Employment Status:</span>
+    <span class="ms-5 fs-2">{{staff.employment_status}}</span>
+    <hr>
+    <hr>
+    <span class="fs-2 fw-medium">Contract Details:</span>
+    <span class="ms-5 fs-2">{{staff.contract_details}}</span>
+    <hr>
+    <hr>
+    <span class="fs-2 fw-medium">Status:</span>
+    <span class="ms-5 fs-2">{{staff.status}}</span>
+    <hr>
+</div>
+{% endblock %}

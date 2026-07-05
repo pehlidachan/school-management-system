@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block 'style' %}
+
+{% endblock %} 
+{% block 'title' %} Student Dashboard {% endblock %}
+{% block 'content' %}
+<div class="main p-5">
+    <h3>Student Name: <span class="fw-bold text-success">{{ current_student.name }}</span></h3>
+    <hr>
+    <h3 class="fw-normal">Grade: <span class="fw-lighter">{{current_student.grade}}</span></h3>
+    <hr>
+    <h3 class="fw-normal">Subjects:</h3>
+    <table class="table text-center table-striped-columns">
+        <thead>
+            <tr>
+                <th>period-1</th>
+                <th>period-2</th>
+                <th>period-3</th>
+                <th>period-4</th>
+                <th>period-5</th>
+                <th>period-6</th>
+                <th>period-7</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{class.period_one_subject}}</td>
+                <td>{{class.period_two_subject}}</td>
+                <td>{{class.period_three_subject}}</td>
+                <td>{{class.period_four_subject}}</td>
+                <td>{{class.period_five_subject}}</td>
+                <td>{{class.period_six_subject}}</td>
+                <td>{{class.period_seven_subject}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+    <h3 class="fw-normal">Timings:</h3>
+    <table class="table text-center table-striped-columns">
+        <thead>
+            <tr>
+                <th>period-1</th>
+                <th>period-2</th>
+                <th>period-3</th>
+                <th>period-4</th>
+                <th>period-5</th>
+                <th>period-6</th>
+                <th>period-7</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{class.period_one_from}} - {{class.period_one_to}}</td>
+                <td>{{class.period_two_from}} - {{class.period_two_to}}</td>
+                <td>{{class.period_three_from}} - {{class.period_three_to}}</td>
+                <td>{{class.period_four_from}} - {{class.period_four_to}}</td>
+                <td>{{class.period_five_from}} - {{class.period_five_to}}</td>
+                <td>{{class.period_six_from}} - {{class.period_six_to}}</td>
+                <td>{{class.period_seven_from}} - {{class.period_seven_to}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

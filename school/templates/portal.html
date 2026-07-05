@@ -1,0 +1,140 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block 'style' %}
+<style>
+    .dashboard-hero {
+        background: linear-gradient(135deg, #0d6efd, #20c997);
+        color: white;
+        border-radius: 18px;
+        padding: 28px;
+    }
+    .metric-card, .action-card {
+        border: 0;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+        height: 100%;
+    }
+    .metric-number {
+        font-size: 2rem;
+        font-weight: 800;
+    }
+    .action-card .card-body {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .next-module {
+        opacity: .65;
+    }
+</style>
+{% endblock %}
+{% block 'title' %}Admin Control Panel{% endblock %}
+{% block 'content' %}
+<div class="container my-5">
+    <div class="dashboard-hero mb-4">
+        <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center">
+            <div>
+                <h1 class="mb-2">School Admin Control Panel</h1>
+                <p class="mb-0">You are logged in as <strong>{{ request.user.username }}</strong>. Use the buttons below to add, view, edit and manage school records.</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{% url 'add_student' %}" class="btn btn-light fw-bold">+ Add Student</a>
+                <a href="{% url 'add_staff' %}" class="btn btn-outline-light fw-bold">+ Add Staff</a>
+                <a href="/admin/" class="btn btn-dark fw-bold">Django Admin</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3"><div class="card metric-card"><div class="card-body"><div class="text-muted">Students</div><div class="metric-number">{{ total_students }}</div><a href="{% url 'display_students' %}">Open students</a></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card metric-card"><div class="card-body"><div class="text-muted">Staff</div><div class="metric-number">{{ total_staff }}</div><a href="{% url 'display_staff' %}">Open staff</a></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card metric-card"><div class="card-body"><div class="text-muted">Classes</div><div class="metric-number">{{ total_classes }}</div><a href="{% url 'display_classes' %}">Open classes</a></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card metric-card"><div class="card-body"><div class="text-muted">Subjects</div><div class="metric-number">{{ total_subjects }}</div><a href="{% url 'display_subjects' %}">Open subjects</a></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card metric-card"><div class="card-body"><div class="text-muted">Student Logins</div><div class="metric-number">{{ total_student_logins }}</div><a href="{% url 'account_creator_dashboard' %}">Manage logins</a></div></div></div>
+        <div class="col-6 col-lg-3"><div class="card metric-card"><div class="card-body"><div class="text-muted">Parent Logins</div><div class="metric-number">{{ total_parent_logins }}</div><a href="{% url 'account_creator_dashboard' %}">Manage logins</a></div></div></div>
+    </div>
+
+    <h3 class="mb-3">Actionable Modules</h3>
+    <div class="row g-4">
+        <div class="col-md-6 col-xl-4">
+            <div class="card action-card">
+                <div class="card-body">
+                    <h5>Students</h5>
+                    <p class="text-muted mb-1">Admission/profile records, status and details.</p>
+                    <a href="{% url 'display_students' %}" class="btn btn-primary">View Students</a>
+                    <a href="{% url 'add_student' %}" class="btn btn-outline-primary">Add Student</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="card action-card">
+                <div class="card-body">
+                    <h5>Staff</h5>
+                    <p class="text-muted mb-1">Teacher/staff records, roles and employment status.</p>
+                    <a href="{% url 'display_staff' %}" class="btn btn-primary">View Staff</a>
+                    <a href="{% url 'add_staff' %}" class="btn btn-outline-primary">Add Staff</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="card action-card">
+                <div class="card-body">
+                    <h5>Classes & Timetable</h5>
+                    <p class="text-muted mb-1">Class timing and period-wise teacher/subject setup.</p>
+                    <a href="{% url 'display_classes' %}" class="btn btn-primary">View Classes</a>
+                    <a href="{% url 'add_class' %}" class="btn btn-outline-primary">Add Class Timing</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="card action-card">
+                <div class="card-body">
+                    <h5>Class Incharge</h5>
+                    <p class="text-muted mb-1">Assign one teacher as incharge of one class.</p>
+                    <a href="{% url 'display_class_incharges' %}" class="btn btn-primary">View Incharges</a>
+                    <a href="{% url 'add_class_incharge' %}" class="btn btn-outline-primary">Assign Incharge</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="card action-card">
+                <div class="card-body">
+                    <h5>Academic Masters</h5>
+                    <p class="text-muted mb-1">Grades/classes, subjects and role master data.</p>
+                    <a href="{% url 'display_grades' %}" class="btn btn-primary">Grades ({{ total_grades }})</a>
+                    <a href="{% url 'display_subjects' %}" class="btn btn-outline-primary">Subjects ({{ total_subjects }})</a>
+                    <a href="{% url 'display_roles' %}" class="btn btn-outline-secondary">Roles ({{ total_roles }})</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="card action-card border-success">
+                <div class="card-body">
+                    <h5>Student & Parent Logins</h5>
+                    <p class="text-muted mb-1">One-click auto ID maker for students and parents. Principal and Accountant can also access this.</p>
+                    <a href="{% url 'account_creator_dashboard' %}" class="btn btn-success">Open Account Maker</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="card action-card">
+                <div class="card-body">
+                    <h5>Setup / Reference Data</h5>
+                    <p class="text-muted mb-1">Gender, guardian relation and employment statuses.</p>
+                    <a href="{% url 'display_genders' %}" class="btn btn-primary">Genders ({{ total_genders }})</a>
+                    <a href="{% url 'display_guardian_relations' %}" class="btn btn-outline-primary">Guardian Relations ({{ total_guardian_relations }})</a>
+                    <a href="/admin/school/employmentstatus/" class="btn btn-outline-secondary">Employment Statuses ({{ total_employment_statuses }})</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mt-5 mb-3">Next Modules Not Built Yet</h3>
+    <div class="row g-3">
+        <div class="col-md-3"><div class="alert alert-secondary next-module">Attendance — Phase 2</div></div>
+        <div class="col-md-3"><div class="alert alert-secondary next-module">Exams & Marks — Phase 2</div></div>
+        <div class="col-md-3"><div class="alert alert-secondary next-module">DMC / Result Card — Phase 2</div></div>
+        <div class="col-md-3"><div class="alert alert-secondary next-module">Fees — Phase 2</div></div>
+    </div>
+</div>
+{% endblock %}

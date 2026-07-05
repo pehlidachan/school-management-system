@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block 'style' %}
+
+{% endblock %}
+{% block 'title' %} Student Details {% endblock %}
+{% block 'content' %}
+<div class="container">
+    <div class="d-flex align-items-center justify-content-between ">
+        <h1 class="my-5">Student details</h1>
+        <a href="{% url 'display_students' %}" class="btn btn-primary">Display Students</a>
+    </div>
+    <span class="fs-2 fw-medium">Id:</span>
+    <span class="ms-5 fs-2">{{student.id}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Name:</span>
+    <span class="ms-5 fs-2">{{student.name}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Grade:</span>
+    <span class="ms-5 fs-2">{{student.grade}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Age:</span>
+    <span class="ms-5 fs-2">{{student.age}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Gender:</span>
+    <span class="ms-5 fs-2">{{student.gender}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Date of Birth:</span>
+    <span class="ms-5 fs-2">{{student.dob}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Guardian Name:</span>
+    <span class="ms-5 fs-2">{{student.guardian_name}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Guardian Relation:</span>
+    <span class="ms-5 fs-2">{{student.guardian_relation}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Address:</span>
+    <span class="ms-5 fs-2">{{student.address}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Date of Enrollment:</span>
+    <span class="ms-5 fs-2">{{student.date_of_enrollment}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Email:</span>
+    <span class="ms-5 fs-2">{{student.email}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Phone:</span>
+    <span class="ms-5 fs-2">{{student.phone}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Emergency Phone:</span>
+    <span class="ms-5 fs-2">{{student.emergency_phone}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Previous School:</span>
+    <span class="ms-5 fs-2">{{student.previous_school}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Status:</span>
+    <span class="ms-5 fs-2">{{student.status}}</span>
+    <hr>
+</div>
+{% endblock %}

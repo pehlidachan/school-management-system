@@ -1,0 +1,107 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block 'style' %}
+
+{% endblock %}
+{% block 'title' %} Class Details {% endblock %}
+{% block 'content' %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="my-5">Class details</h1>
+        <a href="{% url 'display_classes' %}" class="btn btn-primary p-2">Display Classes</a>
+    </div>
+    <span class="fs-2 fw-medium">Id:</span>
+    <span class="ms-5 fs-2">{{class.id}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Name:</span>
+    <span class="ms-5 fs-2">{{class.class_name}}</span>
+    <hr class="border-warning opacity-100 border-5 rounded">
+    <span class="fs-2 fw-medium">Period one Subject:</span>
+    <span class="ms-5 fs-2">{{class.period_one_subject}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Period one Teacher:</span>
+    <span class="ms-5 fs-2">{{class.period_one_teacher}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Start timing:</span>
+    <span class="ms-5 fs-2">{{class.period_one_from}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">End timing:</span>
+    <span class="ms-5 fs-2">{{class.period_one_to}}</span>
+    <hr class="border-warning opacity-100 border-5 rounded">
+    <span class="fs-2 fw-medium">Period two Subject:</span>
+    <span class="ms-5 fs-2">{{class.period_two_subject}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Period two Teacher:</span>
+    <span class="ms-5 fs-2">{{class.period_two_teacher}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Start timing:</span>
+    <span class="ms-5 fs-2">{{class.period_two_from}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">End timing:</span>
+    <span class="ms-5 fs-2">{{class.period_two_to}}</span>
+    <hr class="border-warning opacity-100 border-5 rounded">
+    <span class="fs-2 fw-medium">Period three Subject:</span>
+    <span class="ms-5 fs-2">{{class.period_three_subject}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Period three Teacher:</span>
+    <span class="ms-5 fs-2">{{class.period_three_teacher}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Start timing:</span>
+    <span class="ms-5 fs-2">{{class.period_three_from}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">End timing:</span>
+    <span class="ms-5 fs-2">{{class.period_three_to}}</span>
+    <hr class="border-warning opacity-100 border-5 rounded">
+    <span class="fs-2 fw-medium">Period four Subject:</span>
+    <span class="ms-5 fs-2">{{class.period_four_subject}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Period four Teacher:</span>
+    <span class="ms-5 fs-2">{{class.period_four_teacher}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Start timing:</span>
+    <span class="ms-5 fs-2">{{class.period_four_from}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">End timing:</span>
+    <span class="ms-5 fs-2">{{class.period_four_to}}</span>
+    <hr class="border-warning opacity-100 border-5 rounded">
+    <span class="fs-2 fw-medium">Period five Subject:</span>
+    <span class="ms-5 fs-2">{{class.period_five_subject}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Period five Teacher:</span>
+    <span class="ms-5 fs-2">{{class.period_five_teacher}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Start timing:</span>
+    <span class="ms-5 fs-2">{{class.period_five_from}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">End timing:</span>
+    <span class="ms-5 fs-2">{{class.period_five_to}}</span>
+    <hr class="border-warning opacity-100 border-5 rounded">
+    <span class="fs-2 fw-medium">Period six Subject:</span>
+    <span class="ms-5 fs-2">{{class.period_six_subject}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Period six Teacher:</span>
+    <span class="ms-5 fs-2">{{class.period_six_teacher}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Start timing:</span>
+    <span class="ms-5 fs-2">{{class.period_six_from}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">End timing:</span>
+    <span class="ms-5 fs-2">{{class.period_six_to}}</span>
+    <hr class="border-warning opacity-100 border-5 rounded">
+    <span class="fs-2 fw-medium">Period seven Subject:</span>
+    <span class="ms-5 fs-2">{{class.period_seven_subject}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Period seven Teacher:</span>
+    <span class="ms-5 fs-2">{{class.period_seven_teacher}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">Start timing:</span>
+    <span class="ms-5 fs-2">{{class.period_seven_from}}</span>
+    <hr>
+    <span class="fs-2 fw-medium">End timing:</span>
+    <span class="ms-5 fs-2">{{class.period_seven_to}}</span>
+    <hr class="border-warning opacity-100 border-5 rounded">
+    <span class="fs-2 fw-medium">Status:</span>
+    <span class="ms-5 fs-2">{{class.status}}</span>
+    <hr>
+</div>
+{% endblock %}

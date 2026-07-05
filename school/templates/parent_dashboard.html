@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block 'title' %}Parent Dashboard{% endblock %}
+{% block 'content' %}
+<div class="container my-5">
+    <div class="alert alert-success">
+        <h2 class="mb-1">Parent Dashboard</h2>
+        <p class="mb-0">Welcome {{ profile.guardian_name }}. You are linked with student record below.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">Student Information</div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> {{ current_student.name }}</p>
+                    <p><strong>Grade:</strong> {{ current_student.grade }}</p>
+                    <p><strong>Guardian Relation:</strong> {{ current_student.guardian_relation }}</p>
+                    <p><strong>Phone:</strong> {{ current_student.phone }}</p>
+                    <p><strong>Status:</strong> {% if current_student.status %}Active{% else %}Inactive{% endif %}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">Available Modules</div>
+                <div class="card-body">
+                    <div class="alert alert-secondary">Attendance — upcoming Phase 2</div>
+                    <div class="alert alert-secondary">Result / DMC — upcoming Phase 2</div>
+                    <div class="alert alert-secondary">Fee Status — upcoming Phase 2</div>
+                    <div class="alert alert-secondary">Notices / Homework — upcoming Phase 2</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

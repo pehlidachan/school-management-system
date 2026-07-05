@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block 'style' %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endblock %}
+{% block 'title' %}  {% endblock %}
+{% block 'content' %}
+    <div class="main">
+        <header class="masthead bg-primary text-white text-center">
+            <div class="container d-flex align-items-center flex-column">
+                <!-- Masthead Avatar Image-->
+                <img class="masthead-avatar mb-5" style="height: 50vh; width: 50vw;" src="{% static 'assets/img/Current-Location.svg' %}" alt="..." />
+                <!-- Masthead Heading-->
+                <h1 class="masthead-heading text-uppercase mb-0">ready to school</h1>
+                <!-- Icon Divider-->
+                <div class="divider-custom divider-light">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                    <div class="divider-custom-line"></div>
+                </div>
+                <!-- Masthead Subheading-->
+                <p class="masthead-subheading font-weight-light mb-0">Possibilities are endless</p>
+            </div>
+        </header>
+        <div class="container">
+            <h1 class="my-5">Our Locations:</h1>
+            <iframe src="https://www.google.com/maps/d/u/0/embed?mid=1Gpme9Gz3wWtH7eJ66rKz2C9eb08fBsE&ehbc=2E312F" width="100%" style="height: 100vh;"></iframe>
+        </div>
+    </div>
+{% endblock %}

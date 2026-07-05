@@ -1,0 +1,97 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block 'style' %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+<style>
+    details>p{
+        color: green;
+    }
+</style>
+{% endblock %}
+{% block 'title' %} faqs {% endblock %}
+{% block 'content' %}
+    <div class="main">
+        <header class="masthead bg-primary text-white text-center">
+            <div class="container d-flex align-items-center flex-column">
+                <!-- Masthead Avatar Image-->
+                <img class="masthead-avatar mb-5" style="height: 40vh; width: 40vw;" src="{% static 'assets/img/FAQs.png' %}" alt="..." />
+                <!-- Masthead Heading-->
+                <h1 class="masthead-heading text-uppercase mb-0">ready to school</h1>
+                <!-- Icon Divider-->
+                <div class="divider-custom divider-light">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                    <div class="divider-custom-line"></div>
+                </div>
+                <!-- Masthead Subheading-->
+                <p class="masthead-subheading font-weight-light mb-0">Possibilities are endless</p>
+            </div>
+        </header>
+        <div class="container content">
+            <h1 class="mt-5 mb-3">Frequently Asked Questions (FAQ)</h1><br/>
+            <hr>
+            <details>
+                <summary>What are the school hours?</summary>
+                <br>
+                <p>Dummy Answer: Our school operates from 8:00 AM to 3:00 PM on weekdays.</p>
+            </details>
+            <hr>
+            <details>
+                <summary>Is there a dress code for students?</summary>
+                <br>
+                <p>Dummy Answer: Yes, our dress code policy promotes a professional and respectful atmosphere. Students are expected to adhere to it.</p>
+            </details>
+            <hr>
+            <details>
+                <summary>Do you offer extracurricular activities?</summary>
+                <br>
+                <p>Dummy Answer: Absolutely! We provide a wide range of extracurricular activities including sports, arts, and academic clubs to enrich the student experience.</p>
+            </details>
+            <hr>
+            <details>
+                <summary>How do I enroll my child in your school?</summary>
+                <br>
+                <p>Dummy Answer: To enroll your child, please visit our website and complete the online registration form. Our admissions team will then contact you to guide you through the process.</p>
+            </details>
+            <hr>
+            <details>
+                <summary>What measures do you have in place for student safety?</summary>
+                <br>
+                <p>Dummy Answer: The safety and security of our students are our top priorities. We have implemented comprehensive safety protocols, including surveillance systems, emergency drills, and staff training to ensure a secure learning environment.
+                </p>
+            </details>
+            <hr>
+            <details>
+                <summary>Are meals provided for students?</summary>
+                <br>
+                <p>Dummy Answer: Yes, we offer nutritious meals for students through our cafeteria services. Additionally, we accommodate dietary restrictions and allergies to ensure all students have access to suitable options.</p>
+            </details>
+            <hr>
+            <details>
+                <summary>What is your policy on homework and assignments?</summary>
+                <br>
+                <p>Dummy Answer: Homework and assignments are an integral part of our curriculum to reinforce learning outside the classroom. Teachers provide clear guidelines and deadlines to help students manage their workload effectively.</p>
+            </details>
+            <hr>
+            <details>
+                <summary>How can parents get involved in school activities?</summary>
+                <br>
+                <p>Dummy Answer: We encourage parental involvement and offer various opportunities for parents to participate in school activities, such as parent-teacher associations, volunteering programs, and attending school events.
+                </p>
+            </details>
+            <hr>
+            <details>
+                <summary>What support services are available for students with special needs?</summary>
+                <br>
+                <p>Dummy Answer: We have dedicated support services and resources to cater to the individual needs of students with special requirements. Our team works closely with parents and specialists to ensure each student receives the necessary support to succeed academically and socially.</p>
+            </details>
+            <hr>
+            <details>
+                <summary>How do you handle disciplinary issues?</summary>
+                <br>
+                <p>Dummy Answer: Discipline is an essential aspect of our school culture, and we have clear policies and procedures in place to address disciplinary issues promptly and fairly. We believe in fostering a positive learning environment where mutual respect and responsibility are valued.</p>
+            </details>
+            <hr>
+        </div>
+    </div>
+{% endblock %}

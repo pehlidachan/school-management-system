@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block 'style' %}
+
+{% endblock %}
+{% block 'title' %} Edit Subject {% endblock %}
+{% block 'content' %}
+    <div class="container d-flex flex-column align-items-center">
+        <div class="my-5 d-flex align-items-center justify-content-between w-100">
+            <h1>Edit Subject</h1>
+            <a href="{% url 'display_subjects' %}" class="btn btn-primary">Display Subjects</a>
+        </div>
+        <form action="{% url 'edit_subject' id %}" method="POST" class="w-50">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="d-flex align-items-center justify-content-between ">
+                <button class="btn btn-success my-5">Update</button>
+                <button type="submit" form="delete-subject-form" class="shadow-lg btn btn-danger" onclick="return confirm('Are you sure you want to delete this record?');">Delete this grade</button>
+            </div>
+        </form>
+        <form id="delete-subject-form" action="{% url 'delete_subject' id %}" method="POST" class="d-none">
+            {% csrf_token %}
+        </form>
+    </div>
+{% endblock %}

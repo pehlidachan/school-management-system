@@ -1,0 +1,27 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,body{
+    height: 100%;
+    width: 100%;
+}
+
+.banner{
+    height: 80vh;
+    width: 100%;
+    background-color: #ff9900;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    text-align: center;
+    font-weight: 900;
+    padding-inline: 3vw;
+}
+
+
+

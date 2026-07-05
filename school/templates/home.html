@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block 'style' %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+{% block 'title' %} School {% endblock %}
+{% block 'content' %}
+<div class="main">
+    <div class="banner container-fluid">
+        "Empowering minds, shaping futures – welcome to our educational journey."
+    </div>
+    <div class="container under_hero">
+
+        <div>
+            <h1 class="my-5 text-center">Welcome to Our School: Nurturing Tomorrow's Leaders</h1>
+            <p>At the School, we are committed to providing a nurturing and innovative learning environment where
+                students are inspired to excel academically, socially, and emotionally. With a focus on holistic
+                development, our dedicated faculty and staff strive to cultivate critical thinking, creativity, and
+                leadership skills in every student. From our state-of-the-art facilities to our dynamic curriculum, we
+                aim to empower students to become confident, compassionate, and responsible global citizens. Through a
+                blend of rigorous academics, diverse extracurricular activities, and meaningful community engagement, we
+                endeavor to ignite a passion for lifelong learning and foster a culture of excellence. Join us on this
+                remarkable journey of discovery, growth, and achievement at the School.
+
+            </p>
+        </div>
+        <img src="{% static 'img/lovetolearn.jpg' %}" alt="school image">
+    </div>
+</div>
+<script src="{% static 'js/script.js' %}"></script>
+{% endblock %}

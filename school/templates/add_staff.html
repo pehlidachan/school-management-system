@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block 'style' %}
+
+{% endblock %}
+{% block 'title' %} Add Student {% endblock %}
+{% block 'content' %}
+    <div class="container d-flex align-items-center justify-content-center flex-column ">
+        <div class="container d-flex align-items-center justify-content-between">
+            <h1 class="my-5">Add Staff</h1>
+            <a href="{% url 'display_staff' %}" class="btn btn-primary">Display Staff</a>
+        </div>
+        <form class="w-50 mt-3" action="{% url 'add_staff' %}" method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-success my-3">Submit</button>
+        </form>
+    </div>
+{% endblock %}

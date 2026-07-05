@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block 'style' %}
+
+{% endblock %}
+{% block 'title' %} Signup {% endblock %}
+{% block 'content' %}
+    <div class="contianer d-flex align-items-center justify-content-center flex-column">
+        <div class="m-5">
+            <h1>Signup</h1>
+            <form action="{% url 'signup' %}" method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-success">Signup</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

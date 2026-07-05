@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block 'style' %}
+
+{% endblock %}
+{% block 'title' %} Guardian Relations {% endblock %}
+{% block 'content' %}
+    <div class="container-fluid">
+        <div class="container my-5 d-flex align-items-center justify-content-between">
+            <h1>Guardian Relations</h1>
+            <a href="{% url 'add_guardian_relation' %}" class="btn btn-success">Add Guardian Relation</a>
+        </div>
+        <table class="table table-striped text-center">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for relation in data %}
+                    <tr>
+                        <th>{{relation.id}}</th>
+                        <td>{{relation.name}}</td> 
+                        <td>
+                            <a style="color: transparent;" href="{% url 'edit_guardian_relation' relation.id %}">
+                                <i class="fa-solid fa-pen fs-5 text-secondary"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
