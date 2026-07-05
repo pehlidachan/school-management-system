@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import Gender, Grade, GuardianRelation, Student, Role, Subject, EmploymentStatus, Staff, ClassAndTiming, ClassIncharge, StudentUserProfile, ParentProfile, LoginActivity, AttendanceSession, StudentAttendance
 from .finance_models import FeeInvoice, ExpenseCategory, SchoolExpense
 from .notice_models import Notice
+from .calendar_models import SchoolCalendarEvent
 # Register your models here.
 
 '''
@@ -139,6 +140,14 @@ class NoticeAdmin(admin.ModelAdmin):
     ordering = ('-publish_date', '-created_at')
 
 
+class SchoolCalendarEventAdmin(admin.ModelAdmin):
+    list_display = ('event_date', 'title', 'event_type', 'audience', 'location', 'is_active', 'created_by')
+    list_filter = ('event_type', 'audience', 'is_active', 'event_date')
+    search_fields = ('title', 'description', 'location', 'created_by__username')
+    date_hierarchy = 'event_date'
+    ordering = ('event_date', 'start_time')
+
+
 admin.site.register(StudentUserProfile, StudentUserProfileAdmin)
 admin.site.register(ParentProfile, ParentProfileAdmin)
 admin.site.register(LoginActivity, LoginActivityAdmin)
@@ -148,3 +157,4 @@ admin.site.register(FeeInvoice, FeeInvoiceAdmin)
 admin.site.register(ExpenseCategory, ExpenseCategoryAdmin)
 admin.site.register(SchoolExpense, SchoolExpenseAdmin)
 admin.site.register(Notice, NoticeAdmin)
+admin.site.register(SchoolCalendarEvent, SchoolCalendarEventAdmin)
