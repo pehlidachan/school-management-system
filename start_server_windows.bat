@@ -24,14 +24,21 @@ call venv\Scripts\activate.bat
 
 if not exist .env copy .env.example .env >nul
 
-REM Install requirements only when the marker is missing. Re-installing on every start is slow.
-if not exist .requirements_installed (
-    echo Installing requirements first time for this folder...
+REM Install requirements first time OR whenever requirements.txt is newer than marker.
+set NEED_REQ_INSTALL=0
+if not exist .requirements_installed set NEED_REQ_INSTALL=1
+if exist .requirements_installed (
+    powershell -NoProfile -Command "if ((Get-Item 'requirements.txt').LastWriteTime -gt (Get-Item '.requirements_installed').LastWriteTime) { exit 1 } else { exit 0 }"
+    if errorlevel 1 set NEED_REQ_INSTALL=1
+)
+
+if "%NEED_REQ_INSTALL%"=="1" (
+    echo Installing/updating requirements...
     python -m pip install -r requirements.txt
     if errorlevel 1 pause & exit /b 1
     > ".requirements_installed" echo installed
 ) else (
-    echo Requirements already installed. Skipping pip install for faster startup.
+    echo Requirements already installed and up to date. Skipping pip install for faster startup.
 )
 
 if exist db.sqlite3 (
