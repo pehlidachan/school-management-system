@@ -17,11 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from school import dashboard_views, login_views
+from school import attendance_views, dashboard_views, login_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', login_views.user_login, name='login'),
     path('dashboard/', dashboard_views.dashboard, name='dashboard'),
+    path('attendance/', attendance_views.attendance_dashboard, name='attendance_dashboard'),
+    path('attendance/mark/<int:grade_id>/', attendance_views.mark_attendance, name='mark_attendance'),
+    path('attendance/report/', attendance_views.attendance_report, name='attendance_report'),
+    path('attendance/session/<int:session_id>/', attendance_views.attendance_session_detail, name='attendance_session_detail'),
     path('', include('school.urls')),
 ]
