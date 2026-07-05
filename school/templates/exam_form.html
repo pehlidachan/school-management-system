@@ -1,0 +1,20 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Add Assessment{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div><h1 class="hub-page-title">Add Assessment</h1><p class="text-muted mb-0">Create a class-wise assessment record.</p></div>
+    <a href="{% url 'exam_dashboard' %}" class="btn btn-outline-dark rounded-pill">Back</a>
+</div>
+<form method="POST" class="hub-card p-4">
+    {% csrf_token %}
+    <div class="row g-3">
+        <div class="col-md-6"><label class="form-label">Name</label><input name="name" class="form-control rounded-pill" required placeholder="Mid Term / Final Term"></div>
+        <div class="col-md-6"><label class="form-label">Class</label><select name="grade" class="form-select rounded-pill" required>{% for grade in grades %}<option value="{{ grade.id }}">{{ grade.name }}</option>{% endfor %}</select></div>
+        <div class="col-md-4"><label class="form-label">Start Date</label><input type="date" name="start_date" value="{{ today|date:'Y-m-d' }}" class="form-control rounded-pill"></div>
+        <div class="col-md-4"><label class="form-label">End Date</label><input type="date" name="end_date" class="form-control rounded-pill"></div>
+        <div class="col-md-4 d-flex align-items-end"><label class="form-check mb-2"><input class="form-check-input" type="checkbox" name="is_published"><span class="form-check-label">Published</span></label></div>
+        <div class="col-12 text-end"><button class="btn btn-success rounded-pill px-4" type="submit">Save</button></div>
+    </div>
+</form>
+{% endblock %}
