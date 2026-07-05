@@ -1,6 +1,16 @@
 {% extends 'dashboard_base.html' %}
 {% load static %}
 {% block 'title' %}Dashboard{% endblock %}
+{% block 'style' %}
+<style>
+.dashboard-analytics-grid { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:16px; }
+.dashboard-analytics-box { min-height:230px; overflow:hidden; }
+.dashboard-analytics-box img { width:100%; height:150px; object-fit:contain; display:block; }
+.dashboard-analytics-value { font-size:2.2rem; font-weight:900; color:#2b002d; line-height:1; }
+@media (max-width:1200px){ .dashboard-analytics-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+@media (max-width:700px){ .dashboard-analytics-grid{ grid-template-columns:1fr; } }
+</style>
+{% endblock %}
 {% block 'content' %}
 <div class="hub-hero mb-4">
     <div class="row align-items-center g-4">
@@ -37,6 +47,21 @@
     <div class="col-md-6 col-xl-3"><div class="hub-metric purple"><div class="label">Finance Module</div><div class="value">Next</div></div></div>
     <div class="col-md-6 col-xl-3"><div class="hub-metric green"><div class="label">Result / DMC</div><div class="value">Next</div></div></div>
 </div>
+
+{% if is_admin_user %}
+<div class="hub-card p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div><h3 class="fw-bold mb-1">Admin Analytical Boxes</h3><p class="text-muted mb-0">Python data analytics charts generated with pandas and matplotlib.</p></div>
+        <a href="{% url 'portal' %}" class="btn btn-dark rounded-pill btn-sm">Open Full Admin Panel</a>
+    </div>
+    <div class="dashboard-analytics-grid">
+        <div class="hub-card-soft p-3 dashboard-analytics-box"><h5 class="fw-bold mb-2">Line Graph</h5>{% if dash_line_chart %}<img src="{{ dash_line_chart }}" alt="Line graph">{% endif %}<div class="small text-muted">Students, staff, classes and subjects.</div></div>
+        <div class="hub-card-soft p-3 dashboard-analytics-box"><h5 class="fw-bold mb-2">Bar Chart</h5>{% if dash_bar_chart %}<img src="{{ dash_bar_chart }}" alt="Bar chart">{% endif %}<div class="small text-muted">Complaints, admissions and jobs.</div></div>
+        <div class="hub-card-soft p-3 dashboard-analytics-box"><h5 class="fw-bold mb-2">Pie Chart</h5>{% if dash_pie_chart %}<img src="{{ dash_pie_chart }}" alt="Pie chart">{% endif %}<div class="small text-muted">Student IDs, parent IDs and staff.</div></div>
+        <div class="hub-card-soft p-3 dashboard-analytics-box"><h5 class="fw-bold mb-2">Online Requests</h5><div class="dashboard-analytics-value">{{ dash_analytics_total }}</div><div class="small text-muted mt-2">Parent complaints + admissions + job applications.</div><hr><div class="small"><strong>{{ dash_total_complaints }}</strong> complaints<br><strong>{{ dash_total_admissions }}</strong> admissions<br><strong>{{ dash_total_jobs }}</strong> job applications</div></div>
+    </div>
+</div>
+{% endif %}
 
 <div class="row g-4">
     {% if is_admin_user %}
