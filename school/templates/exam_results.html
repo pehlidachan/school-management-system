@@ -1,0 +1,29 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Result Summary{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div><h1 class="hub-page-title">Result Summary</h1><p class="text-muted mb-0">{{ exam.name }} - {{ exam.grade }}</p></div>
+    <a href="{% url 'exam_detail' exam.id %}" class="btn btn-outline-dark rounded-pill">Back</a>
+</div>
+<div class="hub-table-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th>Student</th><th>Obtained</th><th>Total</th><th>Percentage</th><th>Status</th></tr></thead>
+            <tbody>
+                {% for row in result_rows %}
+                <tr>
+                    <td><strong>{{ row.student.name }}</strong><br><span class="text-muted small">ID: {{ row.student.id }}</span></td>
+                    <td>{{ row.obtained }}</td>
+                    <td>{{ row.total }}</td>
+                    <td>{{ row.percentage }}%</td>
+                    <td>{% if row.status == 'Pass' %}<span class="hub-status active">Pass</span>{% else %}<span class="hub-status inactive">Fail</span>{% endif %}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-center text-muted py-5">No students found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
