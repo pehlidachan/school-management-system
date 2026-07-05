@@ -1,21 +1,5 @@
-"""
-URL configuration for a_project project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 
 from school import attendance_views, calendar_views, dashboard_views, exam_views, finance_views, library_views, login_views, message_views, notice_views, promotion_views, student_card_views
 
@@ -29,6 +13,7 @@ urlpatterns = [
     path('attendance/session/<int:session_id>/', attendance_views.attendance_session_detail, name='attendance_session_detail'),
     path('finance/', finance_views.finance_dashboard, name='finance_dashboard'),
     path('finance/fees/', finance_views.fees_collection, name='fees_collection'),
+    path('finance/fees/report/', finance_views.fee_report, name='fee_report'),
     path('finance/fees/add/', finance_views.add_fee_invoice, name='add_fee_invoice'),
     path('finance/fees/bulk/', finance_views.bulk_fee_invoices, name='bulk_fee_invoices'),
     path('finance/fees/<int:invoice_id>/paid/', finance_views.mark_fee_paid, name='mark_fee_paid'),
