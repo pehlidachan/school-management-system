@@ -28,6 +28,9 @@ staticfiles/
 .env.*
 !.env.example
 
+# Local setup markers
+.requirements_installed
+
 # OS/editor
 .DS_Store
 Thumbs.db
