@@ -65,34 +65,34 @@ def dashboard(request):
         ]),
     }
 
-    if is_admin_user:
-        from . import models
-        try:
-            from . import public_models
-            complaints = public_models.ParentComplaint.objects.count()
-            admissions = public_models.OnlineAdmissionApplication.objects.count()
-            jobs = public_models.JobApplication.objects.count()
-        except Exception:
-            complaints = admissions = jobs = 0
+    from . import models
+    try:
+        from . import public_models
+        complaints = public_models.ParentComplaint.objects.count()
+        admissions = public_models.OnlineAdmissionApplication.objects.count()
+        jobs = public_models.JobApplication.objects.count()
+    except Exception:
+        complaints = admissions = jobs = 0
 
-        students = models.Student.objects.count()
-        staff = models.Staff.objects.count()
-        classes = models.ClassAndTiming.objects.count()
-        subjects = models.Subject.objects.count()
-        student_ids = models.StudentUserProfile.objects.count()
-        parent_ids = models.ParentProfile.objects.count()
+    students = models.Student.objects.count()
+    staff = models.Staff.objects.count()
+    classes = models.ClassAndTiming.objects.count()
+    subjects = models.Subject.objects.count()
+    student_ids = models.StudentUserProfile.objects.count()
+    parent_ids = models.ParentProfile.objects.count()
 
-        context.update({
-            'dash_total_students': students,
-            'dash_total_staff': staff,
-            'dash_total_classes': classes,
-            'dash_total_subjects': subjects,
-            'dash_total_complaints': complaints,
-            'dash_total_admissions': admissions,
-            'dash_total_jobs': jobs,
-            'dash_analytics_total': complaints + admissions + jobs,
-            'dash_line_chart': _chart_uri('line', ['Students', 'Staff', 'Classes', 'Subjects'], [students, staff, classes, subjects], 'Core Records'),
-            'dash_bar_chart': _chart_uri('bar', ['Complaints', 'Admissions', 'Jobs'], [complaints, admissions, jobs], 'Online Requests'),
-            'dash_pie_chart': _chart_uri('pie', ['Student IDs', 'Parent IDs', 'Staff'], [student_ids, parent_ids, staff], 'Account Mix'),
-        })
+    context.update({
+        'show_dashboard_analytics': True,
+        'dash_total_students': students,
+        'dash_total_staff': staff,
+        'dash_total_classes': classes,
+        'dash_total_subjects': subjects,
+        'dash_total_complaints': complaints,
+        'dash_total_admissions': admissions,
+        'dash_total_jobs': jobs,
+        'dash_analytics_total': complaints + admissions + jobs,
+        'dash_line_chart': _chart_uri('line', ['Students', 'Staff', 'Classes', 'Subjects'], [students, staff, classes, subjects], 'Core Records'),
+        'dash_bar_chart': _chart_uri('bar', ['Complaints', 'Admissions', 'Jobs'], [complaints, admissions, jobs], 'Online Requests'),
+        'dash_pie_chart': _chart_uri('pie', ['Student IDs', 'Parent IDs', 'Staff'], [student_ids, parent_ids, staff], 'Account Mix'),
+    })
     return render(request, 'dashboard.html', context)
