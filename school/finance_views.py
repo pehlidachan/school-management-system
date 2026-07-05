@@ -60,6 +60,43 @@ def fees_collection(request):
 
 
 @finance_required
+def fee_report(request):
+    _refresh_overdue()
+    grades = Grade.objects.filter(status=True).order_by("name")
+    status_choices = FeeInvoice.STATUS_CHOICES
+    grade_id = request.GET.get("grade") or ""
+    status = request.GET.get("status") or ""
+    billing_month = (request.GET.get("billing_month") or "").strip()
+
+    invoices = FeeInvoice.objects.select_related("student", "student__grade").order_by("student__grade__name", "student__name", "-due_date")
+    if grade_id:
+        invoices = invoices.filter(student__grade_id=grade_id)
+    if status:
+        invoices = invoices.filter(status=status)
+    if billing_month:
+        invoices = invoices.filter(billing_month__icontains=billing_month)
+
+    invoice_list = list(invoices[:500])
+    total_invoiced = sum((invoice.net_total for invoice in invoice_list), Decimal("0"))
+    total_paid = sum((invoice.amount_paid or Decimal("0") for invoice in invoice_list), Decimal("0"))
+    total_balance = sum((invoice.balance_due for invoice in invoice_list), Decimal("0"))
+
+    return render(request, "fee_report.html", {
+        "grades": grades,
+        "status_choices": status_choices,
+        "invoices": invoice_list,
+        "selected_grade_id": str(grade_id),
+        "selected_status": status,
+        "billing_month": billing_month,
+        "total_invoiced": total_invoiced,
+        "total_paid": total_paid,
+        "total_balance": total_balance,
+        "invoice_count": len(invoice_list),
+        "print_date": timezone.localdate(),
+    })
+
+
+@finance_required
 def add_fee_invoice(request):
     students = Student.objects.filter(status=True).select_related("grade").order_by("name")
     if request.method == "POST":
