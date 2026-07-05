@@ -1,0 +1,79 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Student Promotion{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">Student Promotion</h1>
+        <p class="text-muted mb-0">Promote selected students from one class to another class.</p>
+    </div>
+    <a href="{% url 'display_students' %}" class="btn btn-outline-dark rounded-pill">Students</a>
+</div>
+
+<div class="hub-card p-4 mb-4">
+    <form method="GET" class="row g-3 align-items-end">
+        <div class="col-md-6">
+            <label class="form-label fw-bold">Select current class</label>
+            <select name="from_grade" class="form-select rounded-pill" required>
+                <option value="">Choose class</option>
+                {% for grade in grades %}
+                <option value="{{ grade.id }}" {% if from_grade_id == grade.id|stringformat:'s' %}selected{% endif %}>{{ grade }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-success rounded-pill w-100">Load Students</button>
+        </div>
+    </form>
+</div>
+
+{% if from_grade %}
+<form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="from_grade" value="{{ from_grade.id }}">
+    <div class="hub-card p-4 mb-4">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Promote to class</label>
+                <select name="to_grade" class="form-select rounded-pill" required>
+                    <option value="">Choose next class</option>
+                    {% for grade in grades %}
+                    <option value="{{ grade.id }}">{{ grade }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-success rounded-pill w-100">Promote Selected</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="hub-table-card">
+        <div class="p-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div><strong>{{ from_grade }}</strong> active students</div>
+            <span class="text-muted small">Tick students and click Promote Selected.</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr><th style="width:48px;"><input class="form-check-input" type="checkbox" onclick="document.querySelectorAll('.promote-check').forEach(cb => cb.checked = this.checked)"></th><th>Student</th><th>ID</th><th>Guardian</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td><input class="form-check-input promote-check" type="checkbox" name="student_ids" value="{{ student.id }}"></td>
+                        <td><strong>{{ student.name }}</strong><br><span class="text-muted small">Current: {{ student.grade }}</span></td>
+                        <td>{{ student.id }}</td>
+                        <td>{{ student.guardian_name }}</td>
+                        <td><span class="hub-status active">Active</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted py-5">No active students found in this class.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+{% endif %}
+{% endblock %}
