@@ -8,6 +8,7 @@
         <p class="text-muted mb-0">Fees collection, pending balance and school expense ledger.</p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'finance_summary_report' %}" class="btn btn-outline-dark rounded-pill">Summary</a>
         <a href="{% url 'add_fee_invoice' %}" class="btn btn-success rounded-pill">+ Fee Invoice</a>
         <a href="{% url 'add_school_expense' %}" class="btn btn-dark rounded-pill">+ Expense</a>
     </div>
