@@ -1,0 +1,81 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Expense Report{% endblock %}
+{% block 'style' %}
+<style>
+@media print {
+    .hub-sidebar, .hub-topbar, .no-print { display:none !important; }
+    .hub-shell { display:block !important; }
+    .hub-content-wrap { padding:0 !important; }
+    body.dashboard-body { background:white !important; }
+}
+</style>
+{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar no-print">
+    <div>
+        <h1 class="hub-page-title">Expense Report</h1>
+        <p class="text-muted mb-0">Filter and print school expenses by category and date range.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <button onclick="window.print()" class="btn btn-success rounded-pill" type="button">Print</button>
+        <a href="{% url 'school_expenses' %}" class="btn btn-outline-dark rounded-pill">Expenses</a>
+    </div>
+</div>
+
+<div class="hub-card p-4 mb-4 no-print">
+    <form method="GET" class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Category</label>
+            <select name="category" class="form-select rounded-pill">
+                <option value="">All</option>
+                {% for category in categories %}
+                <option value="{{ category.id }}" {% if selected_category_id == category.id|stringformat:'s' %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Date From</label>
+            <input type="date" name="date_from" value="{{ date_from }}" class="form-control rounded-pill">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Date To</label>
+            <input type="date" name="date_to" value="{{ date_to }}" class="form-control rounded-pill">
+        </div>
+        <div class="col-md-3"><button type="submit" class="btn btn-success rounded-pill w-100">Filter</button></div>
+    </form>
+</div>
+
+<div class="hub-card p-4 mb-4 text-center">
+    <h2 class="hub-page-title mb-1">Government Middle School Shalgah</h2>
+    <p class="text-muted mb-3">Expense Report | {{ print_date }}</p>
+    <div class="row g-3 justify-content-center">
+        <div class="col-md-4"><div class="hub-metric"><div class="label">Expense Entries</div><div class="value">{{ expense_count }}</div></div></div>
+        <div class="col-md-4"><div class="hub-metric"><div class="label">Total Expenses</div><div class="value">{{ total_expenses }}</div></div></div>
+    </div>
+</div>
+
+<div class="hub-table-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th>#</th><th>Date</th><th>Title</th><th>Category</th><th>Paid To</th><th>Method</th><th>Quantity</th><th class="text-end">Amount</th></tr></thead>
+            <tbody>
+                {% for expense in expenses %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ expense.payment_date }}</td>
+                    <td><strong>{{ expense.title }}</strong><br><span class="text-muted small">{{ expense.note|truncatechars:50 }}</span></td>
+                    <td>{{ expense.category|default:'General' }}</td>
+                    <td>{{ expense.paid_to|default:'-' }}</td>
+                    <td>{{ expense.payment_method|default:'-' }}</td>
+                    <td>{{ expense.quantity|default:'-' }}</td>
+                    <td class="text-end">{{ expense.amount }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8" class="text-center text-muted py-5">No expense records found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
