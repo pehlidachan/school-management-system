@@ -62,6 +62,7 @@
                     </td>
                     <td><a href="{% url 'account_creator_dashboard' %}" class="btn btn-sm btn-outline-success rounded-pill fw-bold">Create IDs</a></td>
                     <td class="text-end">
+                        <a class="hub-action-icon" target="_blank" href="{% url 'student_id_card' student.id %}" title="ID Card"><i class="fa-solid fa-id-badge"></i></a>
                         <a class="hub-action-icon" href="{% url 'student_details' student.id %}" title="Details"><i class="fa-solid fa-eye"></i></a>
                         <a class="hub-action-icon" href="{% url 'edit_student' student.id %}" title="Edit"><i class="fa-solid fa-pen"></i></a>
                     </td>
