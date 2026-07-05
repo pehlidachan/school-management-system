@@ -1,0 +1,46 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Message Detail{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">{{ thread.subject }}</h1>
+        <p class="text-muted mb-0">{{ thread.sender }} → {{ thread.recipient }}</p>
+    </div>
+    <a href="{% url 'message_inbox' %}" class="btn btn-outline-dark rounded-pill">Back</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-8">
+        <div class="hub-card p-4">
+            <div class="d-flex gap-2 mb-3 flex-wrap">
+                <span class="hub-status {% if thread.priority == 'urgent' %}inactive{% elif thread.priority == 'important' %}pending{% else %}active{% endif %}">{{ thread.get_priority_display }}</span>
+                {% if thread.recipient == request.user and thread.is_read %}<span class="hub-status active">Read</span>{% endif %}
+            </div>
+            <div class="hub-mini-list">
+                {% for item in thread_messages %}
+                <div class="hub-card-soft p-3">
+                    <div class="d-flex justify-content-between gap-3 flex-wrap mb-2">
+                        <strong>{{ item.author }}</strong>
+                        <span class="text-muted small">{{ item.created_at }}</span>
+                    </div>
+                    <div style="white-space: pre-line; line-height: 1.8;">{{ item.body }}</div>
+                </div>
+                {% empty %}
+                <div class="text-muted">No content found.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="hub-card p-4">
+            <h3 class="mb-3">Reply</h3>
+            <form method="POST" action="{% url 'reply_message' thread.id %}">
+                {% csrf_token %}
+                <textarea name="body" class="form-control rounded-4 mb-3" rows="6" required></textarea>
+                <button class="btn btn-success rounded-pill w-100" type="submit">Send Reply</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
