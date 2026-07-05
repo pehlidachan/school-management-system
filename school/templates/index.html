@@ -28,7 +28,12 @@
         <!-- Masthead Subheading-->
         <p class="masthead-subheading font-weight-light mb-0">Possibilities are endless</p>
         {% if user.is_authenticated %}
+        {% if user.is_superuser %}
+        <a href="{% url 'portal' %}" class="btn btn-light btn-xl mt-4 fw-bold">Open Admin Control Panel</a>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-light btn-xl mt-4 fw-bold ms-2">Role Dashboard</a>
+        {% else %}
         <a href="{% url 'dashboard' %}" class="btn btn-light btn-xl mt-4 fw-bold">Open Dashboard / Control Panel</a>
+        {% endif %}
         {% else %}
         <a href="{% url 'login' %}" class="btn btn-light btn-xl mt-4 fw-bold">Login to Continue</a>
         {% endif %}
