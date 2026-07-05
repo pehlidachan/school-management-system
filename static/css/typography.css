@@ -1,0 +1,61 @@
+/* Phase 2.3 typography polish: regular UI text, bold headings only */
+
+body.dashboard-body {
+    font-family: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+}
+
+.dashboard-body p,
+.dashboard-body td,
+.dashboard-body a,
+.dashboard-body button,
+.dashboard-body input,
+.dashboard-body select,
+.dashboard-body textarea,
+.dashboard-body .btn,
+.dashboard-body .form-control,
+.dashboard-body .form-select,
+.dashboard-body .hub-nav a,
+.dashboard-body .hub-metric .label,
+.dashboard-body .hub-status {
+    font-weight: 400 !important;
+}
+
+.dashboard-body .fw-bold,
+.dashboard-body strong,
+.dashboard-body .fw-black {
+    font-weight: 500 !important;
+}
+
+.dashboard-body h1,
+.dashboard-body h2,
+.dashboard-body h3,
+.dashboard-body h4,
+.dashboard-body h5,
+.dashboard-body h6,
+.dashboard-body .hub-page-title,
+.dashboard-body .hub-brand,
+.dashboard-body .hub-hero h1,
+.dashboard-body .hub-hero h2,
+.dashboard-body .hub-card h3,
+.dashboard-body .hub-card h4,
+.dashboard-body .hub-card-soft h5 {
+    font-weight: 700 !important;
+    letter-spacing: -0.03em;
+}
+
+.dashboard-body .hub-menu-label,
+.dashboard-body .hub-table-card thead th,
+.dashboard-body .hub-nav a.active,
+.dashboard-body .hub-avatar {
+    font-weight: 500 !important;
+}
+
+.dashboard-body .hub-metric .value {
+    font-weight: 700 !important;
+}
+
+.dashboard-body .hub-side-ad .fs-5 {
+    font-weight: 500 !important;
+}
