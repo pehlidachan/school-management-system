@@ -1,0 +1,21 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Admin Control Panel{% endblock %}
+{% block 'content' %}
+<div class="hub-hero mb-4"><h1 class="mb-2">School Admin Control Panel</h1><p class="mb-0 text-muted">Main records and online request counters.</p></div>
+<div class="row g-4 mb-4">
+    <div class="col-6 col-xl-3"><div class="hub-metric blue"><div class="label">Students</div><div class="value">{{ total_students }}</div><a href="{% url 'display_students' %}">Open students</a></div></div>
+    <div class="col-6 col-xl-3"><div class="hub-metric yellow"><div class="label">Staff</div><div class="value">{{ total_staff }}</div><a href="{% url 'display_staff' %}">Open staff</a></div></div>
+    <div class="col-6 col-xl-3"><div class="hub-metric purple"><div class="label">Classes</div><div class="value">{{ total_classes }}</div><a href="{% url 'display_classes' %}">Open classes</a></div></div>
+    <div class="col-6 col-xl-3"><div class="hub-metric green"><div class="label">Subjects</div><div class="value">{{ total_subjects }}</div><a href="{% url 'display_subjects' %}">Open subjects</a></div></div>
+</div>
+<div class="row g-4 mb-4">
+    <div class="col-md-4"><div class="hub-card p-4"><h4 class="fw-bold">Parent Forms</h4><div class="display-5 fw-black">{{ total_parent_complaints }}</div><a href="{% url 'parent_complaint_form' %}" target="_blank">Open form</a></div></div>
+    <div class="col-md-4"><div class="hub-card p-4"><h4 class="fw-bold">Admission Forms</h4><div class="display-5 fw-black">{{ total_online_admissions }}</div><a href="{% url 'online_admission_form' %}" target="_blank">Open form</a></div></div>
+    <div class="col-md-4"><div class="hub-card p-4"><h4 class="fw-bold">Job Forms</h4><div class="display-5 fw-black">{{ total_job_applications }}</div><a href="{% url 'job_apply_form' %}" target="_blank">Open form</a></div></div>
+</div>
+<div class="row g-4">
+    <div class="col-md-6"><div class="hub-card p-4"><h4 class="fw-bold">Student Logins</h4><div class="display-5 fw-black">{{ total_student_logins }}</div><a href="{% url 'account_creator_dashboard' %}">Manage IDs</a></div></div>
+    <div class="col-md-6"><div class="hub-card p-4"><h4 class="fw-bold">Parent Logins</h4><div class="display-5 fw-black">{{ total_parent_logins }}</div><a href="{% url 'account_creator_dashboard' %}">Manage IDs</a></div></div>
+</div>
+{% endblock %}
