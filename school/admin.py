@@ -3,6 +3,7 @@ from .models import Gender, Grade, GuardianRelation, Student, Role, Subject, Emp
 from .finance_models import FeeInvoice, ExpenseCategory, SchoolExpense
 from .notice_models import Notice
 from .calendar_models import SchoolCalendarEvent
+from .library_models import LibraryBook, LibraryIssue
 # Register your models here.
 
 '''
@@ -148,6 +149,21 @@ class SchoolCalendarEventAdmin(admin.ModelAdmin):
     ordering = ('event_date', 'start_time')
 
 
+class LibraryBookAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author', 'accession_number', 'category', 'total_copies', 'available_copies', 'is_active')
+    list_filter = ('category', 'is_active')
+    search_fields = ('title', 'author', 'isbn', 'accession_number', 'publisher')
+    ordering = ('title',)
+
+
+class LibraryIssueAdmin(admin.ModelAdmin):
+    list_display = ('book', 'student', 'issue_date', 'due_date', 'return_date', 'status', 'issued_by')
+    list_filter = ('status', 'issue_date', 'due_date')
+    search_fields = ('book__title', 'book__accession_number', 'student__name', 'remarks')
+    date_hierarchy = 'issue_date'
+    ordering = ('-issue_date',)
+
+
 admin.site.register(StudentUserProfile, StudentUserProfileAdmin)
 admin.site.register(ParentProfile, ParentProfileAdmin)
 admin.site.register(LoginActivity, LoginActivityAdmin)
@@ -158,3 +174,5 @@ admin.site.register(ExpenseCategory, ExpenseCategoryAdmin)
 admin.site.register(SchoolExpense, SchoolExpenseAdmin)
 admin.site.register(Notice, NoticeAdmin)
 admin.site.register(SchoolCalendarEvent, SchoolCalendarEventAdmin)
+admin.site.register(LibraryBook, LibraryBookAdmin)
+admin.site.register(LibraryIssue, LibraryIssueAdmin)
