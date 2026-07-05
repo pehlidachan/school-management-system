@@ -1,0 +1,51 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Notice Board{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">Notice Board</h1>
+        <p class="text-muted mb-0">School announcements for students, parents, teachers and staff.</p>
+    </div>
+    <a href="{% url 'add_notice' %}" class="btn btn-success rounded-pill">+ Add Notice</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-8">
+        <div class="hub-mini-list">
+            {% for notice in notices %}
+            <a href="{% url 'notice_detail' notice.id %}" class="hub-card p-4 text-decoration-none text-dark d-block">
+                <div class="d-flex justify-content-between align-items-start gap-3">
+                    <div>
+                        <div class="d-flex gap-2 mb-2 flex-wrap">
+                            <span class="hub-status {% if notice.priority == 'urgent' %}inactive{% elif notice.priority == 'important' %}pending{% else %}active{% endif %}">{{ notice.get_priority_display }}</span>
+                            <span class="hub-status">{{ notice.get_audience_display }}</span>
+                        </div>
+                        <h3 class="mb-1">{{ notice.title }}</h3>
+                        <p class="text-muted mb-2">{{ notice.body|truncatewords:28 }}</p>
+                        <span class="text-muted small">By {{ notice.created_by|default:'School' }} • {{ notice.publish_date }} • {{ notice.view_count }} views</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-muted"></i>
+                </div>
+            </a>
+            {% empty %}
+            <div class="hub-card p-5 text-center text-muted">No notices published yet.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="hub-card p-4 h-100">
+            <h3 class="mb-3">Featured Notice</h3>
+            {% if featured_notice %}
+                <span class="hub-status {% if featured_notice.priority == 'urgent' %}inactive{% elif featured_notice.priority == 'important' %}pending{% else %}active{% endif %}">{{ featured_notice.get_priority_display }}</span>
+                <h4 class="mt-3">{{ featured_notice.title }}</h4>
+                <p class="text-muted">{{ featured_notice.body|truncatewords:55 }}</p>
+                <a href="{% url 'notice_detail' featured_notice.id %}" class="btn btn-dark rounded-pill w-100">Read Full Notice</a>
+            {% else %}
+                <p class="text-muted">No featured notice available.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
