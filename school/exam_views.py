@@ -26,6 +26,44 @@ def _decimal(value, default="0"):
         return Decimal(default)
 
 
+def _build_result_rows(exam, students=None):
+    if students is None:
+        students = Student.objects.filter(grade=exam.grade, status=True).order_by("name")
+    exam_subjects = list(exam.exam_subjects.select_related("subject"))
+    mark_map = {(m.student_id, m.exam_subject_id): m for m in StudentMark.objects.filter(exam_subject__exam=exam)}
+
+    result_rows = []
+    for student in students:
+        obtained = Decimal("0")
+        total = Decimal("0")
+        failed = False
+        subject_rows = []
+        for exam_subject in exam_subjects:
+            total += exam_subject.total_marks
+            mark = mark_map.get((student.id, exam_subject.id))
+            marks_obtained = mark.marks_obtained if mark else Decimal("0")
+            obtained += marks_obtained
+            if marks_obtained < exam_subject.passing_marks:
+                failed = True
+            subject_rows.append({
+                "subject": exam_subject.subject,
+                "marks": marks_obtained,
+                "total": exam_subject.total_marks,
+                "passing": exam_subject.passing_marks,
+                "status": "Pass" if marks_obtained >= exam_subject.passing_marks else "Fail",
+            })
+        percentage = (obtained / total * 100) if total else Decimal("0")
+        result_rows.append({
+            "student": student,
+            "obtained": obtained,
+            "total": total,
+            "percentage": percentage.quantize(Decimal("0.01")) if total else Decimal("0"),
+            "status": "Fail" if failed else "Pass",
+            "subjects": subject_rows,
+        })
+    return result_rows, exam_subjects
+
+
 @staff_required
 def exam_dashboard(request):
     exams = Exam.objects.select_related("grade", "created_by").annotate(subject_count=Count("exam_subjects"))[:50]
@@ -114,31 +152,20 @@ def marks_entry(request, exam_subject_id):
 @staff_required
 def exam_results(request, exam_id):
     exam = get_object_or_404(Exam.objects.select_related("grade"), id=exam_id)
-    students = Student.objects.filter(grade=exam.grade, status=True).order_by("name")
-    exam_subjects = list(exam.exam_subjects.select_related("subject"))
-    mark_map = {(m.student_id, m.exam_subject_id): m for m in StudentMark.objects.filter(exam_subject__exam=exam)}
-
-    result_rows = []
-    for student in students:
-        obtained = Decimal("0")
-        total = Decimal("0")
-        failed = False
-        subject_rows = []
-        for exam_subject in exam_subjects:
-            total += exam_subject.total_marks
-            mark = mark_map.get((student.id, exam_subject.id))
-            marks_obtained = mark.marks_obtained if mark else Decimal("0")
-            obtained += marks_obtained
-            if marks_obtained < exam_subject.passing_marks:
-                failed = True
-            subject_rows.append({"subject": exam_subject.subject, "marks": marks_obtained, "total": exam_subject.total_marks})
-        percentage = (obtained / total * 100) if total else Decimal("0")
-        result_rows.append({
-            "student": student,
-            "obtained": obtained,
-            "total": total,
-            "percentage": percentage.quantize(Decimal("0.01")) if total else Decimal("0"),
-            "status": "Fail" if failed else "Pass",
-            "subjects": subject_rows,
-        })
+    result_rows, exam_subjects = _build_result_rows(exam)
     return render(request, "exam_results.html", {"exam": exam, "result_rows": result_rows, "exam_subjects": exam_subjects})
+
+
+@staff_required
+def student_result_card(request, exam_id, student_id):
+    exam = get_object_or_404(Exam.objects.select_related("grade"), id=exam_id)
+    student = get_object_or_404(Student.objects.select_related("grade", "gender", "guardian_relation"), id=student_id, grade=exam.grade)
+    result_rows, exam_subjects = _build_result_rows(exam, students=[student])
+    result = result_rows[0] if result_rows else None
+    return render(request, "student_result_card.html", {
+        "exam": exam,
+        "student": student,
+        "result": result,
+        "exam_subjects": exam_subjects,
+        "print_date": timezone.localdate(),
+    })
