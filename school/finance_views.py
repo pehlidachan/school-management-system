@@ -99,6 +99,13 @@ def mark_fee_paid(request, invoice_id):
 
 
 @finance_required
+def fee_receipt(request, invoice_id):
+    invoice = get_object_or_404(FeeInvoice.objects.select_related("student", "student__grade", "created_by"), id=invoice_id)
+    invoice.refresh_status(save=True)
+    return render(request, "fee_receipt.html", {"invoice": invoice, "print_date": timezone.localdate()})
+
+
+@finance_required
 def school_expenses(request):
     expenses = SchoolExpense.objects.select_related("category")[:100]
     return render(request, "school_expenses.html", {"expenses": expenses})
