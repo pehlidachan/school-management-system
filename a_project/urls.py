@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from school import attendance_views, dashboard_views, login_views
+from school import attendance_views, dashboard_views, finance_views, login_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,5 +27,11 @@ urlpatterns = [
     path('attendance/mark/<int:grade_id>/', attendance_views.mark_attendance, name='mark_attendance'),
     path('attendance/report/', attendance_views.attendance_report, name='attendance_report'),
     path('attendance/session/<int:session_id>/', attendance_views.attendance_session_detail, name='attendance_session_detail'),
+    path('finance/', finance_views.finance_dashboard, name='finance_dashboard'),
+    path('finance/fees/', finance_views.fees_collection, name='fees_collection'),
+    path('finance/fees/add/', finance_views.add_fee_invoice, name='add_fee_invoice'),
+    path('finance/fees/<int:invoice_id>/paid/', finance_views.mark_fee_paid, name='mark_fee_paid'),
+    path('finance/expenses/', finance_views.school_expenses, name='school_expenses'),
+    path('finance/expenses/add/', finance_views.add_school_expense, name='add_school_expense'),
     path('', include('school.urls')),
 ]
