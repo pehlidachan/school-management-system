@@ -256,3 +256,86 @@ class LoginActivity(models.Model):
     def __str__(self):
         status = "SUCCESS" if self.is_successful else "FAILED"
         return f"{status} login: {self.username_entered or self.user} from {self.ip_address}"
+
+
+class AttendanceSession(models.Model):
+    """One attendance register for one grade/class on one date."""
+
+    grade = models.ForeignKey(
+        Grade,
+        on_delete=models.CASCADE,
+        related_name="attendance_sessions",
+    )
+    attendance_date = models.DateField()
+    taken_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="taken_attendance_sessions",
+    )
+    note = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-attendance_date", "grade__name"]
+        constraints = [
+            models.UniqueConstraint(fields=["grade", "attendance_date"], name="unique_grade_attendance_date"),
+        ]
+        indexes = [
+            models.Index(fields=["attendance_date"]),
+            models.Index(fields=["grade", "attendance_date"]),
+        ]
+
+    def __str__(self):
+        return f"{self.grade} attendance on {self.attendance_date}"
+
+
+class StudentAttendance(models.Model):
+    PRESENT = "present"
+    ABSENT = "absent"
+    LATE = "late"
+    LEAVE = "leave"
+
+    STATUS_CHOICES = [
+        (PRESENT, "Present"),
+        (ABSENT, "Absent"),
+        (LATE, "Late"),
+        (LEAVE, "Leave"),
+    ]
+
+    session = models.ForeignKey(
+        AttendanceSession,
+        on_delete=models.CASCADE,
+        related_name="records",
+    )
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        related_name="attendance_records",
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PRESENT)
+    remarks = models.CharField(max_length=255, blank=True)
+    marked_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="marked_student_attendance",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["student__name"]
+        constraints = [
+            models.UniqueConstraint(fields=["session", "student"], name="unique_student_attendance_per_session"),
+        ]
+        indexes = [
+            models.Index(fields=["status"]),
+            models.Index(fields=["student", "status"]),
+        ]
+
+    def __str__(self):
+        return f"{self.student.name}: {self.status} ({self.session.attendance_date})"
