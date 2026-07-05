@@ -1,0 +1,53 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Fees Collection{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">Fees Collection</h1>
+        <p class="text-muted mb-0">Fee invoices with paid, pending, partial and overdue status.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'finance_dashboard' %}" class="btn btn-outline-dark rounded-pill">Finance</a>
+        <a href="{% url 'add_fee_invoice' %}" class="btn btn-success rounded-pill">+ Add Invoice</a>
+    </div>
+</div>
+
+<div class="hub-table-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr><th>Student</th><th>Class</th><th>Billing</th><th>Due Date</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th><th class="text-end">Action</th></tr>
+            </thead>
+            <tbody>
+                {% for invoice in invoices %}
+                <tr>
+                    <td>{{ invoice.student.name }}</td>
+                    <td>{{ invoice.student.grade }}</td>
+                    <td>{{ invoice.title }}<br><span class="text-muted small">{{ invoice.billing_month }}</span></td>
+                    <td>{{ invoice.due_date }}</td>
+                    <td>{{ invoice.net_total }}</td>
+                    <td>{{ invoice.amount_paid }}</td>
+                    <td>{{ invoice.balance_due }}</td>
+                    <td><span class="hub-status {{ invoice.status }}">{{ invoice.get_status_display }}</span></td>
+                    <td class="text-end">
+                        {% if invoice.status != 'paid' %}
+                        <form method="POST" action="{% url 'mark_fee_paid' invoice.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="amount_paid" value="{{ invoice.net_total }}">
+                            <input type="hidden" name="payment_method" value="Cash">
+                            <button type="submit" class="btn btn-sm btn-success rounded-pill">Mark Paid</button>
+                        </form>
+                        {% else %}
+                        <span class="text-muted small">Paid {{ invoice.paid_at }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="9" class="text-center text-muted py-5">No fee invoices found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
