@@ -14,7 +14,7 @@
             <a href="{% url 'attendance_dashboard' %}" class="{% if 'attendance' in request.resolver_match.url_name %}active{% endif %}"><span class="icon"><i class="fa-solid fa-people-group"></i></span>Attendance</a>
             <a href="{% url 'finance_dashboard' %}" class="{% if 'finance' in request.resolver_match.url_name or 'fee' in request.resolver_match.url_name or 'expense' in request.resolver_match.url_name %}active{% endif %}"><span class="icon"><i class="fa-solid fa-circle-dollar-to-slot"></i></span>Finance</a>
             <a href="{% url 'notice_board' %}" class="{% if 'notice' in request.resolver_match.url_name %}active{% endif %}"><span class="icon"><i class="fa-solid fa-clipboard-list"></i></span>Notice</a>
-            <a href="#" class="disabled opacity-75"><span class="icon"><i class="fa-solid fa-calendar-days"></i></span>Calendar</a>
+            <a href="{% url 'calendar_dashboard' %}" class="{% if 'calendar' in request.resolver_match.url_name %}active{% endif %}"><span class="icon"><i class="fa-solid fa-calendar-days"></i></span>Calendar</a>
             <a href="#" class="disabled opacity-75"><span class="icon"><i class="fa-solid fa-book-open"></i></span>Library</a>
             <a href="#" class="disabled opacity-75"><span class="icon"><i class="fa-solid fa-comments"></i></span>Message</a>
         </nav>
