@@ -46,4 +46,4 @@ def display_staff(request):
         "selected_status": status,
         "result_count": len(staff_list),
     }
-    return render(request, "staff_filtered_list_v2.html", context)
+    return render(request, "staff_filtered_list_v3.html", context)
