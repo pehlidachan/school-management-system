@@ -1,65 +1,80 @@
-{% extends 'layout.html' %}
+{% extends 'dashboard_base.html' %}
 {% load static %}
-{% block 'style' %}
-
-{% endblock %}
-{% block 'title' %} Students {% endblock %}
+{% block 'title' %}Students{% endblock %}
 {% block 'content' %}
-    <div class="container-fluid">
-        <div class="container my-5 d-flex align-items-center justify-content-between">
-            <h1>Students</h1>
-            <a href="{% url 'add_student' %}" class="btn btn-success">Add Student</a>
-        </div>
-        <table class="table table-striped text-center">
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">All Students List</h1>
+        <p class="text-muted mb-0">Student records, linked ID maker, status and edit actions.</p>
+    </div>
+    <div class="d-flex gap-2 align-items-center flex-wrap">
+        <div class="hub-search" style="width: 280px;"><i class="fa-solid fa-magnifying-glass"></i><input type="search" placeholder="Search by name or ID"></div>
+        <span class="hub-filter-btn" title="Filters"><i class="fa-solid fa-sliders"></i></span>
+        <a href="{% url 'add_student' %}" class="hub-add-btn" title="Add Student"><i class="fa-solid fa-plus"></i></a>
+    </div>
+</div>
+
+<div class="hub-table-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
             <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>Name</th>
-                    <th>Grade</th>
+                    <th style="width: 44px;"><input class="form-check-input" type="checkbox"></th>
+                    <th>Student Name</th>
+                    <th>Student ID</th>
+                    <th>Class</th>
                     <th>Age</th>
                     <th>Gender</th>
-                    <th>Info</th>
                     <th>Status</th>
                     <th>Accounts</th>
-                    <th>Edit</th>
+                    <th class="text-end">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for student in data %}
-                    <tr>
-                        <th>{{student.id}}</th>
-                        <td>{{student.name}}</td>
-                        <td>{{student.grade}}</td>
-                        <td>{{student.age}}</td>
-                        <td>{{student.gender}}</td>
-                        <td>
-                            <a href="{% url 'student_details' student.id %}">
-                                <i class="fa-solid fa-circle-info fs-4"></i>
-                            </a>
-                        </td>
-                        <td>
-                            <form action="{% url 'change_student_status' student.id %}" method="POST" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-link p-0 border-0 bg-transparent" title="Toggle status">
-                                    {% if student.status %}
-                                        <i class="fa-solid fa-circle-check fs-5 text-success"></i>
-                                    {% else %}
-                                        <i class="fa-solid fa-circle-xmark text-danger"></i>
-                                    {% endif %}
-                                </button>
-                            </form>
-                        </td>
-                        <td>
-                            <a href="{% url 'account_creator_dashboard' %}" class="btn btn-sm btn-outline-success">Create IDs</a>
-                        </td>
-                        <td>
-                            <a style="color: transparent;" href="{% url 'edit_student' student.id %}">
-                                <i class="fa-solid fa-pen fs-5 text-secondary"></i>
-                            </a>
-                        </td>
-                    </tr>
+                <tr>
+                    <td><input class="form-check-input" type="checkbox"></td>
+                    <td>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="hub-avatar" style="width:38px;height:38px;font-size:.95rem;">{{ student.name|slice:":1"|upper }}</div>
+                            <div>
+                                <div class="fw-bold">{{ student.name }}</div>
+                                <div class="small text-muted">Grade {{ student.grade }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ student.id }}</td>
+                    <td>{{ student.grade }}</td>
+                    <td>{{ student.age }}</td>
+                    <td>{{ student.gender }}</td>
+                    <td>
+                        <form action="{% url 'change_student_status' student.id %}" method="POST" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link p-0 border-0 bg-transparent" title="Toggle status">
+                                {% if student.status %}
+                                <span class="hub-status active"><i class="fa-solid fa-circle"></i> Active</span>
+                                {% else %}
+                                <span class="hub-status inactive"><i class="fa-solid fa-circle"></i> Inactive</span>
+                                {% endif %}
+                            </button>
+                        </form>
+                    </td>
+                    <td><a href="{% url 'account_creator_dashboard' %}" class="btn btn-sm btn-outline-success rounded-pill fw-bold">Create IDs</a></td>
+                    <td class="text-end">
+                        <a class="hub-action-icon" href="{% url 'student_details' student.id %}" title="Details"><i class="fa-solid fa-eye"></i></a>
+                        <a class="hub-action-icon" href="{% url 'edit_student' student.id %}" title="Edit"><i class="fa-solid fa-pen"></i></a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="9" class="text-center text-muted py-5">No students found.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+    <div class="d-flex justify-content-between align-items-center p-3 border-top">
+        <button class="btn btn-outline-secondary btn-sm rounded-pill" disabled>Previous</button>
+        <span class="text-muted small">Page 1</span>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill" disabled>Next</button>
+    </div>
+</div>
 {% endblock %}
