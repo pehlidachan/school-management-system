@@ -1,0 +1,41 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Messages{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">Messages</h1>
+        <p class="text-muted mb-0">Internal school communication center.</p>
+    </div>
+    <a href="{% url 'compose_message' %}" class="btn btn-success rounded-pill">+ Compose</a>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-6 col-xl-4"><div class="hub-metric yellow"><div class="label">Total</div><div class="value">{{ total_threads }}</div></div></div>
+    <div class="col-6 col-xl-4"><div class="hub-metric purple"><div class="label">Unread</div><div class="value">{{ unread_count }}</div></div></div>
+    <div class="col-6 col-xl-4"><div class="hub-metric green"><div class="label">Sent</div><div class="value">{{ sent_count }}</div></div></div>
+</div>
+
+<div class="hub-card p-4">
+    <h3 class="mb-3">Message List</h3>
+    <div class="hub-mini-list">
+        {% for thread in threads %}
+        <a href="{% url 'message_detail' thread.id %}" class="hub-card-soft p-3 text-decoration-none text-dark d-block">
+            <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                <div>
+                    <div class="d-flex gap-2 mb-2 flex-wrap">
+                        <span class="hub-status {% if thread.priority == 'urgent' %}inactive{% elif thread.priority == 'important' %}pending{% else %}active{% endif %}">{{ thread.get_priority_display }}</span>
+                        {% if thread.recipient == request.user and not thread.is_read %}<span class="hub-status inactive">Unread</span>{% endif %}
+                    </div>
+                    <h4 class="mb-1">{{ thread.subject }}</h4>
+                    <p class="text-muted mb-0">{{ thread.sender }} → {{ thread.recipient }}</p>
+                </div>
+                <div class="text-end text-muted small">{{ thread.last_activity_at }}</div>
+            </div>
+        </a>
+        {% empty %}
+        <div class="hub-card-soft p-5 text-center text-muted">No communication records yet.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
