@@ -9,7 +9,7 @@
 <div class="hub-table-card">
     <div class="table-responsive">
         <table class="table align-middle">
-            <thead><tr><th>Student</th><th>Obtained</th><th>Total</th><th>Percentage</th><th>Status</th></tr></thead>
+            <thead><tr><th>Student</th><th>Obtained</th><th>Total</th><th>Percentage</th><th>Status</th><th class="text-end">Print</th></tr></thead>
             <tbody>
                 {% for row in result_rows %}
                 <tr>
@@ -18,9 +18,10 @@
                     <td>{{ row.total }}</td>
                     <td>{{ row.percentage }}%</td>
                     <td>{% if row.status == 'Pass' %}<span class="hub-status active">Pass</span>{% else %}<span class="hub-status inactive">Fail</span>{% endif %}</td>
+                    <td class="text-end"><a class="btn btn-sm btn-success rounded-pill" target="_blank" href="{% url 'student_result_card' exam.id row.student.id %}">Card</a></td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="5" class="text-center text-muted py-5">No students found.</td></tr>
+                <tr><td colspan="6" class="text-center text-muted py-5">No students found.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
