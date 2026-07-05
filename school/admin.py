@@ -5,6 +5,7 @@ from .notice_models import Notice
 from .calendar_models import SchoolCalendarEvent
 from .library_models import LibraryBook, LibraryIssue
 from .message_models import MessageThread, ThreadMessage
+from .exam_models import Exam, ExamSubject, StudentMark
 # Register your models here.
 
 '''
@@ -180,6 +181,27 @@ class ThreadMessageAdmin(admin.ModelAdmin):
     ordering = ('-created_at',)
 
 
+class ExamAdmin(admin.ModelAdmin):
+    list_display = ('name', 'grade', 'start_date', 'end_date', 'is_published', 'created_by')
+    list_filter = ('grade', 'is_published', 'start_date')
+    search_fields = ('name', 'grade__name')
+    date_hierarchy = 'start_date'
+    ordering = ('-start_date',)
+
+
+class ExamSubjectAdmin(admin.ModelAdmin):
+    list_display = ('exam', 'subject', 'total_marks', 'passing_marks')
+    list_filter = ('exam__grade', 'subject')
+    search_fields = ('exam__name', 'subject__name')
+
+
+class StudentMarkAdmin(admin.ModelAdmin):
+    list_display = ('student', 'exam_subject', 'marks_obtained', 'marked_by', 'updated_at')
+    list_filter = ('exam_subject__exam', 'exam_subject__subject')
+    search_fields = ('student__name', 'exam_subject__exam__name', 'exam_subject__subject__name')
+    ordering = ('-updated_at',)
+
+
 admin.site.register(StudentUserProfile, StudentUserProfileAdmin)
 admin.site.register(ParentProfile, ParentProfileAdmin)
 admin.site.register(LoginActivity, LoginActivityAdmin)
@@ -194,3 +216,6 @@ admin.site.register(LibraryBook, LibraryBookAdmin)
 admin.site.register(LibraryIssue, LibraryIssueAdmin)
 admin.site.register(MessageThread, MessageThreadAdmin)
 admin.site.register(ThreadMessage, ThreadMessageAdmin)
+admin.site.register(Exam, ExamAdmin)
+admin.site.register(ExamSubject, ExamSubjectAdmin)
+admin.site.register(StudentMark, StudentMarkAdmin)
