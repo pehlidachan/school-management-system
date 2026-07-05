@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Gender, Grade, GuardianRelation, Student, Role, Subject, EmploymentStatus, Staff, ClassAndTiming, ClassIncharge, StudentUserProfile, ParentProfile
+from .models import Gender, Grade, GuardianRelation, Student, Role, Subject, EmploymentStatus, Staff, ClassAndTiming, ClassIncharge, StudentUserProfile, ParentProfile, LoginActivity
 # Register your models here.
 
 '''
@@ -79,5 +79,20 @@ class ParentProfileAdmin(admin.ModelAdmin):
     search_fields = ('guardian_name', 'student__name', 'user__username')
 
 
+class LoginActivityAdmin(admin.ModelAdmin):
+    list_display = ('created_at', 'username_entered', 'user', 'ip_address', 'is_successful', 'failure_reason', 'role_snapshot')
+    list_filter = ('is_successful', 'created_at', 'country_code', 'city')
+    search_fields = ('username_entered', 'user__username', 'ip_address', 'forwarded_for', 'user_agent', 'role_snapshot')
+    readonly_fields = (
+        'user', 'username_entered', 'ip_address', 'forwarded_for', 'user_agent',
+        'path', 'method', 'is_successful', 'failure_reason', 'session_key',
+        'role_snapshot', 'city', 'region', 'country_code', 'country_name',
+        'latitude', 'longitude', 'timezone', 'created_at'
+    )
+    date_hierarchy = 'created_at'
+    ordering = ('-created_at',)
+
+
 admin.site.register(StudentUserProfile, StudentUserProfileAdmin)
 admin.site.register(ParentProfile, ParentProfileAdmin)
+admin.site.register(LoginActivity, LoginActivityAdmin)
