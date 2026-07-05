@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Parent Complaint Form</title>
+<style>
+body{margin:0;background:#f3f4f7;font-family:'IBM Plex Sans',Arial,sans-serif;color:#111}.wrap{max-width:760px;margin:35px auto;background:#fff;border-radius:24px;padding:28px;box-shadow:0 18px 50px rgba(43,0,45,.12)}h1{margin:0;color:#2b002d}.sub{color:#777;margin:6px 0 22px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.full{grid-column:1/-1}label{font-weight:700;color:#2b002d}input,textarea{width:100%;box-sizing:border-box;border:1px solid #ddd;border-radius:16px;padding:12px;margin-top:6px;font:inherit}button{border:0;border-radius:999px;background:#2b002d;color:white;padding:12px 22px;font-weight:700;cursor:pointer}.links{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}.links a{color:#2b002d;font-weight:700;text-decoration:none}@media(max-width:700px){.grid{grid-template-columns:1fr}.wrap{margin:15px}}
+</style>
+</head>
+<body><main class="wrap"><h1>Parent Online Complaint</h1><p class="sub">Government Middle School Shalgah - Parent complaint submission form.</p>
+<form method="POST" class="grid">{% csrf_token %}
+<div><label>Parent Name</label><input name="parent_name" required></div>
+<div><label>Student Name</label><input name="student_name" required></div>
+<div><label>Student Class</label><input name="student_class" placeholder="Grade 6"></div>
+<div><label>Phone</label><input name="phone" required></div>
+<div class="full"><label>Email</label><input type="email" name="email"></div>
+<div class="full"><label>Complaint Subject</label><input name="subject" required></div>
+<div class="full"><label>Complaint Detail</label><textarea name="message" rows="6" required></textarea></div>
+<div class="full"><button type="submit">Submit Complaint</button></div>
+</form><div class="links"><a href="/admission/apply/">Admission Form</a><a href="/jobs/apply/">Job Apply Form</a><a href="/">Home</a></div></main></body></html>
