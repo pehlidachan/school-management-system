@@ -1,0 +1,76 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Calendar{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">School Calendar</h1>
+        <p class="text-muted mb-0">Events, holidays, exams, meetings and deadlines.</p>
+    </div>
+    <a href="{% url 'add_calendar_event' %}" class="btn btn-success rounded-pill">+ Add Event</a>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6 col-xl-3"><div class="hub-metric yellow"><div class="label">Today</div><div class="value">{{ total_today }}</div></div></div>
+    <div class="col-md-6 col-xl-3"><div class="hub-metric purple"><div class="label">Upcoming</div><div class="value">{{ total_upcoming }}</div></div></div>
+    <div class="col-md-6 col-xl-3"><div class="hub-metric green"><div class="label">Current Date</div><div class="value" style="font-size:1.2rem;">{{ today }}</div></div></div>
+    <div class="col-md-6 col-xl-3"><div class="hub-metric blue"><div class="label">Module</div><div class="value" style="font-size:1.4rem;">Calendar</div></div></div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-8">
+        <div class="hub-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div><h3 class="mb-1">Upcoming Events</h3><p class="text-muted mb-0">Next active calendar items.</p></div>
+            </div>
+            <div class="hub-mini-list">
+                {% for event in upcoming_events %}
+                <a href="{% url 'calendar_event_detail' event.id %}" class="hub-card-soft p-3 text-decoration-none text-dark d-block">
+                    <div class="d-flex justify-content-between gap-3 flex-wrap">
+                        <div>
+                            <span class="hub-status {% if event.event_type == 'holiday' %}pending{% elif event.event_type == 'exam' %}inactive{% else %}active{% endif %}">{{ event.get_event_type_display }}</span>
+                            <h4 class="mt-2 mb-1">{{ event.title }}</h4>
+                            <p class="text-muted mb-0">{{ event.description|truncatewords:22 }}</p>
+                        </div>
+                        <div class="text-end">
+                            <div class="fw-bold">{{ event.event_date }}</div>
+                            <div class="text-muted small">{{ event.start_time|default:'All day' }}</div>
+                            <div class="text-muted small">{{ event.location }}</div>
+                        </div>
+                    </div>
+                </a>
+                {% empty %}
+                <div class="hub-card-soft p-5 text-center text-muted">No upcoming events yet.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="hub-card p-4 h-100">
+            <h3 class="mb-3">Today</h3>
+            <div class="hub-mini-list mb-4">
+                {% for event in today_events %}
+                <a class="hub-mini-item text-decoration-none text-dark" href="{% url 'calendar_event_detail' event.id %}">
+                    <strong>{{ event.title }}</strong><br>
+                    <span class="text-muted small">{{ event.get_event_type_display }} • {{ event.start_time|default:'All day' }}</span>
+                </a>
+                {% empty %}
+                <span class="text-muted">No events today.</span>
+                {% endfor %}
+            </div>
+            <h3 class="mb-3">Recent Past</h3>
+            <div class="hub-mini-list">
+                {% for event in past_events %}
+                <a class="hub-mini-item text-decoration-none text-dark" href="{% url 'calendar_event_detail' event.id %}">
+                    <strong>{{ event.title }}</strong><br>
+                    <span class="text-muted small">{{ event.event_date }} • {{ event.get_event_type_display }}</span>
+                </a>
+                {% empty %}
+                <span class="text-muted">No past events.</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
