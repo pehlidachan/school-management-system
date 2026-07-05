@@ -1,0 +1,76 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Students{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">All Students List</h1>
+        <p class="text-muted mb-0">{{ result_count }} student record(s) found.</p>
+    </div>
+    <div class="d-flex gap-2 align-items-center flex-wrap">
+        <a href="{% url 'student_promotion' %}" class="btn btn-outline-dark rounded-pill">Promotion</a>
+        <a href="{% url 'bulk_student_id_cards' %}" class="btn btn-outline-dark rounded-pill">Bulk ID Cards</a>
+        <a href="{% url 'add_student' %}" class="hub-add-btn" title="Add Student"><i class="fa-solid fa-plus"></i></a>
+    </div>
+</div>
+
+<div class="hub-card p-3 mb-4">
+    <form method="GET" class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label fw-bold">Search</label>
+            <input type="search" name="q" value="{{ q }}" class="form-control rounded-pill" placeholder="Name, ID, guardian or phone">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Class</label>
+            <select name="grade" class="form-select rounded-pill">
+                <option value="">All Classes</option>
+                {% for grade in grades %}
+                <option value="{{ grade.id }}" {% if selected_grade_id == grade.id|stringformat:'s' %}selected{% endif %}>{{ grade }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Status</label>
+            <select name="status" class="form-select rounded-pill">
+                <option value="">All</option>
+                <option value="active" {% if selected_status == 'active' %}selected{% endif %}>Active</option>
+                <option value="inactive" {% if selected_status == 'inactive' %}selected{% endif %}>Inactive</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-success rounded-pill w-100">Filter</button>
+            <a href="{% url 'display_students' %}" class="btn btn-outline-dark rounded-pill">Reset</a>
+        </div>
+    </form>
+</div>
+
+<div class="hub-table-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr><th>Student</th><th>ID</th><th>Class</th><th>Age</th><th>Gender</th><th>Status</th><th>Accounts</th><th class="text-end">Action</th></tr>
+            </thead>
+            <tbody>
+                {% for student in data %}
+                <tr>
+                    <td><strong>{{ student.name }}</strong><br><span class="text-muted small">Guardian: {{ student.guardian_name|default:'-' }}</span></td>
+                    <td>{{ student.id }}</td>
+                    <td>{{ student.grade }}</td>
+                    <td>{{ student.age }}</td>
+                    <td>{{ student.gender }}</td>
+                    <td>{% if student.status %}<span class="hub-status active">Active</span>{% else %}<span class="hub-status inactive">Inactive</span>{% endif %}</td>
+                    <td><a href="{% url 'account_creator_dashboard' %}" class="btn btn-sm btn-outline-success rounded-pill fw-bold">Create IDs</a></td>
+                    <td class="text-end">
+                        <a class="hub-action-icon" target="_blank" href="{% url 'student_id_card' student.id %}" title="ID Card"><i class="fa-solid fa-id-badge"></i></a>
+                        <a class="hub-action-icon" href="{% url 'student_details' student.id %}" title="Details"><i class="fa-solid fa-eye"></i></a>
+                        <a class="hub-action-icon" href="{% url 'edit_student' student.id %}" title="Edit"><i class="fa-solid fa-pen"></i></a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8" class="text-center text-muted py-5">No students found for selected filters.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
