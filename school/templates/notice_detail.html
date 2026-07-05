@@ -1,0 +1,43 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Notice Detail{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">Notice Detail</h1>
+        <p class="text-muted mb-0">{{ notice.publish_date }} • {{ notice.get_audience_display }}</p>
+    </div>
+    <a href="{% url 'notice_board' %}" class="btn btn-outline-dark rounded-pill">Back to Notices</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-8">
+        <article class="hub-card p-4">
+            <div class="d-flex gap-2 mb-3 flex-wrap">
+                <span class="hub-status {% if notice.priority == 'urgent' %}inactive{% elif notice.priority == 'important' %}pending{% else %}active{% endif %}">{{ notice.get_priority_display }}</span>
+                <span class="hub-status">{{ notice.get_audience_display }}</span>
+                {% if notice.is_expired %}<span class="hub-status inactive">Expired</span>{% endif %}
+            </div>
+            <h1 class="mb-3">{{ notice.title }}</h1>
+            <p class="text-muted small">By {{ notice.created_by|default:'School' }} • Views: {{ notice.view_count }}</p>
+            <hr>
+            <div style="white-space: pre-line; line-height: 1.8;">{{ notice.body }}</div>
+        </article>
+    </div>
+    <div class="col-xl-4">
+        <div class="hub-card p-4">
+            <h3 class="mb-3">Other Notices</h3>
+            <div class="hub-mini-list">
+                {% for item in related_notices %}
+                <a class="hub-mini-item text-decoration-none text-dark" href="{% url 'notice_detail' item.id %}">
+                    <strong>{{ item.title }}</strong><br>
+                    <span class="text-muted small">{{ item.publish_date }} • {{ item.get_priority_display }}</span>
+                </a>
+                {% empty %}
+                <span class="text-muted">No other notices.</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
