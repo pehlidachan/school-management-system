@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Bulk Student ID Cards</title>
+    <style>
+        :root { --purple:#2b002d; --purple2:#6f1b78; --gold:#ffe266; --bg:#f3f4f7; }
+        body { margin:0; background:var(--bg); font-family:'IBM Plex Sans', Helvetica, Arial, sans-serif; color:#111; }
+        .toolbar { max-width:1180px; margin:18px auto; background:white; border-radius:20px; padding:16px; display:flex; justify-content:space-between; align-items:end; gap:14px; box-shadow:0 12px 34px rgba(43,0,45,.08); }
+        .toolbar h1 { margin:0 0 4px; font-size:24px; color:var(--purple); }
+        .toolbar p { margin:0; color:#777; }
+        .controls { display:flex; gap:10px; flex-wrap:wrap; align-items:end; }
+        select, button, a.btn { border-radius:999px; padding:10px 16px; border:1px solid #d9d4df; background:white; font:inherit; text-decoration:none; color:#111; }
+        button, a.primary { background:var(--purple); color:white; border-color:var(--purple); cursor:pointer; font-weight:600; }
+        .sheet { max-width:1180px; margin:0 auto 30px; background:white; border-radius:20px; padding:20px; box-shadow:0 14px 40px rgba(43,0,45,.10); }
+        .cards-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:18px; }
+        .student-card-pair { display:grid; grid-template-columns:1fr 1fr; gap:8px; page-break-inside:avoid; break-inside:avoid; }
+        .id-card { height:210px; border-radius:18px; overflow:hidden; border:2px solid var(--purple); position:relative; background:white; box-sizing:border-box; }
+        .front { background:linear-gradient(135deg, var(--purple), var(--purple2)); color:white; }
+        .top { padding:12px 14px 6px; display:flex; justify-content:space-between; gap:8px; align-items:center; }
+        .school { font-size:12px; font-weight:700; line-height:1.15; text-transform:uppercase; }
+        .badge { width:40px; height:40px; border-radius:14px; background:var(--gold); color:var(--purple); display:grid; place-items:center; font-weight:700; }
+        .photo { width:64px; height:64px; border-radius:20px; background:var(--gold); color:var(--purple); display:grid; place-items:center; font-size:28px; font-weight:700; border:3px solid rgba(255,255,255,.86); margin:6px auto; }
+        .name { text-align:center; font-size:16px; font-weight:700; padding:0 10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .class { text-align:center; color:var(--gold); font-size:12px; font-weight:600; }
+        .strip { position:absolute; left:0; right:0; bottom:0; background:var(--gold); color:var(--purple); padding:7px 12px; display:flex; justify-content:space-between; font-size:10px; font-weight:700; }
+        .back { padding:13px; font-size:10px; }
+        .back-title { color:var(--purple); font-weight:700; font-size:14px; border-bottom:2px solid var(--gold); padding-bottom:5px; margin-bottom:7px; }
+        .row { display:grid; grid-template-columns:68px 1fr; gap:6px; border-bottom:1px solid #eee; padding:3px 0; }
+        .label { color:var(--purple); font-weight:700; }
+        .sig { position:absolute; right:12px; bottom:12px; width:90px; border-top:1px solid #333; text-align:center; padding-top:3px; font-size:9px; }
+        .empty { text-align:center; padding:60px 20px; color:#777; }
+        @media print {
+            body { background:white; }
+            .toolbar { display:none; }
+            .sheet { max-width:none; margin:0; padding:0; box-shadow:none; border-radius:0; }
+            .cards-grid { grid-template-columns:repeat(2, 1fr); gap:10px; }
+            .student-card-pair { break-inside:avoid; page-break-inside:avoid; }
+            .id-card { box-shadow:none; }
+        }
+    </style>
+</head>
+<body>
+    <form method="GET" class="toolbar">
+        <div>
+            <h1>Bulk Student ID Cards</h1>
+            <p>{% if selected_grade %}Class {{ selected_grade }} - {{ students|length }} active student(s){% else %}Select class to generate printable ID cards.{% endif %}</p>
+        </div>
+        <div class="controls">
+            <select name="grade" required>
+                <option value="">Choose class</option>
+                {% for grade in grades %}
+                <option value="{{ grade.id }}" {% if selected_grade_id == grade.id|stringformat:'s' %}selected{% endif %}>{{ grade }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Load Cards</button>
+            {% if selected_grade %}<button type="button" onclick="window.print()">Print All</button>{% endif %}
+            <a class="btn" href="{% url 'display_students' %}">Back</a>
+        </div>
+    </form>
+
+    <main class="sheet">
+        {% if selected_grade %}
+        <div class="cards-grid">
+            {% for student in students %}
+            <div class="student-card-pair">
+                <section class="id-card front">
+                    <div class="top"><div class="school">Government Middle<br>School Shalgah</div><div class="badge">ID</div></div>
+                    <div class="photo">{{ student.name|slice:":1"|upper }}</div>
+                    <div class="name">{{ student.name }}</div>
+                    <div class="class">Class: {{ student.grade }}</div>
+                    <div class="strip"><span>ID: {{ student.id }}</span><span>{{ print_date|date:'Y' }}</span></div>
+                </section>
+                <section class="id-card back">
+                    <div class="back-title">Student Information</div>
+                    <div class="row"><span class="label">Name</span><span>{{ student.name }}</span></div>
+                    <div class="row"><span class="label">Class</span><span>{{ student.grade }}</span></div>
+                    <div class="row"><span class="label">DOB</span><span>{{ student.dob }}</span></div>
+                    <div class="row"><span class="label">Guardian</span><span>{{ student.guardian_name }}</span></div>
+                    <div class="row"><span class="label">Phone</span><span>{{ student.phone }}</span></div>
+                    <div class="row"><span class="label">Emergency</span><span>{{ student.emergency_phone }}</span></div>
+                    <div class="sig">Principal</div>
+                </section>
+            </div>
+            {% empty %}
+            <div class="empty">No active students found in this class.</div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty">Choose a class from the top and click Load Cards.</div>
+        {% endif %}
+    </main>
+</body>
+</html>
