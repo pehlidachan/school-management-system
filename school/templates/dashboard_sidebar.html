@@ -1,0 +1,36 @@
+<aside class="hub-sidebar">
+    <a class="hub-brand" href="{% url 'dashboard' %}">
+        <span class="hub-logo"><i class="fa-solid fa-graduation-cap"></i></span>
+        <span>SchoolHub</span>
+    </a>
+
+    <div>
+        <div class="hub-menu-label">Menu</div>
+        <nav class="hub-nav">
+            <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"><span class="icon"><i class="fa-solid fa-house"></i></span>Dashboard</a>
+            <a href="{% url 'display_staff' %}" class="{% if request.resolver_match.url_name == 'display_staff' %}active{% endif %}"><span class="icon"><i class="fa-solid fa-user-tie"></i></span>Teachers</a>
+            <a href="{% url 'display_students' %}" class="{% if request.resolver_match.url_name == 'display_students' %}active{% endif %}"><span class="icon"><i class="fa-solid fa-users"></i></span>Students</a>
+            <a href="{% url 'account_creator_dashboard' %}" class="{% if request.resolver_match.url_name == 'account_creator_dashboard' %}active{% endif %}"><span class="icon"><i class="fa-solid fa-id-card"></i></span>Login IDs</a>
+            <a href="#" class="disabled opacity-75"><span class="icon"><i class="fa-solid fa-people-group"></i></span>Attendance</a>
+            <a href="#" class="disabled opacity-75"><span class="icon"><i class="fa-solid fa-circle-dollar-to-slot"></i></span>Finance</a>
+            <a href="#" class="disabled opacity-75"><span class="icon"><i class="fa-solid fa-clipboard-list"></i></span>Notice</a>
+            <a href="#" class="disabled opacity-75"><span class="icon"><i class="fa-solid fa-calendar-days"></i></span>Calendar</a>
+            <a href="#" class="disabled opacity-75"><span class="icon"><i class="fa-solid fa-book-open"></i></span>Library</a>
+            <a href="#" class="disabled opacity-75"><span class="icon"><i class="fa-solid fa-comments"></i></span>Message</a>
+        </nav>
+    </div>
+
+    <div>
+        <div class="hub-menu-label">Other</div>
+        <nav class="hub-nav">
+            <a href="/admin/"><span class="icon"><i class="fa-solid fa-screwdriver-wrench"></i></span>Django Admin</a>
+            <a href="{% url 'home' %}"><span class="icon"><i class="fa-solid fa-globe"></i></span>Public Home</a>
+            <a href="{% url 'logout' %}"><span class="icon"><i class="fa-solid fa-right-from-bracket"></i></span>Log out</a>
+        </nav>
+    </div>
+
+    <div class="hub-side-ad">
+        <div class="fw-bold fs-5">Let's Manage<br>Your Data Better<br>in Your Hand</div>
+        <span class="btn btn-light btn-sm rounded-pill fw-bold align-self-start">School ERP</span>
+    </div>
+</aside>
