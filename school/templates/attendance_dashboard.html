@@ -1,0 +1,81 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Attendance{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">Attendance</h1>
+        <p class="text-muted mb-0">Class-wise daily attendance register and reports.</p>
+    </div>
+    <a href="{% url 'attendance_report' %}" class="btn btn-dark rounded-pill fw-bold">Open Reports</a>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-6 col-xl-3"><div class="hub-metric blue"><div class="label">Total Students</div><div class="value">{{ total_students }}</div></div></div>
+    <div class="col-6 col-xl-3"><div class="hub-metric green"><div class="label">Present Today</div><div class="value">{{ today_present }}</div></div></div>
+    <div class="col-6 col-xl-3"><div class="hub-metric yellow"><div class="label">Late Today</div><div class="value">{{ today_late }}</div></div></div>
+    <div class="col-6 col-xl-3"><div class="hub-metric purple"><div class="label">Absent Today</div><div class="value">{{ today_absent }}</div></div></div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-5">
+        <div class="hub-card p-4 h-100">
+            <h3 class="fw-bold mb-3">Mark Attendance</h3>
+            <p class="text-muted">Select class/grade and mark today or any selected date.</p>
+            <div class="hub-mini-list">
+                {% for grade in grades %}
+                <form class="hub-mini-item" action="{% url 'mark_attendance' grade.id %}" method="GET">
+                    <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+                        <div>
+                            <strong>{{ grade.name }}</strong><br>
+                            <span class="text-muted small">Open daily attendance register</span>
+                        </div>
+                        <div class="d-flex gap-2 align-items-center">
+                            <input type="date" name="date" value="{{ today|date:'Y-m-d' }}" class="form-control form-control-sm rounded-pill">
+                            <button class="btn btn-sm btn-primary rounded-pill fw-bold" type="submit">Open</button>
+                        </div>
+                    </div>
+                </form>
+                {% empty %}
+                <div class="alert alert-warning rounded-4 border-0">No active grade/class found. Add grades first.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-7">
+        <div class="hub-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h3 class="fw-bold mb-1">Recent Attendance Sessions</h3>
+                    <p class="text-muted mb-0">Last saved class-wise registers.</p>
+                </div>
+                <a href="{% url 'attendance_report' %}" class="btn btn-outline-dark rounded-pill btn-sm fw-bold">View All</a>
+            </div>
+            <div class="hub-table-card shadow-none border">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr><th>Date</th><th>Class</th><th>Present</th><th>Absent</th><th>Late</th><th>Action</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for session in recent_sessions %}
+                            <tr>
+                                <td>{{ session.attendance_date }}</td>
+                                <td>{{ session.grade }}</td>
+                                <td><span class="hub-status active">{{ session.present }}</span></td>
+                                <td><span class="hub-status inactive">{{ session.absent }}</span></td>
+                                <td><span class="hub-status pending">{{ session.late }}</span></td>
+                                <td><a class="hub-action-icon" href="{% url 'attendance_session_detail' session.id %}"><i class="fa-solid fa-eye"></i></a></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="6" class="text-center text-muted py-4">No attendance saved yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
