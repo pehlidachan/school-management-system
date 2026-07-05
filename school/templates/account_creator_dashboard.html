@@ -1,67 +1,79 @@
-{% extends 'layout.html' %}
+{% extends 'dashboard_base.html' %}
 {% load static %}
 {% block 'title' %}Student & Parent Account Maker{% endblock %}
 {% block 'content' %}
-<div class="container-fluid my-5">
-    <div class="container mb-4">
-        <div class="alert alert-info">
-            <h3 class="mb-2">Student & Parent Auto Account Maker</h3>
-            <p class="mb-0">Principal, Accountant and School Admin can create/reset login IDs from here. Password is shown only after creation/reset, so copy it before leaving the result page.</p>
-        </div>
-        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
-        <a href="{% url 'display_students' %}" class="btn btn-outline-primary">Open Students</a>
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">Student & Parent Auto Account Maker</h1>
+        <p class="text-muted mb-0">Principal, Accountant and School Admin can create/reset login IDs from here. Copy the temporary password on the result page.</p>
     </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'display_students' %}" class="btn btn-outline-dark rounded-pill fw-bold">Open Students</a>
+        <a href="{% url 'dashboard' %}" class="btn btn-dark rounded-pill fw-bold">Dashboard</a>
+    </div>
+</div>
 
-    <table class="table table-striped table-bordered align-middle text-center">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Student</th>
-                <th>Grade</th>
-                <th>Guardian</th>
-                <th>Student Login</th>
-                <th>Parent Login</th>
-                <th>One-click Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in rows %}
-            <tr>
-                <td>{{ row.student.id }}</td>
-                <td class="text-start"><strong>{{ row.student.name }}</strong><br><small>{{ row.student.email }}</small></td>
-                <td>{{ row.student.grade }}</td>
-                <td>{{ row.student.guardian_name }}<br><small>{{ row.student.guardian_relation }}</small></td>
-                <td>
-                    {% if row.student_profile %}
-                        <span class="badge bg-success">Active</span><br>
-                        <code>{{ row.student_profile.user.username }}</code>
-                    {% else %}
-                        <span class="badge bg-warning text-dark">Not created</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if row.parent_profile %}
-                        <span class="badge bg-success">Active</span><br>
-                        <code>{{ row.parent_profile.user.username }}</code>
-                    {% else %}
-                        <span class="badge bg-warning text-dark">Not created</span>
-                    {% endif %}
-                </td>
-                <td>
-                    <form action="{% url 'create_student_login' row.student.id %}" method="POST" class="d-inline">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-sm btn-primary mb-1">{% if row.student_profile %}Reset Student ID{% else %}Create Student ID{% endif %}</button>
-                    </form>
-                    <form action="{% url 'create_parent_login' row.student.id %}" method="POST" class="d-inline">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-sm btn-success mb-1">{% if row.parent_profile %}Reset Parent ID{% else %}Create Parent ID{% endif %}</button>
-                    </form>
-                </td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="7" class="text-muted">No student record found. Add students first.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="hub-table-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student</th>
+                    <th>Grade</th>
+                    <th>Guardian</th>
+                    <th>Student Login</th>
+                    <th>Parent Login</th>
+                    <th class="text-end">One-click Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                <tr>
+                    <td>{{ row.student.id }}</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="hub-avatar" style="width:38px;height:38px;font-size:.95rem;">{{ row.student.name|slice:":1"|upper }}</div>
+                            <div>
+                                <div class="fw-bold">{{ row.student.name }}</div>
+                                <div class="small text-muted">{{ row.student.email }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ row.student.grade }}</td>
+                    <td><strong>{{ row.student.guardian_name }}</strong><br><span class="small text-muted">{{ row.student.guardian_relation }}</span></td>
+                    <td>
+                        {% if row.student_profile %}
+                            <span class="hub-status active"><i class="fa-solid fa-circle"></i> Active</span><br>
+                            <code>{{ row.student_profile.user.username }}</code>
+                        {% else %}
+                            <span class="hub-status pending"><i class="fa-solid fa-circle"></i> Not created</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if row.parent_profile %}
+                            <span class="hub-status active"><i class="fa-solid fa-circle"></i> Active</span><br>
+                            <code>{{ row.parent_profile.user.username }}</code>
+                        {% else %}
+                            <span class="hub-status pending"><i class="fa-solid fa-circle"></i> Not created</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <form action="{% url 'create_student_login' row.student.id %}" method="POST" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-primary rounded-pill mb-1 fw-bold">{% if row.student_profile %}Reset Student ID{% else %}Create Student ID{% endif %}</button>
+                        </form>
+                        <form action="{% url 'create_parent_login' row.student.id %}" method="POST" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-success rounded-pill mb-1 fw-bold">{% if row.parent_profile %}Reset Parent ID{% else %}Create Parent ID{% endif %}</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="text-muted text-center py-5">No student record found. Add students first.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
