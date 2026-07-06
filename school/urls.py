@@ -1,5 +1,5 @@
 from django.urls import path
-from . import finance_summary_views, online_requests_views, public_form_views, staff_cards_bulk, student_list_views, views
+from . import finance_summary_views, gatepass_views, online_requests_views, public_form_views, staff_cards_bulk, student_list_views, views
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -16,6 +16,10 @@ urlpatterns = [
     path('online/complaints/<int:record_id>/status/', online_requests_views.update_parent_complaint_status, name='update_parent_complaint_status'),
     path('online/admissions/<int:record_id>/status/', online_requests_views.update_admission_status, name='update_admission_status'),
     path('online/jobs/<int:record_id>/status/', online_requests_views.update_job_status, name='update_job_status'),
+    path('movement/', gatepass_views.gatepass_dashboard, name='gatepass_dashboard'),
+    path('movement/add/', gatepass_views.add_gatepass, name='add_gatepass'),
+    path('movement/<int:gatepass_id>/print/', gatepass_views.gatepass_print, name='gatepass_print'),
+    path('movement/<int:gatepass_id>/returned/', gatepass_views.mark_gatepass_returned, name='gatepass_returned'),
     path('login/', views.user_login, name='login'),
     path('signup/', views.signup, name='signup'),
     path('logout/', views.user_logout, name='logout'),
