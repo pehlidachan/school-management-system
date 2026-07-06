@@ -12,6 +12,7 @@ URL_NAMES = [
     'message_inbox', 'exam_dashboard', 'gatepass_dashboard', 'multi_child_guardians',
     'export_multi_child_guardians', 'export_gatepass', 'export_non_teaching_staff',
     'export_parent_complaints', 'export_online_admissions', 'export_job_applications',
+    'parent_complaint_form', 'online_admission_form', 'job_apply_form',
 ]
 
 TEMPLATES = [
@@ -21,6 +22,8 @@ TEMPLATES = [
     'notice_board.html', 'calendar_dashboard.html', 'library_dashboard.html',
     'message_inbox.html', 'exam_dashboard.html', 'gatepass_dashboard.html',
     'multi_child_guardians.html', 'online_requests_center.html',
+    'public_parent_complaint.html', 'public_admission_form.html', 'public_job_apply.html',
+    'public_success.html',
 ]
 
 MODEL_LABELS = [
