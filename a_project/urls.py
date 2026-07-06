@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import include, path
 
-from school import admin_online, attendance_views, calendar_views, class_register_views, dashboard_views, exam_views, finance_views, library_views, login_views, message_views, notice_views, online_center_views, person_record_views, promotion_views, staff_card_views, staff_list_views, student_card_views
+from school import admin_online, attendance_views, calendar_views, class_register_views, dashboard_views, exam_views, finance_views, library_views, login_views, message_views, notice_views, online_center_views, person_record_views, promotion_views, staff_card_views, staff_list_views, student_card_views, support_record_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -12,6 +12,8 @@ urlpatterns = [
     path('student/edit/<int:id>/', person_record_views.edit_student, name='edit_student'),
     path('staff/add/', person_record_views.add_staff, name='add_staff'),
     path('staff/edit/<int:id>/', person_record_views.edit_staff, name='edit_staff'),
+    path('non-teaching-staff/add/', support_record_views.add_record, name='add_non_teaching_staff'),
+    path('non-teaching-staff/<int:record_id>/edit/', support_record_views.edit_record, name='edit_non_teaching_staff'),
     path('online/requests/', online_center_views.online_requests_center, name='online_requests_center'),
     path('students/class-register/', class_register_views.class_register, name='class_register'),
     path('attendance/', attendance_views.attendance_dashboard, name='attendance_dashboard'),
