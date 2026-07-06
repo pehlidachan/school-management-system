@@ -1,4 +1,12 @@
 <div class="hub-topbar">
+    <div class="hub-school-brand" title="Government Middle School Shalgah">
+        <div class="hub-school-logo"><i class="fa-solid fa-school"></i></div>
+        <div class="hub-school-name">
+            <strong>GMS Shalgah</strong>
+            <span>School Management</span>
+        </div>
+    </div>
+
     <div class="hub-search">
         <i class="fa-solid fa-magnifying-glass"></i>
         <input type="search" placeholder="Search" aria-label="Search">
@@ -12,7 +20,7 @@
             <button class="hub-circle-btn" type="button" title="Messages"><i class="fa-solid fa-message"></i></button>
             <button class="hub-circle-btn" type="button" title="Notifications"><i class="fa-solid fa-bell"></i></button>
             <div class="hub-user-card">
-                <div class="hub-avatar">{{ request.user.username|slice:":1"|upper }}</div>
+                <div class="hub-avatar hub-profile-photo">{{ request.user.username|slice:":1"|upper }}</div>
                 <div class="hub-user-meta">
                     <div class="hub-user-name">{{ request.user.get_full_name|default:request.user.username }}</div>
                     <div class="hub-user-role">
