@@ -15,9 +15,9 @@
 </div>
 
 <div class="row g-4 mb-4">
-    <div class="col-md-4"><div class="hub-metric blue"><div class="label">Parent Complaints</div><div class="value">{{ complaint_total }}</div><a href="{% url 'online_parent_complaints' %}">View records</a><div class="small text-muted mt-1">New: {{ complaint_new }}</div></div></div>
-    <div class="col-md-4"><div class="hub-metric yellow"><div class="label">Online Admissions</div><div class="value">{{ admission_total }}</div><a href="{% url 'online_admissions_admin' %}">View records</a><div class="small text-muted mt-1">New: {{ admission_new }}</div></div></div>
-    <div class="col-md-4"><div class="hub-metric green"><div class="label">Job Requests</div><div class="value">{{ job_total }}</div><a href="{% url 'online_job_applications' %}">View records</a><div class="small text-muted mt-1">New: {{ job_new }}</div></div></div>
+    <div class="col-md-4"><div class="hub-metric blue"><div class="label">Parent Complaints</div><div class="value">{{ complaint_total }}</div><div class="d-flex gap-2 flex-wrap"><a href="{% url 'online_parent_complaints' %}">View</a><a href="{% url 'export_parent_complaints' %}">CSV</a></div><div class="small text-muted mt-1">New: {{ complaint_new }}</div></div></div>
+    <div class="col-md-4"><div class="hub-metric yellow"><div class="label">Online Admissions</div><div class="value">{{ admission_total }}</div><div class="d-flex gap-2 flex-wrap"><a href="{% url 'online_admissions_admin' %}">View</a><a href="{% url 'export_online_admissions' %}">CSV</a></div><div class="small text-muted mt-1">New: {{ admission_new }}</div></div></div>
+    <div class="col-md-4"><div class="hub-metric green"><div class="label">Job Requests</div><div class="value">{{ job_total }}</div><div class="d-flex gap-2 flex-wrap"><a href="{% url 'online_job_applications' %}">View</a><a href="{% url 'export_job_applications' %}">CSV</a></div><div class="small text-muted mt-1">New: {{ job_new }}</div></div></div>
 </div>
 
 <div class="row g-4">
