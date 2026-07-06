@@ -1,0 +1,47 @@
+{% extends 'dashboard_base.html' %}
+{% block 'title' %}Parents With Multiple Children{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">Parents With Multiple Children</h1>
+        <p class="text-muted mb-0">{{ total_records }} parent/guardian record(s) found with more than one child in school.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <button onclick="window.print()" class="btn btn-dark rounded-pill">Print List</button>
+        <a href="{% url 'display_students' %}" class="btn btn-outline-dark rounded-pill">Back to Students</a>
+    </div>
+</div>
+
+<div class="hub-card p-4">
+    {% for item in records %}
+    <div class="hub-card-soft p-3 mb-3">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+            <div>
+                <h4 class="fw-bold mb-1">{{ item.guardian_name }}</h4>
+                <div class="text-muted small">Phone: {{ item.phone }}</div>
+            </div>
+            <span class="badge rounded-pill text-bg-dark">{{ item.child_count }} Children</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+                <thead><tr><th>#</th><th>Student</th><th>Class</th><th>Relation</th><th>Student ID</th><th>Action</th></tr></thead>
+                <tbody>
+                    {% for child in item.children %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><strong>{{ child.name }}</strong></td>
+                        <td>{{ child.grade }}</td>
+                        <td>{{ child.guardian_relation }}</td>
+                        <td>{{ child.id }}</td>
+                        <td><a class="btn btn-sm btn-outline-dark rounded-pill" href="{% url 'student_details' child.id %}">Open</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-center text-muted py-5">No parent/guardian found with more than one child.</div>
+    {% endfor %}
+</div>
+{% endblock %}
