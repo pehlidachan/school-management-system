@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -10,7 +12,7 @@ def _date_or_none(value):
     if not value:
         return None
     try:
-        return timezone.datetime.strptime(value, "%Y-%m-%d").date()
+        return datetime.strptime(value, "%Y-%m-%d").date()
     except ValueError:
         return None
 
@@ -19,7 +21,7 @@ def _time_or_none(value):
     if not value:
         return None
     try:
-        return timezone.datetime.strptime(value, "%H:%M").time()
+        return datetime.strptime(value, "%H:%M").time()
     except ValueError:
         return None
 
