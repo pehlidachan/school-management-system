@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import include, path
 
-from school import admin_online, attendance_views, calendar_views, class_register_views, dashboard_views, exam_views, finance_views, guardian_reports, library_views, login_views, message_views, notice_views, online_center_views, person_record_views, promotion_views, staff_card_views, staff_list_views, student_card_views, support_record_views
+from school import admin_online, attendance_views, calendar_views, class_register_views, dashboard_views, exam_views, export_views, finance_views, guardian_reports, library_views, login_views, message_views, notice_views, online_center_views, person_record_views, promotion_views, staff_card_views, staff_list_views, student_card_views, support_record_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -15,6 +15,12 @@ urlpatterns = [
     path('non-teaching-staff/add/', support_record_views.add_record, name='add_non_teaching_staff'),
     path('non-teaching-staff/<int:record_id>/edit/', support_record_views.edit_record, name='edit_non_teaching_staff'),
     path('students/parents-multiple-children/', guardian_reports.multi_child_guardians, name='multi_child_guardians'),
+    path('exports/multi-child-parents.csv', export_views.multi_child_guardians_csv, name='export_multi_child_guardians'),
+    path('exports/gatepass.csv', export_views.gatepass_csv, name='export_gatepass'),
+    path('exports/non-teaching-staff.csv', export_views.non_teaching_staff_csv, name='export_non_teaching_staff'),
+    path('exports/parent-complaints.csv', export_views.parent_complaints_csv, name='export_parent_complaints'),
+    path('exports/online-admissions.csv', export_views.online_admissions_csv, name='export_online_admissions'),
+    path('exports/job-applications.csv', export_views.job_applications_csv, name='export_job_applications'),
     path('online/requests/', online_center_views.online_requests_center, name='online_requests_center'),
     path('students/class-register/', class_register_views.class_register, name='class_register'),
     path('attendance/', attendance_views.attendance_dashboard, name='attendance_dashboard'),
