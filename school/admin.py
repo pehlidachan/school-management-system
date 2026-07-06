@@ -1,78 +1,55 @@
 from django.contrib import admin
-from .models import Gender, Grade, GuardianRelation, Student, Role, Subject, EmploymentStatus, Staff, ClassAndTiming, ClassIncharge, StudentUserProfile, ParentProfile, LoginActivity, AttendanceSession, StudentAttendance
-from .finance_models import FeeInvoice, ExpenseCategory, SchoolExpense
+from django.contrib.admin.sites import AlreadyRegistered
+
+from .models import (
+    AttendanceSession, ClassAndTiming, ClassIncharge, EmploymentStatus, Gender, Grade,
+    GuardianRelation, LoginActivity, ParentProfile, Role, Staff, Student, StudentAttendance,
+    StudentUserProfile, Subject,
+)
+from .finance_models import ExpenseCategory, FeeInvoice, SchoolExpense
 from .notice_models import Notice
 from .calendar_models import SchoolCalendarEvent
 from .library_models import LibraryBook, LibraryIssue
 from .message_models import MessageThread, ThreadMessage
 from .exam_models import Exam, ExamSubject, StudentMark
-# Register your models here.
+from .gatepass_models import GatePass
+from .non_teaching_models import NonTeachingStaff
+from .public_models import JobApplication, OnlineAdmissionApplication, ParentComplaint
 
-'''
-///////////////////////
-//   Student     //
-///////////////////////
-'''
-class GenderAdmin(admin.ModelAdmin):
+
+def safe_register(model, model_admin=None):
+    try:
+        admin.site.register(model, model_admin)
+    except AlreadyRegistered:
+        pass
+
+
+class NameAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
-
-
-class GradeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name')
-
-
-class GuardianRelationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name')
+    search_fields = ('name',)
 
 
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'grade', 'age', 'gender', 'dob','guardian_name', 'guardian_relation', 'date_of_enrollment', 'email', 'phone','emergency_phone' , 'previous_school', 'status')
+    list_display = ('id', 'name', 'grade', 'guardian_name', 'phone', 'status')
+    list_filter = ('grade', 'status', 'gender')
+    search_fields = ('name', 'guardian_name', 'phone', 'email')
 
-
-admin.site.register(Gender, GenderAdmin)
-admin.site.register(Grade, GradeAdmin)
-admin.site.register(GuardianRelation, GuardianRelationAdmin)
-admin.site.register(Student, StudentAdmin)
-'''
-///////////////////////
-//   Staff     //
-///////////////////////
-'''
-
-class RoleAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name')
-
-class SubjectAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name')
-
-class EmployStatusAdmin(admin.ModelAdmin):
-    list_display = ('id','name')
 
 class StaffAdmin(admin.ModelAdmin):
-    list_display = ('id', 'dob', 'gender', 'qualification', 'experience', 'role', 'subject', 'email', 'phone', 'emergency_phone', 'address', 'joining_date', 'salary', 'employment_status', 'contract_details', 'status')
+    list_display = ('id', 'name', 'role', 'subject', 'phone', 'employment_status', 'status')
+    list_filter = ('role', 'subject', 'employment_status', 'status')
+    search_fields = ('name', 'phone', 'email', 'qualification')
 
-admin.site.register(Role, RoleAdmin)
-admin.site.register(Subject, SubjectAdmin)
-admin.site.register(EmploymentStatus, EmployStatusAdmin)
-admin.site.register(Staff, StaffAdmin)
-
-
-'''
-///////////////////////////
-//   ClassAndTime     //
-///////////////////////////
-'''
 
 class ClassAndTimingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'class_name', 'period_one_subject', 'period_one_teacher', 'period_two_subject', 'period_two_subject', 'period_three_subject', 'period_three_teacher', 'period_four_subject', 'period_four_teacher', 'period_five_subject', 'period_five_teacher', 'period_six_subject', 'period_six_teacher', 'period_seven_subject', 'period_seven_teacher', 'status')
+    list_display = ('id', 'class_name', 'status')
+    list_filter = ('status',)
+    search_fields = ('class_name__name',)
 
 
 class ClassInchargeAdmin(admin.ModelAdmin):
     list_display = ('id', 'teacher', 'class_obj')
-
-admin.site.register(ClassAndTiming, ClassAndTimingAdmin)
-admin.site.register(ClassIncharge, ClassInchargeAdmin)
-
+    search_fields = ('teacher__name', 'class_obj__class_name__name')
 
 
 class StudentUserProfileAdmin(admin.ModelAdmin):
@@ -89,104 +66,74 @@ class LoginActivityAdmin(admin.ModelAdmin):
     list_display = ('created_at', 'username_entered', 'user', 'ip_address', 'is_successful', 'failure_reason', 'role_snapshot')
     list_filter = ('is_successful', 'created_at', 'country_code', 'city')
     search_fields = ('username_entered', 'user__username', 'ip_address', 'forwarded_for', 'user_agent', 'role_snapshot')
-    readonly_fields = (
-        'user', 'username_entered', 'ip_address', 'forwarded_for', 'user_agent',
-        'path', 'method', 'is_successful', 'failure_reason', 'session_key',
-        'role_snapshot', 'city', 'region', 'country_code', 'country_name',
-        'latitude', 'longitude', 'timezone', 'created_at'
-    )
+    readonly_fields = [field.name for field in LoginActivity._meta.fields]
     date_hierarchy = 'created_at'
     ordering = ('-created_at',)
 
 
 class AttendanceSessionAdmin(admin.ModelAdmin):
-    list_display = ('attendance_date', 'grade', 'taken_by', 'created_at', 'updated_at')
+    list_display = ('attendance_date', 'grade', 'taken_by', 'created_at')
     list_filter = ('grade', 'attendance_date')
     search_fields = ('grade__name', 'taken_by__username', 'note')
-    date_hierarchy = 'attendance_date'
-    ordering = ('-attendance_date',)
 
 
 class StudentAttendanceAdmin(admin.ModelAdmin):
     list_display = ('session', 'student', 'status', 'marked_by', 'updated_at')
     list_filter = ('status', 'session__grade', 'session__attendance_date')
-    search_fields = ('student__name', 'session__grade__name', 'remarks')
-    ordering = ('-session__attendance_date', 'student__name')
+    search_fields = ('student__name', 'remarks')
 
 
 class FeeInvoiceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'student', 'title', 'billing_month', 'due_date', 'amount_paid', 'status', 'created_by')
+    list_display = ('id', 'student', 'title', 'billing_month', 'due_date', 'amount_paid', 'status')
     list_filter = ('status', 'due_date', 'student__grade')
     search_fields = ('student__name', 'title', 'billing_month', 'payment_method')
-    date_hierarchy = 'due_date'
-    ordering = ('-due_date',)
-
-
-class ExpenseCategoryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'status')
-    search_fields = ('name',)
 
 
 class SchoolExpenseAdmin(admin.ModelAdmin):
-    list_display = ('payment_date', 'category', 'title', 'amount', 'paid_to', 'payment_method', 'created_by')
+    list_display = ('payment_date', 'category', 'title', 'amount', 'paid_to', 'payment_method')
     list_filter = ('category', 'payment_date')
     search_fields = ('title', 'paid_to', 'payment_method', 'note')
-    date_hierarchy = 'payment_date'
-    ordering = ('-payment_date',)
 
 
 class NoticeAdmin(admin.ModelAdmin):
-    list_display = ('publish_date', 'title', 'audience', 'priority', 'is_published', 'created_by', 'view_count')
+    list_display = ('publish_date', 'title', 'audience', 'priority', 'is_published', 'view_count')
     list_filter = ('audience', 'priority', 'is_published', 'publish_date')
-    search_fields = ('title', 'body', 'created_by__username')
-    date_hierarchy = 'publish_date'
-    ordering = ('-publish_date', '-created_at')
+    search_fields = ('title', 'body')
 
 
 class SchoolCalendarEventAdmin(admin.ModelAdmin):
-    list_display = ('event_date', 'title', 'event_type', 'audience', 'location', 'is_active', 'created_by')
+    list_display = ('event_date', 'title', 'event_type', 'audience', 'location', 'is_active')
     list_filter = ('event_type', 'audience', 'is_active', 'event_date')
-    search_fields = ('title', 'description', 'location', 'created_by__username')
-    date_hierarchy = 'event_date'
-    ordering = ('event_date', 'start_time')
+    search_fields = ('title', 'description', 'location')
 
 
 class LibraryBookAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'accession_number', 'category', 'total_copies', 'available_copies', 'is_active')
     list_filter = ('category', 'is_active')
     search_fields = ('title', 'author', 'isbn', 'accession_number', 'publisher')
-    ordering = ('title',)
 
 
 class LibraryIssueAdmin(admin.ModelAdmin):
-    list_display = ('book', 'student', 'issue_date', 'due_date', 'return_date', 'status', 'issued_by')
+    list_display = ('book', 'student', 'issue_date', 'due_date', 'return_date', 'status')
     list_filter = ('status', 'issue_date', 'due_date')
     search_fields = ('book__title', 'book__accession_number', 'student__name', 'remarks')
-    date_hierarchy = 'issue_date'
-    ordering = ('-issue_date',)
 
 
 class MessageThreadAdmin(admin.ModelAdmin):
     list_display = ('subject', 'sender', 'recipient', 'priority', 'is_read', 'last_activity_at')
     list_filter = ('priority', 'is_read', 'last_activity_at')
     search_fields = ('subject', 'sender__username', 'recipient__username')
-    date_hierarchy = 'last_activity_at'
-    ordering = ('-last_activity_at',)
 
 
 class ThreadMessageAdmin(admin.ModelAdmin):
     list_display = ('thread', 'author', 'created_at')
     search_fields = ('thread__subject', 'author__username', 'body')
-    date_hierarchy = 'created_at'
-    ordering = ('-created_at',)
 
 
 class ExamAdmin(admin.ModelAdmin):
-    list_display = ('name', 'grade', 'start_date', 'end_date', 'is_published', 'created_by')
+    list_display = ('name', 'grade', 'start_date', 'end_date', 'is_published')
     list_filter = ('grade', 'is_published', 'start_date')
     search_fields = ('name', 'grade__name')
-    date_hierarchy = 'start_date'
-    ordering = ('-start_date',)
 
 
 class ExamSubjectAdmin(admin.ModelAdmin):
@@ -199,81 +146,65 @@ class StudentMarkAdmin(admin.ModelAdmin):
     list_display = ('student', 'exam_subject', 'marks_obtained', 'marked_by', 'updated_at')
     list_filter = ('exam_subject__exam', 'exam_subject__subject')
     search_fields = ('student__name', 'exam_subject__exam__name', 'exam_subject__subject__name')
-    ordering = ('-updated_at',)
-
-
-admin.site.register(StudentUserProfile, StudentUserProfileAdmin)
-admin.site.register(ParentProfile, ParentProfileAdmin)
-admin.site.register(LoginActivity, LoginActivityAdmin)
-admin.site.register(AttendanceSession, AttendanceSessionAdmin)
-admin.site.register(StudentAttendance, StudentAttendanceAdmin)
-admin.site.register(FeeInvoice, FeeInvoiceAdmin)
-admin.site.register(ExpenseCategory, ExpenseCategoryAdmin)
-admin.site.register(SchoolExpense, SchoolExpenseAdmin)
-admin.site.register(Notice, NoticeAdmin)
-admin.site.register(SchoolCalendarEvent, SchoolCalendarEventAdmin)
-admin.site.register(LibraryBook, LibraryBookAdmin)
-admin.site.register(LibraryIssue, LibraryIssueAdmin)
-admin.site.register(MessageThread, MessageThreadAdmin)
-admin.site.register(ThreadMessage, ThreadMessageAdmin)
-admin.site.register(Exam, ExamAdmin)
-admin.site.register(ExamSubject, ExamSubjectAdmin)
-admin.site.register(StudentMark, StudentMarkAdmin)
-
-
-# Phase 3 stability: extra MVP admin registrations
-from django.contrib.admin.sites import AlreadyRegistered
-from .gatepass_models import GatePass
-from .non_teaching_models import NonTeachingStaff
-from .public_models import JobApplication, OnlineAdmissionApplication, ParentComplaint
-
-
-def safe_register(model, model_admin=None):
-    try:
-        admin.site.register(model, model_admin)
-    except AlreadyRegistered:
-        pass
 
 
 class GatePassAdmin(admin.ModelAdmin):
     list_display = ('id', 'person_type', 'person_name', 'student', 'staff', 'phone', 'status', 'created_at')
     list_filter = ('person_type', 'status', 'created_at')
     search_fields = ('person_name', 'phone', 'reason', 'destination', 'student__name', 'staff__name')
-    date_hierarchy = 'created_at'
-    ordering = ('-created_at',)
 
 
 class NonTeachingStaffAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'appointment', 'department', 'phone', 'employment_status', 'status', 'joining_date')
     list_filter = ('status', 'department', 'employment_status', 'joining_date')
     search_fields = ('name', 'appointment', 'work_detail', 'phone', 'email', 'department')
-    ordering = ('name',)
 
 
 class ParentComplaintAdmin(admin.ModelAdmin):
-    list_display = ('id', 'parent_name', 'student_name', 'phone', 'status', 'created_at')
+    list_display = ('id', 'parent_name', 'student_name', 'phone', 'subject', 'status', 'created_at')
     list_filter = ('status', 'created_at')
-    search_fields = ('parent_name', 'student_name', 'phone', 'complaint_text', 'admin_note')
-    date_hierarchy = 'created_at'
-    ordering = ('-created_at',)
+    search_fields = ('parent_name', 'student_name', 'phone', 'subject', 'message', 'admin_note')
 
 
 class OnlineAdmissionApplicationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'student_name', 'father_name', 'requested_class', 'phone', 'status', 'created_at')
-    list_filter = ('status', 'requested_class', 'created_at')
-    search_fields = ('student_name', 'father_name', 'phone', 'previous_school', 'admin_note')
-    date_hierarchy = 'created_at'
-    ordering = ('-created_at',)
+    list_display = ('id', 'student_name', 'father_name', 'desired_class', 'guardian_phone', 'status', 'created_at')
+    list_filter = ('status', 'desired_class', 'created_at')
+    search_fields = ('student_name', 'father_name', 'guardian_phone', 'previous_school', 'note')
 
 
 class JobApplicationAdmin(admin.ModelAdmin):
     list_display = ('id', 'applicant_name', 'applied_for', 'phone', 'status', 'created_at')
     list_filter = ('status', 'applied_for', 'created_at')
-    search_fields = ('applicant_name', 'applied_for', 'phone', 'qualification', 'experience', 'admin_note')
-    date_hierarchy = 'created_at'
-    ordering = ('-created_at',)
+    search_fields = ('applicant_name', 'applied_for', 'phone', 'qualification', 'experience', 'cover_note')
 
 
+safe_register(Gender, NameAdmin)
+safe_register(Grade, NameAdmin)
+safe_register(GuardianRelation, NameAdmin)
+safe_register(Role, NameAdmin)
+safe_register(Subject, NameAdmin)
+safe_register(EmploymentStatus, NameAdmin)
+safe_register(Student, StudentAdmin)
+safe_register(Staff, StaffAdmin)
+safe_register(ClassAndTiming, ClassAndTimingAdmin)
+safe_register(ClassIncharge, ClassInchargeAdmin)
+safe_register(StudentUserProfile, StudentUserProfileAdmin)
+safe_register(ParentProfile, ParentProfileAdmin)
+safe_register(LoginActivity, LoginActivityAdmin)
+safe_register(AttendanceSession, AttendanceSessionAdmin)
+safe_register(StudentAttendance, StudentAttendanceAdmin)
+safe_register(FeeInvoice, FeeInvoiceAdmin)
+safe_register(ExpenseCategory, NameAdmin)
+safe_register(SchoolExpense, SchoolExpenseAdmin)
+safe_register(Notice, NoticeAdmin)
+safe_register(SchoolCalendarEvent, SchoolCalendarEventAdmin)
+safe_register(LibraryBook, LibraryBookAdmin)
+safe_register(LibraryIssue, LibraryIssueAdmin)
+safe_register(MessageThread, MessageThreadAdmin)
+safe_register(ThreadMessage, ThreadMessageAdmin)
+safe_register(Exam, ExamAdmin)
+safe_register(ExamSubject, ExamSubjectAdmin)
+safe_register(StudentMark, StudentMarkAdmin)
 safe_register(GatePass, GatePassAdmin)
 safe_register(NonTeachingStaff, NonTeachingStaffAdmin)
 safe_register(ParentComplaint, ParentComplaintAdmin)
