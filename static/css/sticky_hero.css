@@ -1,0 +1,17 @@
+.hub-hero,
+.dashboard-body .hub-hero,
+.hub-content-wrap .hub-hero {
+    position: sticky !important;
+    top: 78px !important;
+    z-index: 55 !important;
+}
+
+@media (max-width: 992px) {
+    .hub-hero,
+    .dashboard-body .hub-hero,
+    .hub-content-wrap .hub-hero {
+        position: sticky !important;
+        top: 190px !important;
+        z-index: 55 !important;
+    }
+}
