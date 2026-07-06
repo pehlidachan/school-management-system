@@ -9,33 +9,17 @@
 .modern-form input:focus, .modern-form select:focus, .modern-form textarea:focus { border-color: #2b002d; box-shadow: 0 0 0 4px rgba(43,0,45,.08); }
 .modern-form .helptext { display:block; color:#6b7280; font-size:12px; margin-top:4px; }
 .modern-form ul.errorlist { color:#dc3545; font-weight:700; margin:0 0 6px 0; padding-left:18px; }
+.person-preview { max-width:140px; border-radius:18px; display:none; margin-top:10px; }
 </style>
 {% endblock %}
 {% block 'content' %}
-<div class="hub-toolbar">
-    <div>
-        <h1 class="hub-page-title">Add Student</h1>
-        <p class="text-muted mb-0">Create a new student admission/profile record.</p>
-    </div>
-    <div class="d-flex gap-2 flex-wrap">
-        <a href="{% url 'display_students' %}" class="btn btn-dark rounded-pill">Edit Existing</a>
-        <a href="{% url 'display_students' %}" class="btn btn-outline-dark rounded-pill">Back to Students</a>
-    </div>
-</div>
-
+<div class="hub-toolbar"><div><h1 class="hub-page-title">Add Student</h1><p class="text-muted mb-0">Create a new student admission/profile record.</p></div><div class="d-flex gap-2 flex-wrap"><a href="{% url 'display_students' %}" class="btn btn-dark rounded-pill">Edit Existing</a><a href="{% url 'display_students' %}" class="btn btn-outline-dark rounded-pill">Back to Students</a></div></div>
 <div class="hub-card p-4">
-    <form class="modern-form" action="{% url 'add_student' %}" method="POST">
+    <form class="modern-form" action="{% url 'add_student' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="row g-3">
-            <div class="col-12">
-                {{ form.as_p }}
-            </div>
-            <div class="col-12 d-flex gap-2 flex-wrap">
-                <button class="btn btn-success rounded-pill px-4 fw-bold" type="submit">Save Student</button>
-                <a href="{% url 'display_students' %}" class="btn btn-dark rounded-pill px-4">Edit Existing</a>
-                <a href="{% url 'display_students' %}" class="btn btn-outline-dark rounded-pill px-4">Cancel</a>
-            </div>
-        </div>
+        <div class="hub-card-soft p-3 mb-3" data-person-image-box><label class="fw-bold">Image</label><input type="file" name="person_image" class="form-control rounded-pill" accept="image/*" capture="environment" data-person-image-input><div class="small text-muted mt-2">Upload/select image. Mobile browser can offer camera. File is compressed before submit.</div><img class="person-preview" alt="Preview" data-person-image-preview></div>
+        <div class="row g-3"><div class="col-12">{{ form.as_p }}</div><div class="col-12 d-flex gap-2 flex-wrap"><button class="btn btn-success rounded-pill px-4 fw-bold" type="submit">Save Student</button><a href="{% url 'display_students' %}" class="btn btn-dark rounded-pill px-4">Edit Existing</a><a href="{% url 'display_students' %}" class="btn btn-outline-dark rounded-pill px-4">Cancel</a></div></div>
     </form>
 </div>
+<script src="{% static 'js/person_image_capture.js' %}"></script>
 {% endblock %}
