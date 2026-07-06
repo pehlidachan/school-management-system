@@ -7,18 +7,29 @@
 .analytics-box { min-height:230px; overflow:hidden; }
 .analytics-box img { width:100%; height:150px; object-fit:contain; display:block; }
 .analytics-value { font-size:2.2rem; font-weight:900; color:#2b002d; line-height:1; }
-@media (max-width:1200px){ .analytics-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+.admin-action-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:18px; }
+.admin-action-box { min-height:160px; display:flex; flex-direction:column; justify-content:space-between; }
+@media (max-width:1200px){ .analytics-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); } .admin-action-grid{ grid-template-columns:1fr; } }
 @media (max-width:700px){ .analytics-grid{ grid-template-columns:1fr; } }
 </style>
 {% endblock %}
 {% block 'content' %}
-<div class="hub-hero mb-4"><h1 class="mb-2">School Admin Control Panel</h1><p class="mb-0 text-muted">Main records, online requests and Python analytics charts.</p></div>
+<div class="hub-hero mb-4"><h1 class="mb-2">School Admin Control Panel</h1><p class="mb-0 text-muted">Main records, quick add boxes, online requests and analytics charts.</p></div>
 
 <div class="row g-4 mb-4">
     <div class="col-6 col-xl-3"><div class="hub-metric blue"><div class="label">Students</div><div class="value">{{ total_students }}</div><a href="{% url 'display_students' %}">Open students</a></div></div>
     <div class="col-6 col-xl-3"><div class="hub-metric yellow"><div class="label">Staff</div><div class="value">{{ total_staff }}</div><a href="{% url 'display_staff' %}">Open staff</a></div></div>
     <div class="col-6 col-xl-3"><div class="hub-metric purple"><div class="label">Classes</div><div class="value">{{ total_classes }}</div><a href="{% url 'display_classes' %}">Open classes</a></div></div>
     <div class="col-6 col-xl-3"><div class="hub-metric green"><div class="label">Subjects</div><div class="value">{{ total_subjects }}</div><a href="{% url 'display_subjects' %}">Open subjects</a></div></div>
+</div>
+
+<div class="hub-card p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div><h3 class="fw-bold mb-1">Admin Quick Add</h3><p class="text-muted mb-0">Student, teacher and non-teaching staff boxes.</p></div></div>
+    <div class="admin-action-grid">
+        <div class="hub-card-soft p-4 admin-action-box"><div><h4 class="fw-bold">Add Student</h4><p class="text-muted mb-0">New student admission/profile record.</p></div><a href="{% url 'add_student' %}" class="btn btn-success rounded-pill fw-bold mt-3">Add Student</a></div>
+        <div class="hub-card-soft p-4 admin-action-box"><div><h4 class="fw-bold">Add Teacher / Staff</h4><p class="text-muted mb-0">Teaching staff and school staff record.</p></div><a href="{% url 'add_staff' %}" class="btn btn-dark rounded-pill fw-bold mt-3">Add Teacher</a></div>
+        <div class="hub-card-soft p-4 admin-action-box"><div><h4 class="fw-bold">Non-Teaching Staff</h4><p class="text-muted mb-0">Support staff appointment and work detail.</p></div><a href="{% url 'add_non_teaching_staff' %}" class="btn btn-warning rounded-pill fw-bold mt-3">Add Non-Teaching</a></div>
+    </div>
 </div>
 
 <div class="hub-card p-4 mb-4">
