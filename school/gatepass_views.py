@@ -3,6 +3,7 @@ from datetime import datetime
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.views.decorators.http import require_POST
 
 from .access_control import staff_required
 from .gatepass_models import GatePass
@@ -68,6 +69,7 @@ def gatepass_print(request, gatepass_id):
 
 
 @staff_required
+@require_POST
 def mark_gatepass_returned(request, gatepass_id):
     record = get_object_or_404(GatePass, id=gatepass_id)
     record.status = GatePass.STATUS_RETURNED
