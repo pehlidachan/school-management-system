@@ -1,37 +1,43 @@
 /* Topbar + sticky hero polish */
 
 .hub-topbar {
-    min-height: 104px;
+    min-height: 112px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 18px;
-    padding: 14px 0 18px !important;
+    padding: 14px 0 20px !important;
     margin-top: 0 !important;
     background: linear-gradient(180deg, rgba(248,248,251,.99), rgba(246,246,249,.95)) !important;
     box-shadow: 0 10px 28px rgba(43, 0, 45, .08);
 }
 
 .hub-school-brand {
+    order: 2;
+    flex: 0 1 560px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    min-width: 210px;
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: #fff;
-    border: 1px solid rgba(43, 0, 45, .08);
-    box-shadow: 0 12px 28px rgba(43, 0, 45, .08);
+    justify-content: center;
+    gap: 14px;
+    min-width: 420px;
+    padding: 12px 26px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #fff6c9, #ffffff 45%, #f3e7ff);
+    border: 1px solid rgba(255, 226, 102, .75);
+    box-shadow: 0 14px 32px rgba(43, 0, 45, .10);
+    text-align: center;
 }
 
 .hub-school-logo {
-    width: 42px;
-    height: 42px;
-    border-radius: 14px;
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
     display: grid;
     place-items: center;
     background: linear-gradient(135deg, #2b002d, #7a197d);
     color: #ffe266;
-    box-shadow: inset 0 0 0 2px rgba(255, 226, 102, .22);
+    font-size: 22px;
+    box-shadow: inset 0 0 0 2px rgba(255, 226, 102, .28), 0 10px 22px rgba(43,0,45,.18);
     flex: 0 0 auto;
 }
 
@@ -43,36 +49,40 @@
 .hub-school-name strong {
     display: block;
     color: #2b002d;
-    font-size: .9rem;
+    font-size: 1.12rem;
+    font-weight: 900;
     letter-spacing: -.02em;
 }
 
 .hub-school-name span {
     display: block;
     color: #6b7280;
-    font-size: .7rem;
-    font-weight: 700;
-    margin-top: 3px;
+    font-size: .78rem;
+    font-weight: 800;
+    margin-top: 5px;
 }
 
 .hub-topbar .hub-search {
-    flex: 1 1 330px;
+    order: 1;
+    flex: 0 1 340px;
     max-width: 360px;
 }
 
 .hub-user-stack {
+    order: 3;
     align-items: flex-end !important;
+    flex: 0 0 auto;
 }
 
 .hub-user-card {
-    min-width: 220px;
-    min-height: 58px;
+    min-width: 224px;
+    min-height: 60px;
     padding: 8px 14px 8px 8px !important;
 }
 
 .hub-avatar.hub-profile-photo {
-    width: 46px;
-    height: 46px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     display: grid;
     place-items: center;
@@ -84,38 +94,45 @@
 }
 
 .hub-bismillah-mark {
-    margin-right: 34px;
+    margin-right: 38px;
 }
 
 .hub-hero,
 .dashboard-body .hub-hero,
 .hub-content-wrap .hub-hero {
-    top: 122px !important;
+    top: 132px !important;
     z-index: 45 !important;
     box-shadow: 0 14px 34px rgba(43, 0, 45, .16);
 }
 
 @media (max-width: 1200px) {
-    .hub-school-name { display: none; }
-    .hub-school-brand { min-width: auto; padding: 8px; }
+    .hub-school-name span { display: none; }
+    .hub-school-brand { min-width: 300px; flex-basis: 360px; padding: 10px 16px; }
+    .hub-school-name strong { font-size: .92rem; }
 }
 
 @media (max-width: 992px) {
     .hub-topbar {
         min-height: auto;
         align-items: stretch;
+        flex-direction: column;
     }
     .hub-school-brand,
     .hub-topbar .hub-search,
     .hub-user-stack {
         width: 100%;
         max-width: none;
+        min-width: 0;
+        flex: 0 0 auto;
     }
-    .hub-school-name { display: block; }
+    .hub-school-brand { order: 1; }
+    .hub-topbar .hub-search { order: 2; }
+    .hub-user-stack { order: 3; }
+    .hub-school-name span { display: block; }
     .hub-bismillah-mark { margin-right: 0; }
     .hub-hero,
     .dashboard-body .hub-hero,
     .hub-content-wrap .hub-hero {
-        top: 250px !important;
+        top: 285px !important;
     }
 }
