@@ -1,13 +1,14 @@
 from django.contrib import admin
 from django.urls import include, path
 
-from school import admin_online, attendance_views, calendar_views, dashboard_views, exam_views, finance_views, library_views, login_views, message_views, notice_views, promotion_views, staff_card_views, staff_list_views, student_card_views
+from school import admin_online, attendance_views, calendar_views, dashboard_views, exam_views, finance_views, library_views, login_views, message_views, notice_views, online_center_views, promotion_views, staff_card_views, staff_list_views, student_card_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', login_views.user_login, name='login'),
     path('dashboard/', dashboard_views.dashboard, name='dashboard'),
     path('portal/', admin_online.portal, name='portal'),
+    path('online/requests/', online_center_views.online_requests_center, name='online_requests_center'),
     path('attendance/', attendance_views.attendance_dashboard, name='attendance_dashboard'),
     path('attendance/mark/<int:grade_id>/', attendance_views.mark_attendance, name='mark_attendance'),
     path('attendance/report/', attendance_views.attendance_report, name='attendance_report'),
