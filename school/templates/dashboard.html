@@ -7,7 +7,10 @@
 .dashboard-analytics-box { min-height:230px; overflow:hidden; }
 .dashboard-analytics-box img { width:100%; height:150px; object-fit:contain; display:block; }
 .dashboard-analytics-value { font-size:2.2rem; font-weight:900; color:#2b002d; line-height:1; }
-@media (max-width:1200px){ .dashboard-analytics-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+.admin-action-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:18px; }
+.admin-action-box { min-height:170px; display:flex; flex-direction:column; justify-content:space-between; }
+.admin-action-icon { width:52px; height:52px; border-radius:18px; display:grid; place-items:center; background:#2b002d; color:#ffe266; font-size:22px; margin-bottom:12px; }
+@media (max-width:1200px){ .dashboard-analytics-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); } .admin-action-grid{ grid-template-columns:1fr; } }
 @media (max-width:700px){ .dashboard-analytics-grid{ grid-template-columns:1fr; } }
 </style>
 {% endblock %}
@@ -33,19 +36,22 @@
 {% endif %}
 
 <div class="row g-4 mb-4">
-    <div class="col-md-6 col-xl-3">
-        <div class="hub-metric blue">
-            <div class="label">Your role areas</div>
-            <div class="value">
-                {% if has_any_school_area %}
-                    {% if is_admin_user %}Admin{% elif is_account_creator_user %}IDs{% elif is_teacher_user %}Teacher{% elif is_student_user %}Student{% elif is_parent_user %}Parent{% endif %}
-                {% else %}None{% endif %}
-            </div>
-        </div>
-    </div>
+    <div class="col-md-6 col-xl-3"><div class="hub-metric blue"><div class="label">Your role areas</div><div class="value">{% if has_any_school_area %}{% if is_admin_user %}Admin{% elif is_account_creator_user %}IDs{% elif is_teacher_user %}Teacher{% elif is_student_user %}Student{% elif is_parent_user %}Parent{% endif %}{% else %}None{% endif %}</div></div></div>
     <div class="col-md-6 col-xl-3"><div class="hub-metric yellow"><div class="label">Attendance Module</div><div class="value">Next</div></div></div>
     <div class="col-md-6 col-xl-3"><div class="hub-metric purple"><div class="label">Finance Module</div><div class="value">Next</div></div></div>
     <div class="col-md-6 col-xl-3"><div class="hub-metric green"><div class="label">Result / DMC</div><div class="value">Next</div></div></div>
+</div>
+
+<div class="hub-card p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div><h3 class="fw-bold mb-1">Admin Quick Add</h3><p class="text-muted mb-0">Student, teacher and non-teaching staff boxes are always visible here.</p></div>
+        <a href="{% url 'portal' %}" class="btn btn-outline-dark rounded-pill btn-sm">Open Full Admin Panel</a>
+    </div>
+    <div class="admin-action-grid">
+        <div class="hub-card-soft p-4 admin-action-box"><div><div class="admin-action-icon"><i class="fa-solid fa-user-plus"></i></div><h4 class="fw-bold">Add Student</h4><p class="text-muted mb-0">New student admission/profile record.</p></div><a href="{% url 'add_student' %}" class="btn btn-success rounded-pill fw-bold mt-3">Add Student</a></div>
+        <div class="hub-card-soft p-4 admin-action-box"><div><div class="admin-action-icon"><i class="fa-solid fa-chalkboard-user"></i></div><h4 class="fw-bold">Add Teacher / Staff</h4><p class="text-muted mb-0">Teaching staff and school staff record.</p></div><a href="{% url 'add_staff' %}" class="btn btn-dark rounded-pill fw-bold mt-3">Add Teacher</a></div>
+        <div class="hub-card-soft p-4 admin-action-box"><div><div class="admin-action-icon"><i class="fa-solid fa-briefcase"></i></div><h4 class="fw-bold">Non-Teaching Staff</h4><p class="text-muted mb-0">Clerk, peon, guard, lab attendant and support staff.</p></div><a href="{% url 'add_non_teaching_staff' %}" class="btn btn-warning rounded-pill fw-bold mt-3">Add Non-Teaching</a></div>
+    </div>
 </div>
 
 <div class="hub-card p-4 mb-4">
@@ -62,75 +68,11 @@
 </div>
 
 <div class="row g-4">
-    {% if is_admin_user %}
-    <div class="col-md-6 col-xl-4">
-        <div class="hub-card h-100 p-4">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <div>
-                    <h4 class="fw-bold mb-1">Admin Control Panel</h4>
-                    <p class="text-muted mb-0">Students, staff, classes and master data.</p>
-                </div>
-                <span class="hub-filter-btn"><i class="fa-solid fa-screwdriver-wrench"></i></span>
-            </div>
-            <a href="{% url 'portal' %}" class="btn btn-dark rounded-pill fw-bold">Open Admin Panel</a>
-        </div>
-    </div>
-    {% endif %}
-
-    {% if is_account_creator_user %}
-    <div class="col-md-6 col-xl-4">
-        <div class="hub-card h-100 p-4">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <div>
-                    <h4 class="fw-bold mb-1">Student & Parent Login Maker</h4>
-                    <p class="text-muted mb-0">One-click create/reset IDs.</p>
-                </div>
-                <span class="hub-filter-btn"><i class="fa-solid fa-id-card"></i></span>
-            </div>
-            <a href="{% url 'account_creator_dashboard' %}" class="btn btn-success rounded-pill fw-bold">Open Account Maker</a>
-        </div>
-    </div>
-    {% endif %}
-
-    {% if is_teacher_user %}
-    <div class="col-md-6 col-xl-4">
-        <div class="hub-card h-100 p-4">
-            <h4 class="fw-bold">Teacher / HOD Dashboard</h4>
-            <p class="text-muted">Class incharge and teaching-side view.</p>
-            <a href="{% url 'teacher_dashboard' %}" class="btn btn-secondary rounded-pill fw-bold">Open Teacher Dashboard</a>
-        </div>
-    </div>
-    {% endif %}
-
-    {% if is_student_user %}
-    <div class="col-md-6 col-xl-4">
-        <div class="hub-card h-100 p-4">
-            <h4 class="fw-bold">Student Dashboard</h4>
-            <p class="text-muted">Student profile and class/timetable view.</p>
-            <a href="{% url 'student_dashboard' %}" class="btn btn-info text-white rounded-pill fw-bold">Open Student Dashboard</a>
-        </div>
-    </div>
-    {% endif %}
-
-    {% if is_parent_user %}
-    <div class="col-md-6 col-xl-4">
-        <div class="hub-card h-100 p-4">
-            <h4 class="fw-bold">Parent Dashboard</h4>
-            <p class="text-muted">Linked child profile and upcoming views.</p>
-            <a href="{% url 'parent_dashboard' %}" class="btn btn-warning rounded-pill fw-bold">Open Parent Dashboard</a>
-        </div>
-    </div>
-    {% endif %}
-
-    <div class="col-md-6 col-xl-4">
-        <div class="hub-card h-100 p-4">
-            <h4 class="fw-bold">Quick Links</h4>
-            <div class="hub-mini-list mt-2">
-                <a class="hub-mini-item text-decoration-none text-dark" href="{% url 'display_students' %}">Students List</a>
-                <a class="hub-mini-item text-decoration-none text-dark" href="{% url 'display_staff' %}">Teachers / Staff List</a>
-                <a class="hub-mini-item text-decoration-none text-dark" href="{% url 'home' %}">Public Home</a>
-            </div>
-        </div>
-    </div>
+    {% if is_admin_user %}<div class="col-md-6 col-xl-4"><div class="hub-card h-100 p-4"><h4 class="fw-bold mb-1">Admin Control Panel</h4><p class="text-muted">Students, staff, classes and master data.</p><a href="{% url 'portal' %}" class="btn btn-dark rounded-pill fw-bold">Open Admin Panel</a></div></div>{% endif %}
+    {% if is_account_creator_user %}<div class="col-md-6 col-xl-4"><div class="hub-card h-100 p-4"><h4 class="fw-bold mb-1">Student & Parent Login Maker</h4><p class="text-muted">One-click create/reset IDs.</p><a href="{% url 'account_creator_dashboard' %}" class="btn btn-success rounded-pill fw-bold">Open Account Maker</a></div></div>{% endif %}
+    {% if is_teacher_user %}<div class="col-md-6 col-xl-4"><div class="hub-card h-100 p-4"><h4 class="fw-bold">Teacher / HOD Dashboard</h4><p class="text-muted">Class incharge and teaching-side view.</p><a href="{% url 'teacher_dashboard' %}" class="btn btn-secondary rounded-pill fw-bold">Open Teacher Dashboard</a></div></div>{% endif %}
+    {% if is_student_user %}<div class="col-md-6 col-xl-4"><div class="hub-card h-100 p-4"><h4 class="fw-bold">Student Dashboard</h4><p class="text-muted">Student profile and class/timetable view.</p><a href="{% url 'student_dashboard' %}" class="btn btn-info text-white rounded-pill fw-bold">Open Student Dashboard</a></div></div>{% endif %}
+    {% if is_parent_user %}<div class="col-md-6 col-xl-4"><div class="hub-card h-100 p-4"><h4 class="fw-bold">Parent Dashboard</h4><p class="text-muted">Linked child profile and upcoming views.</p><a href="{% url 'parent_dashboard' %}" class="btn btn-warning rounded-pill fw-bold">Open Parent Dashboard</a></div></div>{% endif %}
+    <div class="col-md-6 col-xl-4"><div class="hub-card h-100 p-4"><h4 class="fw-bold">Quick Links</h4><div class="hub-mini-list mt-2"><a class="hub-mini-item text-decoration-none text-dark" href="{% url 'display_students' %}">Students List</a><a class="hub-mini-item text-decoration-none text-dark" href="{% url 'display_staff' %}">Teachers / Staff List</a><a class="hub-mini-item text-decoration-none text-dark" href="{% url 'non_teaching_staff_list' %}">Non-Teaching Staff List</a><a class="hub-mini-item text-decoration-none text-dark" href="{% url 'home' %}">Public Home</a></div></div></div>
 </div>
 {% endblock %}
