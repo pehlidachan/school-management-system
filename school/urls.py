@@ -1,5 +1,5 @@
 from django.urls import path
-from . import finance_summary_views, gatepass_views, online_requests_views, public_form_views, staff_cards_bulk, student_list_views, views
+from . import finance_summary_views, gatepass_views, non_teaching_views, online_requests_views, public_form_views, staff_cards_bulk, student_list_views, views
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -20,6 +20,11 @@ urlpatterns = [
     path('movement/add/', gatepass_views.add_gatepass, name='add_gatepass'),
     path('movement/<int:gatepass_id>/print/', gatepass_views.gatepass_print, name='gatepass_print'),
     path('movement/<int:gatepass_id>/returned/', gatepass_views.mark_gatepass_returned, name='gatepass_returned'),
+    path('non-teaching-staff/', non_teaching_views.non_teaching_staff_list, name='non_teaching_staff_list'),
+    path('non-teaching-staff/add/', non_teaching_views.add_non_teaching_staff, name='add_non_teaching_staff'),
+    path('non-teaching-staff/<int:record_id>/', non_teaching_views.non_teaching_staff_detail, name='non_teaching_staff_detail'),
+    path('non-teaching-staff/<int:record_id>/edit/', non_teaching_views.edit_non_teaching_staff, name='edit_non_teaching_staff'),
+    path('non-teaching-staff/<int:record_id>/status/', non_teaching_views.change_non_teaching_staff_status, name='change_non_teaching_staff_status'),
     path('login/', views.user_login, name='login'),
     path('signup/', views.signup, name='signup'),
     path('logout/', views.user_logout, name='logout'),
