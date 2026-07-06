@@ -3,6 +3,7 @@ from datetime import datetime
 from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
 from .access_control import admin_required
 from .models import EmploymentStatus, Gender
@@ -18,11 +19,19 @@ def _date_or_none(value):
         return None
 
 
+def _int_or_none(value):
+    try:
+        number = int(value or 0)
+    except (TypeError, ValueError):
+        return None
+    return number or None
+
+
 def _save_record(request, record=None):
     if record is None:
         record = NonTeachingStaff()
     record.name = (request.POST.get('name') or '').strip()
-    record.age = int(request.POST.get('age') or 0) or None
+    record.age = _int_or_none(request.POST.get('age'))
     record.dob = _date_or_none(request.POST.get('dob'))
     record.gender_id = request.POST.get('gender') or None
     record.appointment = (request.POST.get('appointment') or '').strip()
@@ -83,6 +92,7 @@ def non_teaching_staff_detail(request, record_id):
 
 
 @admin_required
+@require_POST
 def change_non_teaching_staff_status(request, record_id):
     record = get_object_or_404(NonTeachingStaff, id=record_id)
     record.status = not record.status
