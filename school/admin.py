@@ -219,3 +219,63 @@ admin.site.register(ThreadMessage, ThreadMessageAdmin)
 admin.site.register(Exam, ExamAdmin)
 admin.site.register(ExamSubject, ExamSubjectAdmin)
 admin.site.register(StudentMark, StudentMarkAdmin)
+
+
+# Phase 3 stability: extra MVP admin registrations
+from django.contrib.admin.sites import AlreadyRegistered
+from .gatepass_models import GatePass
+from .non_teaching_models import NonTeachingStaff
+from .public_models import JobApplication, OnlineAdmissionApplication, ParentComplaint
+
+
+def safe_register(model, model_admin=None):
+    try:
+        admin.site.register(model, model_admin)
+    except AlreadyRegistered:
+        pass
+
+
+class GatePassAdmin(admin.ModelAdmin):
+    list_display = ('id', 'person_type', 'person_name', 'student', 'staff', 'phone', 'status', 'created_at')
+    list_filter = ('person_type', 'status', 'created_at')
+    search_fields = ('person_name', 'phone', 'reason', 'destination', 'student__name', 'staff__name')
+    date_hierarchy = 'created_at'
+    ordering = ('-created_at',)
+
+
+class NonTeachingStaffAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'appointment', 'department', 'phone', 'employment_status', 'status', 'joining_date')
+    list_filter = ('status', 'department', 'employment_status', 'joining_date')
+    search_fields = ('name', 'appointment', 'work_detail', 'phone', 'email', 'department')
+    ordering = ('name',)
+
+
+class ParentComplaintAdmin(admin.ModelAdmin):
+    list_display = ('id', 'parent_name', 'student_name', 'phone', 'status', 'created_at')
+    list_filter = ('status', 'created_at')
+    search_fields = ('parent_name', 'student_name', 'phone', 'complaint_text', 'admin_note')
+    date_hierarchy = 'created_at'
+    ordering = ('-created_at',)
+
+
+class OnlineAdmissionApplicationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'student_name', 'father_name', 'requested_class', 'phone', 'status', 'created_at')
+    list_filter = ('status', 'requested_class', 'created_at')
+    search_fields = ('student_name', 'father_name', 'phone', 'previous_school', 'admin_note')
+    date_hierarchy = 'created_at'
+    ordering = ('-created_at',)
+
+
+class JobApplicationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'applicant_name', 'applied_for', 'phone', 'status', 'created_at')
+    list_filter = ('status', 'applied_for', 'created_at')
+    search_fields = ('applicant_name', 'applied_for', 'phone', 'qualification', 'experience', 'admin_note')
+    date_hierarchy = 'created_at'
+    ordering = ('-created_at',)
+
+
+safe_register(GatePass, GatePassAdmin)
+safe_register(NonTeachingStaff, NonTeachingStaffAdmin)
+safe_register(ParentComplaint, ParentComplaintAdmin)
+safe_register(OnlineAdmissionApplication, OnlineAdmissionApplicationAdmin)
+safe_register(JobApplication, JobApplicationAdmin)
