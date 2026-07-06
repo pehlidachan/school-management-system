@@ -1,0 +1,28 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Online Requests{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">Online Requests Center</h1>
+        <p class="text-muted mb-0">Parent complaints, admission forms and job requests in one place.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'parent_complaint_form' %}" target="_blank" class="btn btn-outline-dark rounded-pill">Complaint Form</a>
+        <a href="{% url 'online_admission_form' %}" target="_blank" class="btn btn-outline-dark rounded-pill">Admission Form</a>
+        <a href="{% url 'job_apply_form' %}" target="_blank" class="btn btn-success rounded-pill">Job Form</a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4"><div class="hub-metric blue"><div class="label">Parent Complaints</div><div class="value">{{ complaint_total }}</div><a href="{% url 'online_parent_complaints' %}">View records</a><div class="small text-muted mt-1">New: {{ complaint_new }}</div></div></div>
+    <div class="col-md-4"><div class="hub-metric yellow"><div class="label">Online Admissions</div><div class="value">{{ admission_total }}</div><a href="{% url 'online_admissions_admin' %}">View records</a><div class="small text-muted mt-1">New: {{ admission_new }}</div></div></div>
+    <div class="col-md-4"><div class="hub-metric green"><div class="label">Job Requests</div><div class="value">{{ job_total }}</div><a href="{% url 'online_job_applications' %}">View records</a><div class="small text-muted mt-1">New: {{ job_new }}</div></div></div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-4"><div class="hub-card p-4 h-100"><h4 class="fw-bold mb-3">Recent Complaints</h4><div class="hub-mini-list">{% for item in recent_complaints %}<a class="hub-mini-item text-decoration-none text-dark" href="{% url 'online_parent_complaints' %}"><strong>{{ item.parent_name }}</strong><br><span class="text-muted small">{{ item.subject|truncatechars:45 }}</span></a>{% empty %}<div class="text-muted">No records yet.</div>{% endfor %}</div></div></div>
+    <div class="col-xl-4"><div class="hub-card p-4 h-100"><h4 class="fw-bold mb-3">Recent Admissions</h4><div class="hub-mini-list">{% for item in recent_admissions %}<a class="hub-mini-item text-decoration-none text-dark" href="{% url 'online_admissions_admin' %}"><strong>{{ item.student_name }}</strong><br><span class="text-muted small">Class: {{ item.desired_class }}</span></a>{% empty %}<div class="text-muted">No records yet.</div>{% endfor %}</div></div></div>
+    <div class="col-xl-4"><div class="hub-card p-4 h-100"><h4 class="fw-bold mb-3">Recent Job Requests</h4><div class="hub-mini-list">{% for item in recent_jobs %}<a class="hub-mini-item text-decoration-none text-dark" href="{% url 'online_job_applications' %}"><strong>{{ item.applicant_name }}</strong><br><span class="text-muted small">{{ item.applied_for }}</span></a>{% empty %}<div class="text-muted">No records yet.</div>{% endfor %}</div></div></div>
+</div>
+{% endblock %}
