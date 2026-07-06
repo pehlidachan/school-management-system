@@ -18,6 +18,14 @@ def _date_or_none(value):
         return None
 
 
+def _int_or_none(value):
+    try:
+        number = int(value or 0)
+    except (TypeError, ValueError):
+        return None
+    return number or None
+
+
 def _upload(request):
     return request.FILES.get('person_image') or request.FILES.get('photo_capture') or request.FILES.get('image')
 
@@ -26,7 +34,7 @@ def _save(request, record=None):
     if record is None:
         record = NonTeachingStaff()
     record.name = (request.POST.get('name') or '').strip()
-    record.age = int(request.POST.get('age') or 0) or None
+    record.age = _int_or_none(request.POST.get('age'))
     record.dob = _date_or_none(request.POST.get('dob'))
     record.gender_id = request.POST.get('gender') or None
     record.appointment = (request.POST.get('appointment') or '').strip()
