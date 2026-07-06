@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib import messages
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect, render
@@ -12,7 +14,7 @@ def _date_or_none(value):
     if not value:
         return None
     try:
-        return timezone.datetime.strptime(value, "%Y-%m-%d").date()
+        return datetime.strptime(value, "%Y-%m-%d").date()
     except ValueError:
         return None
 
