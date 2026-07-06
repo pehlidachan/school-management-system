@@ -7,6 +7,7 @@
         <p class="text-muted mb-0">{{ total_records }} parent/guardian record(s) found with more than one child in school.</p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'export_multi_child_guardians' %}" class="btn btn-success rounded-pill">Export CSV</a>
         <button onclick="window.print()" class="btn btn-dark rounded-pill">Print List</button>
         <a href="{% url 'display_students' %}" class="btn btn-outline-dark rounded-pill">Back to Students</a>
     </div>
