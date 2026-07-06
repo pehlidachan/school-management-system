@@ -10,6 +10,8 @@ URL_NAMES = [
     'non_teaching_staff_list', 'add_non_teaching_staff', 'attendance_dashboard',
     'finance_dashboard', 'notice_board', 'calendar_dashboard', 'library_dashboard',
     'message_inbox', 'exam_dashboard', 'gatepass_dashboard', 'multi_child_guardians',
+    'export_multi_child_guardians', 'export_gatepass', 'export_non_teaching_staff',
+    'export_parent_complaints', 'export_online_admissions', 'export_job_applications',
 ]
 
 TEMPLATES = [
@@ -18,7 +20,7 @@ TEMPLATES = [
     'non_teaching_staff_form.html', 'attendance_dashboard.html', 'finance_dashboard.html',
     'notice_board.html', 'calendar_dashboard.html', 'library_dashboard.html',
     'message_inbox.html', 'exam_dashboard.html', 'gatepass_dashboard.html',
-    'multi_child_guardians.html',
+    'multi_child_guardians.html', 'online_requests_center.html',
 ]
 
 MODEL_LABELS = [
@@ -26,6 +28,7 @@ MODEL_LABELS = [
     'school.FeeInvoice', 'school.SchoolExpense', 'school.Notice', 'school.SchoolCalendarEvent',
     'school.LibraryBook', 'school.LibraryIssue', 'school.MessageThread', 'school.ThreadMessage',
     'school.Exam', 'school.StudentMark', 'school.GatePass', 'school.NonTeachingStaff',
+    'school.ParentComplaint', 'school.OnlineAdmissionApplication', 'school.JobApplication',
 ]
 
 
