@@ -64,7 +64,7 @@ def add_gatepass(request):
 @staff_required
 def gatepass_print(request, gatepass_id):
     record = get_object_or_404(GatePass.objects.select_related('student', 'staff', 'issued_by'), id=gatepass_id)
-    return render(request, 'gatepass_print.html', {'record': record, 'print_date': timezone.localdate()})
+    return render(request, 'out_slip.html', {'record': record, 'print_date': timezone.localdate()})
 
 
 @staff_required
