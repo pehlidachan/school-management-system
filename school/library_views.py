@@ -19,6 +19,13 @@ def _date_or_none(value):
         return None
 
 
+def _int_or_default(value, default=1):
+    try:
+        return int(value or default)
+    except (TypeError, ValueError):
+        return default
+
+
 def _refresh_overdue():
     today = timezone.localdate()
     LibraryIssue.objects.filter(status=LibraryIssue.ISSUED, due_date__lt=today, return_date__isnull=True).update(status=LibraryIssue.OVERDUE)
@@ -50,7 +57,7 @@ def add_library_book(request):
         if not title or not accession_number:
             messages.error(request, "Book title and accession number are required.")
             return redirect("add_library_book")
-        total_copies = int(request.POST.get("total_copies") or 1)
+        total_copies = _int_or_default(request.POST.get("total_copies"), 1)
         LibraryBook.objects.create(
             title=title,
             author=(request.POST.get("author") or "").strip(),
