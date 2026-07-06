@@ -40,9 +40,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         errors = []
+        ok_count = 0
         for name in URL_NAMES:
             try:
                 reverse(name)
+                ok_count += 1
                 self.stdout.write(self.style.SUCCESS('URL OK: ' + name))
             except NoReverseMatch as exc:
                 errors.append('URL FAIL: ' + name + ' -> ' + str(exc))
@@ -50,6 +52,7 @@ class Command(BaseCommand):
         for template_name in TEMPLATES:
             try:
                 get_template(template_name)
+                ok_count += 1
                 self.stdout.write(self.style.SUCCESS('TEMPLATE OK: ' + template_name))
             except Exception as exc:
                 errors.append('TEMPLATE FAIL: ' + template_name + ' -> ' + str(exc))
@@ -61,6 +64,7 @@ class Command(BaseCommand):
                 model = apps.get_model(app_label, model_name)
                 table_name = model._meta.db_table
                 if table_name in existing_tables:
+                    ok_count += 1
                     self.stdout.write(self.style.SUCCESS('TABLE OK: ' + table_name))
                 else:
                     errors.append('TABLE FAIL: ' + table_name + ' missing')
@@ -69,5 +73,7 @@ class Command(BaseCommand):
                 errors.append('MODEL FAIL: ' + label + ' -> ' + str(exc))
                 self.stdout.write(self.style.ERROR(errors[-1]))
         if errors:
+            self.stdout.write(self.style.ERROR('School check failed. Run: python manage.py migrate'))
             raise SystemExit(1)
-        self.stdout.write(self.style.SUCCESS('School URL/template/table check passed.'))
+        self.stdout.write(self.style.SUCCESS('School check passed. Items checked: ' + str(ok_count)))
+        self.stdout.write(self.style.SUCCESS('Next: open /dashboard/ and press Ctrl + F5 in browser.'))
