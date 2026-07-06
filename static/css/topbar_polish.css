@@ -1,0 +1,121 @@
+/* Topbar + sticky hero polish */
+
+.hub-topbar {
+    min-height: 104px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 0 18px !important;
+    margin-top: 0 !important;
+    background: linear-gradient(180deg, rgba(248,248,251,.99), rgba(246,246,249,.95)) !important;
+    box-shadow: 0 10px 28px rgba(43, 0, 45, .08);
+}
+
+.hub-school-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 210px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid rgba(43, 0, 45, .08);
+    box-shadow: 0 12px 28px rgba(43, 0, 45, .08);
+}
+
+.hub-school-logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #2b002d, #7a197d);
+    color: #ffe266;
+    box-shadow: inset 0 0 0 2px rgba(255, 226, 102, .22);
+    flex: 0 0 auto;
+}
+
+.hub-school-name {
+    min-width: 0;
+    line-height: 1.05;
+}
+
+.hub-school-name strong {
+    display: block;
+    color: #2b002d;
+    font-size: .9rem;
+    letter-spacing: -.02em;
+}
+
+.hub-school-name span {
+    display: block;
+    color: #6b7280;
+    font-size: .7rem;
+    font-weight: 700;
+    margin-top: 3px;
+}
+
+.hub-topbar .hub-search {
+    flex: 1 1 330px;
+    max-width: 360px;
+}
+
+.hub-user-stack {
+    align-items: flex-end !important;
+}
+
+.hub-user-card {
+    min-width: 220px;
+    min-height: 58px;
+    padding: 8px 14px 8px 8px !important;
+}
+
+.hub-avatar.hub-profile-photo {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #ffe266, #fff2a3);
+    color: #2b002d;
+    border: 3px solid rgba(255,255,255,.78);
+    font-weight: 900;
+    box-shadow: 0 10px 24px rgba(43, 0, 45, .24);
+}
+
+.hub-bismillah-mark {
+    margin-right: 34px;
+}
+
+.hub-hero,
+.dashboard-body .hub-hero,
+.hub-content-wrap .hub-hero {
+    top: 122px !important;
+    z-index: 45 !important;
+    box-shadow: 0 14px 34px rgba(43, 0, 45, .16);
+}
+
+@media (max-width: 1200px) {
+    .hub-school-name { display: none; }
+    .hub-school-brand { min-width: auto; padding: 8px; }
+}
+
+@media (max-width: 992px) {
+    .hub-topbar {
+        min-height: auto;
+        align-items: stretch;
+    }
+    .hub-school-brand,
+    .hub-topbar .hub-search,
+    .hub-user-stack {
+        width: 100%;
+        max-width: none;
+    }
+    .hub-school-name { display: block; }
+    .hub-bismillah-mark { margin-right: 0; }
+    .hub-hero,
+    .dashboard-body .hub-hero,
+    .hub-content-wrap .hub-hero {
+        top: 250px !important;
+    }
+}
