@@ -1,0 +1,392 @@
+/* Global mobile responsive polish for SchoolHub */
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+img,
+svg,
+video,
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table {
+    min-width: 720px;
+}
+
+form .row,
+.hub-toolbar,
+.hub-topbar,
+.hub-userbar,
+.d-flex.flex-wrap {
+    min-width: 0;
+}
+
+input,
+select,
+textarea,
+.form-control,
+.form-select {
+    max-width: 100%;
+}
+
+.hub-card,
+.hub-card-soft,
+.hub-table-card,
+.hub-hero,
+.hub-metric {
+    min-width: 0;
+}
+
+@media (max-width: 1200px) {
+    .hub-shell {
+        grid-template-columns: 92px minmax(0, 1fr);
+    }
+
+    .hub-shell .hub-sidebar {
+        padding: 22px 12px;
+        align-items: center;
+    }
+
+    .hub-shell .hub-sidebar-head {
+        flex-direction: column;
+    }
+
+    .hub-shell .hub-label,
+    .hub-shell .hub-menu-label,
+    .hub-shell .hub-side-ad {
+        opacity: 0;
+        width: 0;
+        max-width: 0;
+        height: 0;
+        max-height: 0;
+        overflow: hidden;
+        pointer-events: none;
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    .hub-shell .hub-nav a {
+        width: 54px;
+        min-height: 48px;
+        justify-content: center;
+        gap: 0;
+        padding: 0;
+        border-radius: 16px;
+    }
+
+    .hub-shell .hub-nav .icon {
+        width: auto;
+        font-size: 1.05rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .hub-shell {
+        display: block;
+    }
+
+    .hub-sidebar {
+        position: relative;
+        top: auto;
+        height: auto;
+        width: 100%;
+        border-right: 0;
+        border-bottom: 1px solid rgba(255, 226, 102, .18);
+        padding: 14px 14px 10px;
+        box-shadow: 0 12px 28px rgba(43, 0, 45, .16);
+        gap: 12px;
+    }
+
+    .hub-sidebar-head {
+        flex-direction: row !important;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .hub-sidebar-toggle,
+    #hubSidebarToggle {
+        display: none !important;
+    }
+
+    .hub-sidebar .hub-label,
+    .hub-sidebar .hub-menu-label,
+    .hub-sidebar .hub-side-ad {
+        opacity: 1 !important;
+        width: auto !important;
+        max-width: none !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        pointer-events: auto !important;
+    }
+
+    .hub-sidebar .hub-menu-label,
+    .hub-side-ad {
+        display: none !important;
+    }
+
+    .hub-nav {
+        flex-direction: row !important;
+        overflow-x: auto;
+        padding-bottom: 6px;
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .hub-nav a {
+        flex: 0 0 auto;
+        min-width: 82px;
+        width: auto !important;
+        min-height: 46px;
+        height: auto !important;
+        padding: 9px 12px !important;
+        justify-content: center;
+        border-radius: 14px;
+        scroll-snap-align: start;
+    }
+
+    .hub-nav .icon {
+        width: 18px;
+    }
+
+    .hub-content-wrap {
+        padding: 16px;
+    }
+
+    .hub-topbar {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        margin-bottom: 16px;
+        padding: 10px 0;
+    }
+
+    .hub-search,
+    .hub-user-stack,
+    .hub-userbar,
+    .hub-user-card,
+    .hub-bismillah-mark {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+    }
+
+    .hub-userbar {
+        justify-content: space-between;
+    }
+
+    .hub-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .hub-toolbar > div,
+    .hub-toolbar .d-flex,
+    .hub-toolbar .btn,
+    .hub-toolbar a.btn {
+        width: 100%;
+    }
+
+    .hub-toolbar .d-flex {
+        justify-content: stretch;
+    }
+
+    .hub-toolbar .d-flex .btn,
+    .hub-toolbar .hub-add-btn,
+    .hub-toolbar .hub-filter-btn {
+        flex: 1 1 auto;
+    }
+
+    .hub-page-title,
+    .hub-hero h1,
+    .hub-hero h2 {
+        font-size: clamp(1.35rem, 6vw, 2rem);
+    }
+
+    .hub-hero {
+        padding: 18px;
+    }
+
+    .hub-metric {
+        min-height: 96px;
+        padding: 16px;
+    }
+
+    .hub-metric .value {
+        font-size: 1.55rem;
+    }
+
+    .hub-card.p-4,
+    .hub-card-soft.p-4 {
+        padding: 1rem !important;
+    }
+
+    .row.g-4 {
+        --bs-gutter-y: 1rem;
+        --bs-gutter-x: 1rem;
+    }
+
+    .dashboard-analytics-grid,
+    .analytics-grid,
+    .admin-action-grid,
+    .signature-row,
+    .signs {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 576px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    .hub-content-wrap {
+        padding: 12px;
+    }
+
+    .hub-sidebar {
+        padding: 12px 10px 8px;
+    }
+
+    .hub-brand {
+        font-size: 1rem;
+    }
+
+    .hub-logo {
+        width: 28px;
+        height: 28px;
+        border-radius: 9px;
+    }
+
+    .hub-nav a {
+        min-width: 70px;
+        font-size: .78rem;
+        padding: 8px 10px !important;
+    }
+
+    .hub-nav a .icon {
+        font-size: .95rem;
+    }
+
+    .hub-topbar {
+        margin-top: 0;
+    }
+
+    .hub-user-card {
+        border-radius: 18px;
+        padding: 10px;
+    }
+
+    .hub-user-name {
+        max-width: 190px;
+    }
+
+    .hub-bismillah-mark span {
+        font-size: .95rem;
+    }
+
+    .hub-toolbar .d-flex {
+        flex-direction: column;
+    }
+
+    .hub-toolbar .btn,
+    .hub-toolbar a.btn,
+    .hub-add-btn,
+    .hub-filter-btn {
+        width: 100% !important;
+        min-height: 42px;
+    }
+
+    .hub-add-btn,
+    .hub-filter-btn {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 999px;
+    }
+
+    .btn,
+    button,
+    input,
+    select,
+    textarea {
+        min-height: 42px;
+    }
+
+    .table {
+        min-width: 680px;
+        font-size: .86rem;
+    }
+
+    .hub-table-card thead th,
+    .hub-table-card tbody td,
+    .hub-table-card tbody th {
+        padding: 10px;
+    }
+
+    .hub-action-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .container,
+    .container-fluid {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .modern-form p,
+    form p {
+        margin-bottom: 12px;
+    }
+
+    .modern-form input,
+    .modern-form select,
+    .modern-form textarea,
+    form input,
+    form select,
+    form textarea {
+        font-size: 16px;
+    }
+}
+
+@media print {
+    .hub-sidebar,
+    .hub-topbar,
+    .no-print,
+    .hub-toolbar .btn,
+    .hub-toolbar a.btn {
+        display: none !important;
+    }
+
+    .hub-shell {
+        display: block !important;
+    }
+
+    .hub-content-wrap {
+        padding: 0 !important;
+    }
+
+    .hub-card,
+    .hub-table-card {
+        box-shadow: none !important;
+        border: 0 !important;
+    }
+
+    .table {
+        min-width: 0 !important;
+    }
+}
