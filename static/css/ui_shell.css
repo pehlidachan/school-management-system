@@ -102,6 +102,15 @@
     border-bottom: 1px solid rgba(74,13,79,.06);
 }
 
+/* Keep the lower Welcome/Hero card normal, not sticky/fixed. */
+.hub-hero,
+.dashboard-body .hub-hero,
+.hub-content-wrap .hub-hero {
+    position: static !important;
+    top: auto !important;
+    z-index: auto !important;
+}
+
 .hub-user-stack {
     margin-left: auto;
     display: flex;
@@ -193,6 +202,7 @@
         pointer-events: auto;
     }
     .hub-topbar { top: 0; }
+    .hub-hero { position: static !important; top: auto !important; z-index: auto !important; }
     .hub-user-stack { width: 100%; }
     .hub-bismillah-mark { min-width: 0; width: 100%; max-width: 360px; }
     .hub-userbar { width: 100%; justify-content: space-between; }
