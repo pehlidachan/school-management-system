@@ -9,3 +9,4 @@ class SchoolConfig(AppConfig):
         # Load MVP model modules that live outside models.py so Django's
         # migration state check can see them consistently.
         from . import staff_attendance_models  # noqa: F401
+        from . import study_material_models  # noqa: F401
