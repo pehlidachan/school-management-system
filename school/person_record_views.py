@@ -13,6 +13,14 @@ def _upload(request):
     return request.FILES.get('person_image') or request.FILES.get('photo_capture') or request.FILES.get('image')
 
 
+def _save_photo_path(area, record, uploaded_file):
+    photo_path = save_person_file(area, record.id, uploaded_file)
+    if photo_path:
+        record.photo_path = photo_path
+        record.save(update_fields=['photo_path'])
+    return photo_path
+
+
 @admin_required
 def add_student(request):
     if not is_school_admin(request.user):
@@ -23,7 +31,7 @@ def add_student(request):
     form = AddStudentForm(request.POST)
     if form.is_valid():
         record = form.save()
-        save_person_file('students', record.id, _upload(request))
+        _save_photo_path('students', record, _upload(request))
         messages.success(request, 'The student has been added successfully!')
         return redirect('display_students')
     messages.error(request, 'Please enter the valid Information!')
@@ -41,7 +49,7 @@ def edit_student(request, id):
     form = AddStudentForm(request.POST, instance=record)
     if form.is_valid():
         record = form.save()
-        save_person_file('students', record.id, _upload(request))
+        _save_photo_path('students', record, _upload(request))
         messages.success(request, 'Student updated successfully!')
         return redirect('display_students')
     messages.error(request, 'please enter valid information!')
@@ -58,7 +66,7 @@ def add_staff(request):
     form = AddStaffForm(request.POST)
     if form.is_valid():
         record = form.save()
-        save_person_file('staff', record.id, _upload(request))
+        _save_photo_path('staff', record, _upload(request))
         messages.success(request, 'New staff added successfully!')
         return redirect('display_staff')
     messages.error(request, 'Please enter valid information!')
@@ -76,7 +84,7 @@ def edit_staff(request, id):
     form = AddStaffForm(request.POST, instance=record)
     if form.is_valid():
         record = form.save()
-        save_person_file('staff', record.id, _upload(request))
+        _save_photo_path('staff', record, _upload(request))
         messages.success(request, 'Staff updated successfully!')
         return redirect('display_staff')
     messages.error(request, 'Please enter the valid information!')
