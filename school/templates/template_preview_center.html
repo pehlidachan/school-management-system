@@ -6,7 +6,7 @@
 <div class="hub-toolbar">
     <div>
         <h1 class="hub-page-title">Template Preview Center</h1>
-        <p class="text-muted mb-0">All MVP print and form templates in one preview box with popup screen preview.</p>
+        <p class="text-muted mb-0">All MVP print and form templates with dynamic column preview boxes.</p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
         <a href="{% url 'dashboard' %}" class="btn btn-outline-dark rounded-pill">Dashboard</a>
@@ -17,14 +17,14 @@
 <div class="preview-stage-box">
     <div class="preview-stage-head">
         <div>
-            <span class="preview-kicker">Live UI Gallery</span>
+            <span class="preview-kicker">Dynamic UI Gallery</span>
             <h2>Print, Card, Report and Ledger Templates</h2>
         </div>
         <div class="preview-count">{{ templates|length }} Templates</div>
     </div>
     <div class="preview-grid">
         {% for item in templates %}
-        <button type="button" class="preview-card" data-title="{{ item.title }}" data-category="{{ item.category }}" data-badge="{{ item.badge }}" data-description="{{ item.description }}" data-sample="{{ item.sample }}">
+        <button type="button" class="preview-card" data-title="{{ item.title }}" data-category="{{ item.category }}" data-badge="{{ item.badge }}" data-description="{{ item.description }}" data-sample="{{ item.sample }}" data-fields-id="previewFields{{ forloop.counter }}">
             <span class="preview-card-icon"><i class="fa-solid {{ item.icon }}"></i></span>
             <span class="preview-card-body">
                 <span class="preview-card-top"><strong>{{ item.title }}</strong><em>{{ item.badge }}</em></span>
@@ -32,6 +32,14 @@
                 <span class="preview-card-foot">{{ item.category }} <i class="fa-solid fa-up-right-and-down-left-from-center"></i></span>
             </span>
         </button>
+        <div class="preview-fields-source" id="previewFields{{ forloop.counter }}">
+            {% for field in item.fields %}
+            <div class="dynamic-field-box">
+                <span class="dynamic-field-label">{{ field.label }}</span>
+                <code>{{ field.value }}</code>
+            </div>
+            {% endfor %}
+        </div>
         {% endfor %}
     </div>
 </div>
@@ -50,10 +58,9 @@
                     <div class="mock-school">Government Middle School Shalgah</div>
                     <h2 id="previewTitle">Template Preview</h2>
                     <p id="previewDescription">Select a template card to preview.</p>
-                    <div class="mock-lines">
-                        <div></div><div></div><div></div><div></div>
-                    </div>
-                    <div class="mock-panel" id="previewSample">Sample fields will appear here.</div>
+                    <div class="mock-panel" id="previewSample">Dynamic fields will appear below.</div>
+                    <div class="dynamic-fields-title">Relevant MVP dynamic columns</div>
+                    <div class="dynamic-fields-grid" id="previewFieldsGrid"></div>
                     <div class="mock-signatures"><span>Prepared By</span><span>Principal</span></div>
                 </div>
             </div>
@@ -70,13 +77,16 @@
     const badge = document.getElementById('previewBadge');
     const description = document.getElementById('previewDescription');
     const sample = document.getElementById('previewSample');
+    const fieldsGrid = document.getElementById('previewFieldsGrid');
 
     function openPreview(card){
+        const fieldsSource = document.getElementById(card.dataset.fieldsId);
         title.textContent = card.dataset.title;
         category.textContent = card.dataset.category + ' Preview';
         badge.textContent = card.dataset.badge;
         description.textContent = card.dataset.description;
         sample.textContent = card.dataset.sample;
+        fieldsGrid.innerHTML = fieldsSource ? fieldsSource.innerHTML : '';
         overlay.classList.add('is-open');
         overlay.setAttribute('aria-hidden', 'false');
         document.body.classList.add('template-modal-open');
