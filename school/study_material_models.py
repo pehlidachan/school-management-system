@@ -37,8 +37,8 @@ class StudyMaterial(models.Model):
         app_label = "school"
         ordering = ["-created_at", "grade__name", "subject__name"]
         indexes = [
-            models.Index(fields=["is_published"]),
-            models.Index(fields=["grade", "subject"]),
+            models.Index(fields=["is_published"], name="school_stud_is_publ_0a8aa9_idx"),
+            models.Index(fields=["grade", "subject"], name="school_stud_grade_i_aad513_idx"),
         ]
 
     def __str__(self):
