@@ -1,59 +1,11 @@
 {% extends 'layout.html' %}
 {% load static %}
+{% block 'title' %}Student Details{% endblock %}
 {% block 'style' %}
-
+<style>
+body{background:rgba(0,0,0,.72)}.detail-wrap{max-width:1080px;margin:30px auto;background:#fff;border-radius:28px;border:3px solid #287a86;box-shadow:0 26px 90px rgba(0,0,0,.45);overflow:hidden}.detail-head{padding:16px 24px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center}.detail-body{padding:22px}.hero{display:grid;grid-template-columns:145px 1fr;gap:24px;align-items:center;margin-bottom:18px}.avatar{width:132px;height:132px;border-radius:50%;box-shadow:0 6px 20px #9bd7e8;display:grid;place-items:center;overflow:hidden;background:#f3f4f6}.avatar img{width:100%;height:100%;object-fit:cover}.avatar span{font-size:52px;font-weight:900;color:#297889}.name{font-size:28px;margin:0}.meta{font-size:18px;color:#444}.status{color:#0b8a26;font-weight:800}.grid{display:grid;grid-template-columns:170px 1fr 170px 1fr;border-top:1px solid #ddd;border-left:1px solid #ddd}.grid div{padding:10px 12px;border-right:1px solid #ddd;border-bottom:1px solid #ddd}.label{background:#fafafa;color:#333}.value{font-weight:800;color:#08c}.fee-box{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:16px}.panel{border:1px solid #ddd;border-radius:12px;overflow:hidden}.panel h3{margin:0;background:#eee;padding:10px 14px;font-size:16px}.panel p{padding:12px;margin:0}.actions{padding:18px 24px;border-top:1px solid #eee;display:flex;justify-content:flex-end;gap:12px}.btnx{border:0;border-radius:6px;padding:11px 18px;text-decoration:none;font-weight:800}.gray{background:#eee;color:#333}.green{background:#059669;color:#fff}.red{background:#dc2626;color:#fff}@media(max-width:800px){.hero{grid-template-columns:1fr;text-align:center}.avatar{margin:auto}.grid{grid-template-columns:150px 1fr}.fee-box{grid-template-columns:1fr}}
+</style>
 {% endblock %}
-{% block 'title' %} Student Details {% endblock %}
 {% block 'content' %}
-<div class="container">
-    <div class="d-flex align-items-center justify-content-between ">
-        <h1 class="my-5">Student details</h1>
-        <a href="{% url 'display_students' %}" class="btn btn-primary">Display Students</a>
-    </div>
-    <span class="fs-2 fw-medium">Id:</span>
-    <span class="ms-5 fs-2">{{student.id}}</span>
-    <hr>
-    <span class="fs-2 fw-medium">Name:</span>
-    <span class="ms-5 fs-2">{{student.name}}</span>
-    <hr>
-    <span class="fs-2 fw-medium">Grade:</span>
-    <span class="ms-5 fs-2">{{student.grade}}</span>
-    <hr>
-    <span class="fs-2 fw-medium">Age:</span>
-    <span class="ms-5 fs-2">{{student.age}}</span>
-    <hr>
-    <span class="fs-2 fw-medium">Gender:</span>
-    <span class="ms-5 fs-2">{{student.gender}}</span>
-    <hr>
-    <span class="fs-2 fw-medium">Date of Birth:</span>
-    <span class="ms-5 fs-2">{{student.dob}}</span>
-    <hr>
-    <span class="fs-2 fw-medium">Guardian Name:</span>
-    <span class="ms-5 fs-2">{{student.guardian_name}}</span>
-    <hr>
-    <span class="fs-2 fw-medium">Guardian Relation:</span>
-    <span class="ms-5 fs-2">{{student.guardian_relation}}</span>
-    <hr>
-    <span class="fs-2 fw-medium">Address:</span>
-    <span class="ms-5 fs-2">{{student.address}}</span>
-    <hr>
-    <span class="fs-2 fw-medium">Date of Enrollment:</span>
-    <span class="ms-5 fs-2">{{student.date_of_enrollment}}</span>
-    <hr>
-    <span class="fs-2 fw-medium">Email:</span>
-    <span class="ms-5 fs-2">{{student.email}}</span>
-    <hr>
-    <span class="fs-2 fw-medium">Phone:</span>
-    <span class="ms-5 fs-2">{{student.phone}}</span>
-    <hr>
-    <span class="fs-2 fw-medium">Emergency Phone:</span>
-    <span class="ms-5 fs-2">{{student.emergency_phone}}</span>
-    <hr>
-    <span class="fs-2 fw-medium">Previous School:</span>
-    <span class="ms-5 fs-2">{{student.previous_school}}</span>
-    <hr>
-    <span class="fs-2 fw-medium">Status:</span>
-    <span class="ms-5 fs-2">{{student.status}}</span>
-    <hr>
-</div>
+<div class="detail-wrap"><div class="detail-head"><h4 class="m-0">Government Middle School Shalgah</h4><a href="{% url 'display_students' %}" class="btnx gray">× Close</a></div><div class="detail-body"><div class="hero"><div class="avatar">{% if student.photo_path %}<img src="/{{ student.photo_path }}" alt="{{ student.name }}">{% else %}<span>{{ student.name|slice:':1'|upper }}</span>{% endif %}</div><div><p class="meta mb-1">(GR# <b style="color:red">{{ student.gr_no|default:student.id }}</b>) {% if student.id %}(Family ID# <b style="color:green">{{ student.id }}</b>){% endif %}</p><h1 class="name">{{ student.name }}</h1><div class="meta">Class {{ student.grade }}</div><div class="status">{% if student.status %}( Active {{ student.date_of_enrollment|date:'d-M-Y' }} ){% else %}( Inactive ){% endif %}</div></div></div><div class="grid"><div class="label">Email</div><div class="value">{{ student.email }}</div><div class="label">Phone</div><div class="value">{{ student.phone }}</div><div class="label">Admission Date</div><div class="value">{{ student.date_of_enrollment|date:'d-M-Y' }}</div><div class="label">Birth Date</div><div class="value">{{ student.dob|date:'d-M-Y' }}</div><div class="label">Class</div><div class="value">{{ student.grade }}</div><div class="label">Roll No</div><div class="value">{{ student.roll_no|default:'-' }}</div><div class="label">Address</div><div class="value">{{ student.address }}</div><div class="label">Gender</div><div class="value">{{ student.gender }}</div><div class="label">Previous School</div><div class="value">{{ student.previous_school|default:'Nil' }}</div><div class="label">Guardian</div><div class="value">{{ student.guardian_name }}</div><div class="label">Parent Name</div><div class="value">{{ student.father_name|default:student.guardian_name }}</div><div class="label">NIC</div><div class="value">{{ student.guardian_cnic|default:'-' }}</div><div class="label">Mother Info</div><div class="value">{{ student.mother_mobile|default:'-' }}</div><div class="label">WhatsApp</div><div class="value">{{ student.whatsapp_no|default:'-' }}</div><div class="label">Detailed Notes</div><div class="value">{{ student.fee_category|default:'-' }}</div><div class="label">Status</div><div class="value">{{ student.status }}</div></div><div class="fee-box"><div class="panel"><h3>Fee Category</h3><p>Monthly Fee: <b>{{ student.monthly_fee }}</b><br>Welcome Card: <b>{% if student.welcome_card_sent %}Sent{% else %}Pending{% endif %}</b></p></div><div class="panel"><h3>Print Tools</h3><p>Bio data, certificates, welcome cards and advisory letters are available from Students list.</p></div></div></div><div class="actions"><a href="{% url 'display_students' %}" class="btnx gray">Close Window</a><a target="_blank" href="{% url 'student_biodata_print' student.id %}" class="btnx green">Print Student Bio Data</a><a href="{% url 'delete_student' student.id %}" class="btnx red">Delete Student</a></div></div>
 {% endblock %}
