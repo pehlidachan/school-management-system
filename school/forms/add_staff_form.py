@@ -7,6 +7,10 @@ from ..constants import STAFF_ROLE_NAMES, DEFAULT_EMPLOYMENT_STATUS_NAMES
 
 class AddStaffForm(forms.ModelForm):
     name = forms.CharField(max_length=75, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    staff_code = forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Staff code'}))
+    staff_name_urdu = forms.CharField(max_length=150, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'dir': 'rtl'}))
+    father_or_husband_name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    cnic = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'xxxxx-xxxxxxx-x'}))
     age = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
     dob = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type':'date'}))
     gender = forms.ModelChoiceField(queryset=Gender.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
@@ -16,12 +20,19 @@ class AddStaffForm(forms.ModelForm):
     subject = forms.ModelChoiceField(queryset=Subject.objects.all(), required=False, widget=forms.Select(attrs={'class': 'form-control'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
     phone = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    whatsapp_no = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     emergency_phone = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}))
     address = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    department = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     joining_date = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type':'date'}))
+    rejoining_date = forms.DateField(required=False, widget=forms.DateInput(attrs={'class': 'form-control', 'type':'date'}))
     salary = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'class': 'form-control'}))
     employment_status = forms.ModelChoiceField(queryset=EmploymentStatus.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
     contract_details = forms.CharField(max_length=1000, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    can_print_student_biodata = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    can_print_staff_biodata = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    birthday_card_sent = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    photo_path = forms.CharField(required=False, widget=forms.HiddenInput())
     status = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}), initial=True, required=False)
 
     class Meta:

@@ -41,6 +41,16 @@ if "%NEED_REQ_INSTALL%"=="1" (
     echo Requirements already installed and up to date. Skipping pip install for faster startup.
 )
 
+echo Checking migration policy before database changes...
+python manage.py makemigrations --check --dry-run
+if errorlevel 1 (
+    echo.
+    echo ERROR: Model changes exist without a committed migration file.
+    echo ChatGPT must add and commit the migration before you test this branch.
+    pause
+    exit /b 1
+)
+
 if exist db.sqlite3 (
     if not exist db_backups mkdir db_backups
     for /f %%i in ('powershell -NoProfile -Command "Get-Date -Format yyyyMMdd_HHmmss"') do set TS=%%i

@@ -30,15 +30,33 @@ class NameAdmin(admin.ModelAdmin):
 
 
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'grade', 'guardian_name', 'phone', 'status')
-    list_filter = ('grade', 'status', 'gender')
-    search_fields = ('name', 'guardian_name', 'phone', 'email')
+    list_display = (
+        'id', 'name', 'gr_no', 'admission_no', 'roll_no', 'grade',
+        'father_name', 'guardian_name', 'whatsapp_no', 'monthly_fee',
+        'welcome_card_sent', 'status',
+    )
+    list_filter = ('grade', 'status', 'gender', 'welcome_card_sent', 'rejoining_date')
+    search_fields = (
+        'name', 'student_name_urdu', 'father_name', 'guardian_name',
+        'guardian_cnic', 'phone', 'whatsapp_no', 'email', 'gr_no',
+        'admission_no', 'roll_no',
+    )
 
 
 class StaffAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'role', 'subject', 'phone', 'employment_status', 'status')
-    list_filter = ('role', 'subject', 'employment_status', 'status')
-    search_fields = ('name', 'phone', 'email', 'qualification')
+    list_display = (
+        'id', 'name', 'staff_code', 'role', 'subject', 'department',
+        'phone', 'whatsapp_no', 'employment_status', 'rejoining_date',
+        'can_print_student_biodata', 'can_print_staff_biodata', 'status',
+    )
+    list_filter = (
+        'role', 'subject', 'employment_status', 'status', 'department',
+        'can_print_student_biodata', 'can_print_staff_biodata', 'birthday_card_sent',
+    )
+    search_fields = (
+        'name', 'staff_name_urdu', 'staff_code', 'father_or_husband_name',
+        'cnic', 'phone', 'whatsapp_no', 'email', 'qualification', 'department',
+    )
 
 
 class ClassAndTimingAdmin(admin.ModelAdmin):
