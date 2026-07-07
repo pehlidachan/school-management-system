@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        :root { --purple:#2b002d; --purple2:#6f1b78; --gold:#d8a928; --gold2:#ffe266; --ink:#111827; --muted:#6b7280; }
+        * { box-sizing:border-box; }
+        body { margin:0; background:#f4f5f8; color:var(--ink); font-family: Georgia, 'Times New Roman', serif; }
+        .toolbar { max-width:980px; margin:18px auto; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; font-family:Arial, Helvetica, sans-serif; }
+        .toolbar h1 { margin:0; color:var(--purple); font-size:24px; }
+        .actions { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+        .actions a, .actions button { border:0; border-radius:999px; padding:10px 18px; background:var(--purple); color:#fff; font-weight:800; text-decoration:none; cursor:pointer; }
+        .actions select { border:1px solid #e8dff0; border-radius:999px; padding:10px 14px; min-width:220px; font-family:Arial, Helvetica, sans-serif; }
+        .sheet { width:210mm; margin:0 auto 24px; background:#fff; padding:11mm; box-shadow:0 18px 50px rgba(43,0,45,.12); }
+        .certificate { min-height:275mm; padding:14mm; position:relative; border:4px double var(--purple); outline:2px solid var(--gold); outline-offset:-10px; break-after:page; overflow:hidden; }
+        .certificate:last-child { break-after:auto; }
+        .certificate::before { content:""; position:absolute; inset:22mm; border:1px solid rgba(216,169,40,.35); pointer-events:none; }
+        .watermark { position:absolute; inset:0; display:grid; place-items:center; font-size:94px; font-weight:900; color:rgba(43,0,45,.045); transform:rotate(-28deg); text-transform:uppercase; letter-spacing:.06em; }
+        .content { position:relative; z-index:1; min-height:245mm; display:flex; flex-direction:column; }
+        .top { text-align:center; padding-top:6px; }
+        .school { text-transform:uppercase; color:var(--purple); font-size:27px; line-height:1.1; font-weight:900; letter-spacing:.04em; }
+        .sub { margin-top:6px; color:var(--muted); font-size:14px; font-family:Arial, Helvetica, sans-serif; }
+        .ribbon { width:86px; height:86px; border-radius:50%; margin:18px auto 10px; background:radial-gradient(circle at 35% 30%, var(--gold2), var(--gold)); border:3px solid var(--purple); display:grid; place-items:center; color:var(--purple); font-size:34px; font-weight:900; font-family:Arial, Helvetica, sans-serif; }
+        .heading { text-align:center; color:var(--purple); font-size:34px; text-transform:uppercase; letter-spacing:.08em; margin:14px 0 6px; font-weight:900; }
+        .line { width:72%; height:2px; background:linear-gradient(90deg, transparent, var(--gold), transparent); margin:0 auto 22px; }
+        .body { font-size:19px; line-height:1.75; text-align:center; margin:6px 10mm 20px; }
+        .details { margin:8px 8mm 18px; display:grid; grid-template-columns:1fr 1fr; gap:12px 24px; font-family:Arial, Helvetica, sans-serif; }
+        .row { display:grid; grid-template-columns:130px 1fr; gap:10px; border-bottom:1px dotted #9ca3af; padding:7px 0; min-height:34px; }
+        .label { color:var(--purple); font-weight:900; }
+        .value { color:#111827; font-weight:700; }
+        .wide { grid-column:1 / -1; }
+        .purpose { text-align:center; color:#374151; font-size:15px; font-style:italic; margin:10px 18mm 0; line-height:1.5; }
+        .spacer { flex:1; }
+        .footer { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-top:28px; font-family:Arial, Helvetica, sans-serif; }
+        .meta { font-size:13px; color:#374151; line-height:1.6; }
+        .signature { min-width:165px; text-align:center; border-top:2px solid #111; padding-top:8px; color:#111; font-weight:900; }
+        .empty { max-width:760px; margin:40px auto; background:#fff; border-radius:18px; padding:30px; text-align:center; color:#6b7280; font-family:Arial, Helvetica, sans-serif; }
+        @media print {
+            body { background:#fff; }
+            .toolbar, .empty { display:none !important; }
+            .sheet { width:100%; margin:0; padding:0; box-shadow:none; }
+            .certificate { min-height:296mm; border:4px double #111; outline:2px solid #111; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <h1>{{ title }}</h1>
+        <div class="actions">
+            {% if is_bulk %}
+            <form method="GET" class="actions">
+                <select name="type" onchange="this.form.submit()">
+                    {% for key, item in certificate_types.items %}
+                    <option value="{{ key }}" {% if certificate_type == key %}selected{% endif %}>{{ item.title }}</option>
+                    {% endfor %}
+                </select>
+                <select name="grade" onchange="this.form.submit()">
+                    <option value="">Select class</option>
+                    {% for grade in grades %}
+                    <option value="{{ grade.id }}" {% if selected_grade_id == grade.id|stringformat:'s' %}selected{% endif %}>{{ grade.name }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            {% else %}
+            <select onchange="if(this.value){window.location.href=this.value;}">
+                {% for key, item in certificate_types.items %}
+                <option value="{% url 'student_certificate' students.0.id key %}" {% if certificate_type == key %}selected{% endif %}>{{ item.title }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+            <button onclick="window.print()">Print Certificate</button>
+            <a href="{% url 'display_students' %}">Back</a>
+        </div>
+    </div>
+
+    {% if students %}
+    <main class="sheet">
+        {% for student in students %}
+        <section class="certificate">
+            <div class="watermark">GMS Shalgah</div>
+            <div class="content">
+                <div class="top">
+                    <div class="school">Government Middle School Shalgah</div>
+                    <div class="sub">Official School Certificate • Printed on {{ print_date|date:'d M Y' }}</div>
+                </div>
+                <div class="ribbon">★</div>
+                <div class="heading">{{ certificate.heading }}</div>
+                <div class="line"></div>
+                <div class="body">{{ certificate.body }}</div>
+                <div class="details">
+                    <div class="row"><span class="label">Student Name</span><span class="value">{{ student.name }}</span></div>
+                    <div class="row"><span class="label">Father Name</span><span class="value">{{ student.father_name|default:student.guardian_name }}</span></div>
+                    <div class="row"><span class="label">Class</span><span class="value">{{ student.grade }}</span></div>
+                    <div class="row"><span class="label">Roll No</span><span class="value">{{ student.roll_no|default:'-' }}</span></div>
+                    <div class="row"><span class="label">Admission No</span><span class="value">{{ student.admission_no|default:student.id }}</span></div>
+                    <div class="row"><span class="label">GR No</span><span class="value">{{ student.gr_no|default:'-' }}</span></div>
+                    <div class="row"><span class="label">Date of Birth</span><span class="value">{{ student.dob|date:'d M Y' }}</span></div>
+                    <div class="row"><span class="label">Enrollment</span><span class="value">{{ student.date_of_enrollment|date:'d M Y' }}</span></div>
+                    <div class="row wide"><span class="label">Address</span><span class="value">{{ student.address }}</span></div>
+                </div>
+                <div class="purpose">{{ certificate.purpose }}</div>
+                <div class="spacer"></div>
+                <div class="footer">
+                    <div class="meta">Certificate Type: {{ certificate.title }}<br>Record ID: {{ student.id }}<br>Issue Date: {{ print_date|date:'d M Y' }}</div>
+                    <div class="signature">Principal / Head Teacher</div>
+                </div>
+            </div>
+        </section>
+        {% endfor %}
+    </main>
+    {% else %}
+    <div class="empty">Select a class and certificate type to generate bulk certificates.</div>
+    {% endif %}
+</body>
+</html>
