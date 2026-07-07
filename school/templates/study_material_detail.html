@@ -1,0 +1,6 @@
+{% extends 'dashboard_base.html' %}
+{% block 'title' %}Learning Resource{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar"><div><h1 class="hub-page-title">{{ material.title }}</h1><p class="text-muted mb-0">{{ material.grade|default:'All classes' }} - {{ material.subject|default:'All subjects' }}</p></div><div class="d-flex gap-2"><button onclick="window.print()" class="btn btn-dark rounded-pill">Print</button><button onclick="navigator.clipboard.writeText(document.getElementById('share').value); this.innerText='Copied';" class="btn btn-success rounded-pill">Copy Share Text</button><a href="{% url 'study_material_center' %}" class="btn btn-outline-dark rounded-pill">Back</a></div></div>
+<div class="hub-card p-4"><p class="text-muted">{{ material.description|default:'-' }}</p>{% if material.external_url %}<p><strong>Link:</strong> <a href="{{ material.external_url }}" target="_blank">{{ material.external_url }}</a></p>{% endif %}<hr><div style="white-space:pre-wrap;line-height:1.7">{{ material.content|default:'No written content added.' }}</div><hr><label class="fw-bold">Share Text</label><textarea id="share" class="form-control" rows="6" readonly>{{ share_text }}</textarea></div>
+{% endblock %}
