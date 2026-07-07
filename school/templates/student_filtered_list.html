@@ -11,6 +11,7 @@
         <a href="{% url 'student_promotion' %}" class="btn btn-outline-dark rounded-pill">Promotion</a>
         <a href="{% url 'class_register' %}" class="btn btn-outline-dark rounded-pill">Class Register</a>
         <a href="{% url 'multi_child_guardians' %}" class="btn btn-outline-dark rounded-pill">Multi-Child Parents</a>
+        <a href="{% url 'bulk_student_welcome_cards' %}" class="btn btn-outline-dark rounded-pill">Welcome Cards</a>
         <a href="{% url 'bulk_student_biodata' %}" class="btn btn-outline-dark rounded-pill">Bulk Bio Data</a>
         <a href="{% url 'bulk_student_id_cards' %}" class="btn btn-outline-dark rounded-pill">Bulk ID Cards</a>
         <a href="{% url 'add_student' %}" class="hub-add-btn" title="Add Student"><i class="fa-solid fa-plus"></i></a>
@@ -51,7 +52,7 @@
     <div class="table-responsive">
         <table class="table align-middle">
             <thead>
-                <tr><th>Student</th><th>ID</th><th>Class</th><th>Age</th><th>Gender</th><th>Status</th><th>Accounts</th><th class="text-end">Action</th></tr>
+                <tr><th>Student</th><th>ID</th><th>Class</th><th>Age</th><th>Gender</th><th>Status</th><th>Welcome</th><th>Accounts</th><th class="text-end">Action</th></tr>
             </thead>
             <tbody>
                 {% for student in data %}
@@ -62,8 +63,23 @@
                     <td>{{ student.age }}</td>
                     <td>{{ student.gender }}</td>
                     <td>{% if student.status %}<span class="hub-status active">Active</span>{% else %}<span class="hub-status inactive">Inactive</span>{% endif %}</td>
+                    <td>
+                        {% if student.welcome_card_sent %}
+                        <span class="hub-status active">Sent</span>
+                        <form action="{% url 'reset_welcome_card_sent' student.id %}" method="POST" class="d-inline ms-1">
+                            {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+                            <button type="submit" class="btn btn-sm btn-link p-0 text-muted" title="Reset welcome card status">Reset</button>
+                        </form>
+                        {% else %}
+                        <form action="{% url 'mark_welcome_card_sent' student.id %}" method="POST" class="d-inline">
+                            {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+                            <button type="submit" class="btn btn-sm btn-outline-warning rounded-pill fw-bold">Mark Sent</button>
+                        </form>
+                        {% endif %}
+                    </td>
                     <td><a href="{% url 'account_creator_dashboard' %}" class="btn btn-sm btn-outline-success rounded-pill fw-bold">Create IDs</a></td>
                     <td class="text-end">
+                        <a class="hub-action-icon" target="_blank" href="{% url 'student_welcome_card' student.id %}" title="Welcome Card"><i class="fa-solid fa-gift"></i></a>
                         <a class="hub-action-icon" target="_blank" href="{% url 'student_biodata_print' student.id %}" title="Bio Data"><i class="fa-solid fa-file-lines"></i></a>
                         <a class="hub-action-icon" target="_blank" href="{% url 'student_id_card' student.id %}" title="ID Card"><i class="fa-solid fa-id-badge"></i></a>
                         <a class="hub-action-icon" href="{% url 'student_details' student.id %}" title="Details"><i class="fa-solid fa-eye"></i></a>
@@ -71,7 +87,7 @@
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="8" class="text-center text-muted py-5">No students found for selected filters.</td></tr>
+                <tr><td colspan="9" class="text-center text-muted py-5">No students found for selected filters.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
