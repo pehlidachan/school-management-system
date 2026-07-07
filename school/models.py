@@ -38,14 +38,28 @@ class Student(models.Model):
     age = models.IntegerField()
     gender = models.ForeignKey(Gender, on_delete=models.CASCADE)
     dob = models.DateField()
+    dob_in_words = models.CharField(max_length=255, null=True, blank=True)
+    place_of_birth = models.CharField(max_length=150, null=True, blank=True)
+    religion = models.CharField(max_length=100, null=True, blank=True)
+    caste = models.CharField(max_length=100, null=True, blank=True)
+    nationality = models.CharField(max_length=100, null=True, blank=True)
+    b_form_no = models.CharField(max_length=50, null=True, blank=True)
+    study_group = models.CharField(max_length=100, null=True, blank=True)
+    transport = models.CharField(max_length=150, null=True, blank=True)
+    campus_gr = models.CharField(max_length=50, null=True, blank=True)
+    family_id = models.CharField(max_length=50, null=True, blank=True)
     guardian_name = models.CharField(max_length=255)
     guardian_relation = models.ForeignKey(GuardianRelation, on_delete=models.CASCADE)
     guardian_cnic = models.CharField(max_length=20, null=True, blank=True)
+    guardian_profession = models.CharField(max_length=150, null=True, blank=True)
     address = models.CharField(max_length=500)
     date_of_enrollment = models.DateField()
     rejoining_date = models.DateField(null=True, blank=True)
+    left_reason = models.CharField(max_length=255, null=True, blank=True)
     email = models.EmailField()
     phone = models.CharField(max_length=100)
+    mother_name = models.CharField(max_length=150, null=True, blank=True)
+    mother_profession = models.CharField(max_length=150, null=True, blank=True)
     mother_mobile = models.CharField(max_length=100, null=True, blank=True)
     whatsapp_no = models.CharField(max_length=100, null=True, blank=True)
     emergency_phone = models.CharField(max_length=100)
@@ -117,11 +131,17 @@ class Staff(models.Model):
     cnic = models.CharField(max_length=20, null=True, blank=True)
     age = models.IntegerField()
     dob = models.DateField()
+    dob_in_words = models.CharField(max_length=255, null=True, blank=True)
+    place_of_birth = models.CharField(max_length=150, null=True, blank=True)
+    religion = models.CharField(max_length=100, null=True, blank=True)
+    marital_status = models.CharField(max_length=80, null=True, blank=True)
     gender = models.ForeignKey(Gender, on_delete=models.CASCADE)
     qualification = models.CharField(max_length=255)
     experience = models.CharField(max_length=255, null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
+    staff_category = models.CharField(max_length=120, null=True, blank=True)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, null=True, blank=True)
+    subjects_taught = models.CharField(max_length=255, null=True, blank=True)
     email = models.EmailField()
     phone = models.CharField(max_length=100)
     whatsapp_no = models.CharField(max_length=100, null=True, blank=True)
@@ -130,9 +150,13 @@ class Staff(models.Model):
     department = models.CharField(max_length=100, null=True, blank=True)
     joining_date = models.DateField()
     rejoining_date = models.DateField(null=True, blank=True)
+    left_reason = models.CharField(max_length=255, null=True, blank=True)
+    initial_salary = models.CharField(max_length=20, null=True, blank=True)
     salary = models.CharField(max_length=20)
+    bank_account = models.CharField(max_length=120, null=True, blank=True)
     employment_status = models.ForeignKey(EmploymentStatus, on_delete=models.CASCADE)
     contract_details = models.CharField(max_length=1000, null=True, blank=True)
+    recommendation = models.TextField(null=True, blank=True)
     can_print_student_biodata = models.BooleanField(default=False)
     can_print_staff_biodata = models.BooleanField(default=False)
     birthday_card_sent = models.BooleanField(default=False)
@@ -258,21 +282,19 @@ class LoginActivity(models.Model):
 class AttendanceSession(models.Model):
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE, related_name='attendance_sessions')
     attendance_date = models.DateField()
-    taken_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='taken_attendance_sessions')
     note = models.TextField(blank=True)
+    taken_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='taken_attendance_sessions')
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['-attendance_date', 'grade__name']
-        constraints = [models.UniqueConstraint(fields=['grade', 'attendance_date'], name='unique_grade_attendance_date')]
+        ordering = ['-attendance_date', '-created_at']
         indexes = [
             models.Index(fields=['attendance_date']),
             models.Index(fields=['grade', 'attendance_date']),
         ]
 
     def __str__(self):
-        return f'{self.grade} attendance on {self.attendance_date}'
+        return f'{self.grade} - {self.attendance_date}'
 
 
 class StudentAttendance(models.Model):
@@ -280,7 +302,13 @@ class StudentAttendance(models.Model):
     ABSENT = 'absent'
     LATE = 'late'
     LEAVE = 'leave'
-    STATUS_CHOICES = [(PRESENT, 'Present'), (ABSENT, 'Absent'), (LATE, 'Late'), (LEAVE, 'Leave')]
+    STATUS_CHOICES = [
+        (PRESENT, 'Present'),
+        (ABSENT, 'Absent'),
+        (LATE, 'Late'),
+        (LEAVE, 'Leave'),
+    ]
+
     session = models.ForeignKey(AttendanceSession, on_delete=models.CASCADE, related_name='records')
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='attendance_records')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PRESENT)
@@ -291,7 +319,9 @@ class StudentAttendance(models.Model):
 
     class Meta:
         ordering = ['student__name']
-        constraints = [models.UniqueConstraint(fields=['session', 'student'], name='unique_student_attendance_per_session')]
+        constraints = [
+            models.UniqueConstraint(fields=['session', 'student'], name='unique_student_attendance_per_session'),
+        ]
         indexes = [
             models.Index(fields=['status']),
             models.Index(fields=['student', 'status']),
