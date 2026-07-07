@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        :root { --purple:#2b002d; --purple2:#6f1b78; --gold:#ffe266; --line:#e8dff0; --muted:#6b7280; }
+        * { box-sizing: border-box; }
+        body { margin:0; background:#f4f5f8; color:#111827; font-family: Arial, Helvetica, sans-serif; }
+        .toolbar { max-width: 980px; margin: 18px auto; display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; }
+        .toolbar h1 { margin:0; color:var(--purple); font-size:24px; }
+        .toolbar .actions { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+        .toolbar a, .toolbar button { border:0; border-radius:999px; padding:10px 18px; background:var(--purple); color:#fff; text-decoration:none; font-weight:700; cursor:pointer; }
+        .toolbar select { border:1px solid var(--line); border-radius:999px; padding:10px 14px; min-width:220px; }
+        .sheet { width: 210mm; min-height: 297mm; margin: 0 auto 24px; background:#fff; padding: 14mm; box-shadow:0 18px 50px rgba(43,0,45,.12); }
+        .record { min-height: 267mm; border: 2px solid var(--purple); border-radius: 18px; padding: 16px; position:relative; break-after: page; overflow:hidden; }
+        .record:last-child { break-after:auto; }
+        .header { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:16px; border-radius:16px; background:linear-gradient(135deg, var(--purple), var(--purple2)); color:#fff; }
+        .school { text-transform:uppercase; letter-spacing:.04em; }
+        .school strong { display:block; font-size:23px; line-height:1.1; }
+        .school span { display:block; color:var(--gold); font-size:13px; margin-top:5px; font-weight:700; }
+        .badge { width:72px; height:72px; border-radius:18px; background:var(--gold); color:var(--purple); display:grid; place-items:center; font-size:26px; font-weight:900; }
+        .title { text-align:center; margin:18px 0; color:var(--purple); font-size:22px; font-weight:900; letter-spacing:.03em; text-transform:uppercase; }
+        .top-row { display:grid; grid-template-columns: 1fr 125px; gap:16px; align-items:start; }
+        .photo { width:125px; height:145px; border:2px solid var(--purple); border-radius:16px; display:grid; place-items:center; font-size:44px; font-weight:900; color:var(--purple); background:#fff8cd; }
+        .section { border:1px solid var(--line); border-radius:14px; padding:12px; margin-bottom:14px; }
+        .section h2 { margin:0 0 10px; color:var(--purple); font-size:15px; text-transform:uppercase; border-bottom:3px solid var(--gold); padding-bottom:7px; }
+        .grid { display:grid; grid-template-columns:1fr 1fr; gap:8px 14px; }
+        .row { display:grid; grid-template-columns: 135px 1fr; gap:8px; border-bottom:1px dashed #d9d2df; padding:6px 0; min-height:30px; }
+        .label { color:var(--purple); font-weight:800; }
+        .value { color:#111827; }
+        .wide { grid-column:1 / -1; }
+        .footer { position:absolute; left:18px; right:18px; bottom:18px; display:flex; justify-content:space-between; gap:18px; align-items:end; color:#374151; font-size:12px; }
+        .sig { width:160px; text-align:center; border-top:1px solid #111; padding-top:6px; font-weight:700; }
+        .empty { max-width:780px; margin:40px auto; background:#fff; border-radius:18px; padding:30px; text-align:center; color:var(--muted); }
+        @media print {
+            body { background:#fff; }
+            .toolbar, .empty { display:none !important; }
+            .sheet { margin:0; width:100%; min-height:auto; padding:0; box-shadow:none; }
+            .record { border-radius:0; min-height: 287mm; border:1.5px solid #111; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <h1>{{ title }}</h1>
+        <div class="actions">
+            {% if is_bulk %}
+            <form method="GET" class="actions">
+                <select name="role" onchange="this.form.submit()">
+                    <option value="">Select role for bulk bio data</option>
+                    {% for role in roles %}
+                    <option value="{{ role.id }}" {% if selected_role_id == role.id|stringformat:'s' %}selected{% endif %}>{{ role.name }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            {% endif %}
+            <button onclick="window.print()">Print Bio Data</button>
+            <a href="{% url 'display_staff' %}">Back</a>
+        </div>
+    </div>
+
+    {% if staff_members %}
+    <main class="sheet">
+        {% for member in staff_members %}
+        <article class="record">
+            <div class="header">
+                <div class="school"><strong>Government Middle School Shalgah</strong><span>Staff bio data / HR profile</span></div>
+                <div class="badge">BIO</div>
+            </div>
+            <div class="title">Staff Bio Data</div>
+            <div class="top-row">
+                <div>
+                    <div class="section">
+                        <h2>Identity</h2>
+                        <div class="grid">
+                            <div class="row"><span class="label">Staff ID</span><span class="value">{{ member.id }}</span></div>
+                            <div class="row"><span class="label">Staff Code</span><span class="value">{{ member.staff_code|default:'STF-' }}{{ member.id }}</span></div>
+                            <div class="row"><span class="label">Name</span><span class="value">{{ member.name }}</span></div>
+                            <div class="row"><span class="label">Urdu Name</span><span class="value">{{ member.staff_name_urdu|default:'-' }}</span></div>
+                            <div class="row"><span class="label">Father/Husband</span><span class="value">{{ member.father_or_husband_name|default:'-' }}</span></div>
+                            <div class="row"><span class="label">CNIC</span><span class="value">{{ member.cnic|default:'-' }}</span></div>
+                            <div class="row"><span class="label">Role</span><span class="value">{{ member.role }}</span></div>
+                            <div class="row"><span class="label">Status</span><span class="value">{% if member.status %}Active{% else %}Inactive{% endif %}</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="photo">{{ member.name|slice:':1'|upper }}</div>
+            </div>
+
+            <div class="section">
+                <h2>Job and academic profile</h2>
+                <div class="grid">
+                    <div class="row"><span class="label">Subject</span><span class="value">{{ member.subject|default:'-' }}</span></div>
+                    <div class="row"><span class="label">Department</span><span class="value">{{ member.department|default:'-' }}</span></div>
+                    <div class="row"><span class="label">Qualification</span><span class="value">{{ member.qualification }}</span></div>
+                    <div class="row"><span class="label">Experience</span><span class="value">{{ member.experience|default:'-' }}</span></div>
+                    <div class="row"><span class="label">Joining Date</span><span class="value">{{ member.joining_date|date:'d M Y' }}</span></div>
+                    <div class="row"><span class="label">Rejoining Date</span><span class="value">{{ member.rejoining_date|date:'d M Y'|default:'-' }}</span></div>
+                    <div class="row"><span class="label">Employment</span><span class="value">{{ member.employment_status }}</span></div>
+                    <div class="row"><span class="label">Salary</span><span class="value">{{ member.salary }}</span></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Contact and permissions</h2>
+                <div class="grid">
+                    <div class="row"><span class="label">Phone</span><span class="value">{{ member.phone }}</span></div>
+                    <div class="row"><span class="label">WhatsApp</span><span class="value">{{ member.whatsapp_no|default:'-' }}</span></div>
+                    <div class="row"><span class="label">Emergency</span><span class="value">{{ member.emergency_phone }}</span></div>
+                    <div class="row"><span class="label">Email</span><span class="value">{{ member.email }}</span></div>
+                    <div class="row"><span class="label">Student Bio Print</span><span class="value">{% if member.can_print_student_biodata %}Allowed{% else %}Not allowed{% endif %}</span></div>
+                    <div class="row"><span class="label">Staff Bio Print</span><span class="value">{% if member.can_print_staff_biodata %}Allowed{% else %}Not allowed{% endif %}</span></div>
+                    <div class="row wide"><span class="label">Address</span><span class="value">{{ member.address }}</span></div>
+                    <div class="row wide"><span class="label">Contract</span><span class="value">{{ member.contract_details|default:'-' }}</span></div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div>Printed on {{ print_date|date:'d M Y' }}. Please verify details before official use.</div>
+                <div class="sig">Principal / Admin</div>
+            </div>
+        </article>
+        {% endfor %}
+    </main>
+    {% else %}
+    <div class="empty">Select a role to generate bulk staff bio data.</div>
+    {% endif %}
+</body>
+</html>

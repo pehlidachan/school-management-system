@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import include, path
 
-from school import admin_online, attendance_views, calendar_views, class_register_views, dashboard_views, exam_views, export_views, finance_views, guardian_reports, library_views, login_views, message_views, notice_views, online_center_views, person_record_views, promotion_views, staff_card_views, staff_list_views, student_card_views, support_record_views
+from school import admin_online, attendance_views, biodata_views, calendar_views, class_register_views, dashboard_views, exam_views, export_views, finance_views, guardian_reports, library_views, login_views, message_views, notice_views, online_center_views, person_record_views, promotion_views, staff_card_views, staff_list_views, student_card_views, support_record_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -52,9 +52,13 @@ urlpatterns = [
     path('messages/<int:thread_id>/', message_views.message_detail, name='message_detail'),
     path('messages/<int:thread_id>/reply/', message_views.reply_message, name='reply_message'),
     path('staff/display/', staff_list_views.display_staff, name='display_staff'),
+    path('staff/biodata/', biodata_views.bulk_staff_biodata, name='bulk_staff_biodata'),
+    path('staff/<int:staff_id>/biodata/', biodata_views.staff_biodata_print, name='staff_biodata_print'),
     path('staff/<int:staff_id>/id-card/', staff_card_views.staff_id_card, name='staff_id_card'),
     path('students/promotion/', promotion_views.student_promotion, name='student_promotion'),
+    path('students/biodata/', biodata_views.bulk_student_biodata, name='bulk_student_biodata'),
     path('students/id-cards/', student_card_views.bulk_student_id_cards, name='bulk_student_id_cards'),
+    path('students/<int:student_id>/biodata/', biodata_views.student_biodata_print, name='student_biodata_print'),
     path('students/<int:student_id>/id-card/', student_card_views.student_id_card, name='student_id_card'),
     path('exams/', exam_views.exam_dashboard, name='exam_dashboard'),
     path('exams/add/', exam_views.add_exam, name='add_exam'),
