@@ -1,4 +1,7 @@
+from decimal import Decimal
+
 from django import forms
+
 from ..models import Gender, Grade, GuardianRelation, Student
 
 
@@ -27,12 +30,16 @@ class AddStudentForm(forms.ModelForm):
     previous_school = forms.CharField(max_length=200, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     blood_group = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     fee_category = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    monthly_fee = forms.DecimalField(max_digits=10, decimal_places=2, required=False, widget=forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}))
+    monthly_fee = forms.DecimalField(max_digits=10, decimal_places=2, min_value=0, required=False, widget=forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'min': '0'}))
     welcome_card_sent = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
-    welcome_card_sent_at = forms.DateTimeField(required=False, widget=forms.DateTimeInput(attrs={'class': 'form-control', 'type':'datetime-local'}))
-    photo_path = forms.CharField(required=False, widget=forms.HiddenInput())
     status = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}), initial=True, required=False)
-    
+
     class Meta:
         model = Student
-        fields = ('__all__')
+        exclude = ('photo_path', 'welcome_card_sent_at')
+
+    def clean_monthly_fee(self):
+        value = self.cleaned_data.get('monthly_fee')
+        if value in (None, ''):
+            return Decimal('0.00')
+        return value
