@@ -1,0 +1,6 @@
+{% extends 'dashboard_base.html' %}
+{% block 'title' %}New Staff Attendance Session{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar"><div><h1 class="hub-page-title">New Staff Lecture Attendance</h1><p class="text-muted mb-0">Create a daily staff/lecture attendance session.</p></div><a href="{% url 'staff_attendance_dashboard' %}" class="btn btn-outline-dark rounded-pill">Back</a></div>
+<div class="hub-card p-4"><form method="POST">{% csrf_token %}<div class="row g-3"><div class="col-md-4"><label class="form-label fw-bold">Date</label><input type="date" name="session_date" value="{{ today|date:'Y-m-d' }}" class="form-control"></div><div class="col-md-8"><label class="form-label fw-bold">Title</label><input name="title" value="Daily Staff Lecture Attendance" class="form-control"></div><div class="col-12"><label class="form-label fw-bold">Note</label><textarea name="note" class="form-control" rows="3"></textarea></div><div class="col-12"><button class="btn btn-success rounded-pill px-4">Create and Mark</button></div></div></form></div>
+{% endblock %}
