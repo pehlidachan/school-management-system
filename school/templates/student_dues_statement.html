@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dues Statement - {{ student.name }}</title>
+<style>
+:root{--p:#2b002d;--g:#ffe266}body{margin:0;background:#f4f5f8;font-family:Arial,Helvetica,sans-serif;color:#111}.toolbar{max-width:900px;margin:18px auto;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}.toolbar button,.toolbar a{border:0;border-radius:999px;padding:10px 18px;background:var(--p);color:#fff;text-decoration:none;font-weight:800;cursor:pointer}.wrap{width:210mm;margin:0 auto 24px;background:#fff;padding:14mm;box-shadow:0 18px 50px rgba(43,0,45,.12)}.head{text-align:center;border-bottom:4px solid var(--p);padding-bottom:14px}.school{font-size:27px;font-weight:900;color:var(--p);text-transform:uppercase}.title{display:inline-block;margin:16px auto;padding:8px 24px;background:var(--g);border:2px solid var(--p);font-weight:900;font-size:20px}.meta{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;margin:16px 0}.meta div{border-bottom:1px dotted #777;padding:7px 0}.meta b{display:inline-block;min-width:110px;color:var(--p)}table{width:100%;border-collapse:collapse}th,td{border:1px solid #222;padding:9px;text-align:right}th{text-align:left;background:var(--p);color:white}.left{text-align:left}.total{margin-top:14px;border:3px solid var(--p);padding:16px;text-align:center}.total small{display:block;text-transform:uppercase;color:#666}.total strong{font-size:32px;color:var(--p)}.msg{margin-top:18px}.msg textarea{width:100%;min-height:170px;border:2px solid var(--p);border-radius:12px;padding:12px;font-family:Arial,Helvetica,sans-serif}.note{text-align:center;margin-top:16px;color:#666;font-size:12px}@media print{body{background:#fff}.toolbar,.msg button{display:none}.wrap{width:100%;margin:0;padding:8mm;box-shadow:none}.msg textarea{border:1px solid #777}}
+</style>
+</head>
+<body>
+<div class="toolbar"><button onclick="window.print()">Print Statement</button><button onclick="navigator.clipboard.writeText(document.getElementById('wa').value); this.innerText='Copied';">Copy WhatsApp Text</button><a href="{% url 'fees_collection' %}">Back</a></div>
+<main class="wrap">
+<header class="head"><div class="school">Government Middle School Shalgah</div><div>Student Fee Dues Statement</div></header>
+<div class="title">Dues Statement</div>
+<section class="meta"><div><b>Student:</b> {{ student.name }}</div><div><b>Class:</b> {{ student.grade }}</div><div><b>Guardian:</b> {{ student.guardian_name }}</div><div><b>Phone:</b> {{ student.phone }}</div><div><b>WhatsApp:</b> {{ student.whatsapp_no|default:'-' }}</div><div><b>Print Date:</b> {{ print_date }}</div></section>
+<table><thead><tr><th>Billing</th><th>Due Date</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th></tr></thead><tbody>
+{% for invoice in invoices %}<tr><td class="left">{{ invoice.billing_month|default:invoice.title }}</td><td>{{ invoice.due_date }}</td><td>{{ invoice.net_total }}</td><td>{{ invoice.amount_paid }}</td><td>{{ invoice.balance_due }}</td><td>{{ invoice.get_status_display }}</td></tr>{% empty %}<tr><td colspan="6" class="left">No fee invoices found.</td></tr>{% endfor %}
+</tbody></table>
+<div class="total"><small>Total Outstanding Dues</small><strong>Rs. {{ total_due }}</strong></div>
+<section class="msg"><h3>WhatsApp Copy Message</h3><textarea id="wa" readonly>{{ whatsapp_text }}</textarea></section>
+<div class="note">This is a system-generated dues statement. Please verify before official use.</div>
+</main>
+</body>
+</html>
