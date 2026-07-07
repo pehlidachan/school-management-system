@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import include, path
 
-from school import admin_online, advisory_letter_views, attendance_views, biodata_views, calendar_views, certificate_views, class_register_views, dashboard_views, exam_views, export_views, finance_views, guardian_reports, library_views, login_views, message_views, notice_views, online_center_views, person_record_views, promotion_views, staff_attendance_views, staff_card_views, staff_list_views, student_card_views, study_material_views, support_record_views, welcome_card_views
+from school import admin_online, advisory_letter_views, attendance_views, biodata_views, calendar_views, certificate_views, class_register_views, dashboard_views, exam_views, export_views, finance_views, guardian_reports, ledger_views, library_views, login_views, message_views, notice_views, online_center_views, person_record_views, promotion_views, staff_attendance_views, staff_card_views, staff_list_views, student_card_views, study_material_views, support_record_views, welcome_card_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,6 +34,11 @@ urlpatterns = [
     path('staff-attendance/new/', staff_attendance_views.create_staff_attendance_session, name='create_staff_attendance_session'),
     path('staff-attendance/<int:session_id>/mark/', staff_attendance_views.mark_staff_attendance, name='mark_staff_attendance'),
     path('staff-attendance/<int:session_id>/', staff_attendance_views.staff_attendance_detail, name='staff_attendance_detail'),
+    path('ledger/', ledger_views.ledger_dashboard, name='ledger_dashboard'),
+    path('ledger/vendors/add/', ledger_views.add_vendor, name='add_vendor'),
+    path('ledger/vendors/<int:vendor_id>/', ledger_views.vendor_detail, name='vendor_detail'),
+    path('ledger/cashbook/', ledger_views.cashbook, name='cashbook'),
+    path('ledger/accounts/add/', ledger_views.add_cash_bank_account, name='add_cash_bank_account'),
     path('finance/', finance_views.finance_dashboard, name='finance_dashboard'),
     path('finance/fees/', finance_views.fees_collection, name='fees_collection'),
     path('finance/fees/report/', finance_views.fee_report, name='fee_report'),
