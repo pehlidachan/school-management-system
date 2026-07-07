@@ -1,0 +1,31 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | SchoolHub Admin Control Panel{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/admin_control_panel.css' %}">
+{% endblock %}
+
+{% block branding %}
+<div class="admin-hub-brand">
+    <span class="admin-hub-logo"><i class="fa-solid fa-school"></i></span>
+    <span>
+        <strong>Government Middle School Shalgah</strong>
+        <small>Admin Control Panel</small>
+    </span>
+</div>
+{% endblock %}
+
+{% block nav-global %}
+<div class="admin-hub-actions">
+    <a href="{% url 'dashboard' %}"><i class="fa-solid fa-house"></i> Dashboard</a>
+    <a href="{% url 'template_preview_center' %}"><i class="fa-solid fa-window-restore"></i> Template Previews</a>
+    <a href="/staff-attendance/"><i class="fa-solid fa-clipboard-user"></i> Staff Attendance</a>
+    <a href="/ledger/"><i class="fa-solid fa-cash-register"></i> Account Book</a>
+</div>
+{% endblock %}
