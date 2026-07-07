@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import include, path
 
-from school import admin_online, advisory_letter_views, attendance_views, biodata_views, calendar_views, certificate_views, class_register_views, dashboard_views, exam_views, export_views, finance_views, guardian_reports, library_views, login_views, message_views, notice_views, online_center_views, person_record_views, promotion_views, staff_attendance_views, staff_card_views, staff_list_views, student_card_views, support_record_views, welcome_card_views
+from school import admin_online, advisory_letter_views, attendance_views, biodata_views, calendar_views, certificate_views, class_register_views, dashboard_views, exam_views, export_views, finance_views, guardian_reports, library_views, login_views, message_views, notice_views, online_center_views, person_record_views, promotion_views, staff_attendance_views, staff_card_views, staff_list_views, student_card_views, study_material_views, support_record_views, welcome_card_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -22,6 +22,9 @@ urlpatterns = [
     path('exports/online-admissions.csv', export_views.online_admissions_csv, name='export_online_admissions'),
     path('exports/job-applications.csv', export_views.job_applications_csv, name='export_job_applications'),
     path('online/requests/', online_center_views.online_requests_center, name='online_requests_center'),
+    path('study-materials/', study_material_views.study_material_center, name='study_material_center'),
+    path('study-materials/add/', study_material_views.add_study_material, name='add_study_material'),
+    path('study-materials/<int:material_id>/', study_material_views.study_material_detail, name='study_material_detail'),
     path('students/class-register/', class_register_views.class_register, name='class_register'),
     path('attendance/', attendance_views.attendance_dashboard, name='attendance_dashboard'),
     path('attendance/mark/<int:grade_id>/', attendance_views.mark_attendance, name='mark_attendance'),
