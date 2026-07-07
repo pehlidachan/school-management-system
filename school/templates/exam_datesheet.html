@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Date Sheet - {{ exam.name }}</title>
+<style>
+:root{--p:#2b002d;--g:#ffe266}body{margin:0;background:#f4f5f8;font-family:Arial,Helvetica,sans-serif;color:#111}.toolbar{max-width:980px;margin:18px auto;display:flex;justify-content:flex-end;gap:10px}.toolbar button,.toolbar a{border:0;border-radius:999px;padding:10px 18px;background:var(--p);color:#fff;text-decoration:none;font-weight:800;cursor:pointer}.sheet{width:210mm;margin:0 auto 24px;background:#fff;padding:14mm;box-shadow:0 18px 50px rgba(43,0,45,.12);border:6px double var(--p)}.head{text-align:center;border-bottom:4px solid var(--p);padding-bottom:16px}.school{font-size:28px;font-weight:900;color:var(--p);text-transform:uppercase}.sub{margin-top:5px;color:#555}.title{display:inline-block;margin:18px auto;background:var(--g);border:2px solid var(--p);padding:9px 30px;font-size:22px;font-weight:900}.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 18px}.meta div{border:1px solid #ddd;padding:10px;border-radius:12px}.meta b{display:block;color:var(--p);font-size:12px;text-transform:uppercase;margin-bottom:4px}table{width:100%;border-collapse:collapse;font-size:15px}th,td{border:1px solid #222;padding:10px;text-align:left}th{background:var(--p);color:white;text-transform:uppercase;font-size:12px}td:nth-child(1),td:nth-child(4),td:nth-child(5){text-align:center}.note{margin-top:18px;border:2px solid var(--p);padding:12px;border-radius:14px;color:#374151;line-height:1.5}.sig{display:flex;justify-content:space-between;margin-top:55px}.sig div{width:190px;text-align:center;border-top:1px solid #111;padding-top:8px;font-weight:800}@media print{body{background:#fff}.toolbar{display:none}.sheet{width:100%;margin:0;padding:8mm;box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="toolbar"><button onclick="window.print()">Print Date Sheet</button><a href="{% url 'exam_detail' exam.id %}">Back</a></div>
+<main class="sheet">
+<header class="head"><div class="school">Government Middle School Shalgah</div><div class="sub">Comprehensive Examination Date Sheet</div></header>
+<div style="text-align:center"><div class="title">{{ exam.name }}</div></div>
+<section class="meta"><div><b>Class</b>{{ exam.grade }}</div><div><b>Start Date</b>{{ exam.start_date }}</div><div><b>Print Date</b>{{ print_date }}</div></section>
+<table><thead><tr><th>#</th><th>Date</th><th>Day</th><th>Subject</th><th>Time</th><th>Total Marks</th><th>Passing</th></tr></thead><tbody>
+{% for row in rows %}<tr><td>{{ row.serial }}</td><td>{{ row.date|date:'d M Y' }}</td><td>{{ row.day }}</td><td>{{ row.subject.name }}</td><td>{{ row.time }}</td><td>{{ row.total_marks }}</td><td>{{ row.passing_marks }}</td></tr>{% empty %}<tr><td colspan="7">No subjects found. Add subjects to this exam first.</td></tr>{% endfor %}
+</tbody></table>
+<div class="note"><strong>Instructions:</strong> Students must arrive 20 minutes before paper time. Bring required stationery. Mobile phones and unfair means are strictly prohibited. This MVP schedule places one subject per day starting from exam start date.</div>
+<div class="sig"><div>Exam Incharge</div><div>Principal / Head Teacher</div></div>
+</main>
+</body>
+</html>
