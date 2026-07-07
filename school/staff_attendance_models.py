@@ -20,7 +20,7 @@ class StaffLectureSession(models.Model):
     class Meta:
         app_label = "school"
         ordering = ["-session_date", "-created_at"]
-        indexes = [models.Index(fields=["session_date"])]
+        indexes = [models.Index(fields=["session_date"], name="school_staf_session_c7b9d1_idx")]
 
     def __str__(self):
         return f"{self.title} - {self.session_date}"
@@ -68,8 +68,8 @@ class StaffLectureAttendance(models.Model):
             models.UniqueConstraint(fields=["session", "staff"], name="unique_staff_lecture_attendance"),
         ]
         indexes = [
-            models.Index(fields=["status"]),
-            models.Index(fields=["staff", "status"]),
+            models.Index(fields=["status"], name="school_staf_status_c25966_idx"),
+            models.Index(fields=["staff", "status"], name="school_staf_staff_i_5d46f4_idx"),
         ]
 
     def __str__(self):
