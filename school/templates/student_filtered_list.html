@@ -11,6 +11,7 @@
         <a href="{% url 'student_promotion' %}" class="btn btn-outline-dark rounded-pill">Promotion</a>
         <a href="{% url 'class_register' %}" class="btn btn-outline-dark rounded-pill">Class Register</a>
         <a href="{% url 'multi_child_guardians' %}" class="btn btn-outline-dark rounded-pill">Multi-Child Parents</a>
+        <a href="{% url 'bulk_student_certificates' %}" class="btn btn-outline-dark rounded-pill">Certificates</a>
         <a href="{% url 'bulk_student_welcome_cards' %}" class="btn btn-outline-dark rounded-pill">Welcome Cards</a>
         <a href="{% url 'bulk_student_biodata' %}" class="btn btn-outline-dark rounded-pill">Bulk Bio Data</a>
         <a href="{% url 'bulk_student_id_cards' %}" class="btn btn-outline-dark rounded-pill">Bulk ID Cards</a>
@@ -79,6 +80,7 @@
                     </td>
                     <td><a href="{% url 'account_creator_dashboard' %}" class="btn btn-sm btn-outline-success rounded-pill fw-bold">Create IDs</a></td>
                     <td class="text-end">
+                        <a class="hub-action-icon" target="_blank" href="{% url 'student_certificate' student.id 'character' %}" title="Certificate"><i class="fa-solid fa-award"></i></a>
                         <a class="hub-action-icon" target="_blank" href="{% url 'student_welcome_card' student.id %}" title="Welcome Card"><i class="fa-solid fa-gift"></i></a>
                         <a class="hub-action-icon" target="_blank" href="{% url 'student_biodata_print' student.id %}" title="Bio Data"><i class="fa-solid fa-file-lines"></i></a>
                         <a class="hub-action-icon" target="_blank" href="{% url 'student_id_card' student.id %}" title="ID Card"><i class="fa-solid fa-id-badge"></i></a>
