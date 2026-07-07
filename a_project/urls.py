@@ -71,6 +71,7 @@ urlpatterns = [
     path('exams/', exam_views.exam_dashboard, name='exam_dashboard'),
     path('exams/add/', exam_views.add_exam, name='add_exam'),
     path('exams/<int:exam_id>/', exam_views.exam_detail, name='exam_detail'),
+    path('exams/<int:exam_id>/datesheet/', exam_views.exam_datesheet, name='exam_datesheet'),
     path('exams/<int:exam_id>/subjects/add/', exam_views.add_exam_subject, name='add_exam_subject'),
     path('exams/subjects/<int:exam_subject_id>/marks/', exam_views.marks_entry, name='marks_entry'),
     path('exams/<int:exam_id>/results/', exam_views.exam_results, name='exam_results'),
