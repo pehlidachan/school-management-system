@@ -32,12 +32,11 @@ class AddStaffForm(forms.ModelForm):
     can_print_student_biodata = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
     can_print_staff_biodata = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
     birthday_card_sent = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
-    photo_path = forms.CharField(required=False, widget=forms.HiddenInput())
     status = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}), initial=True, required=False)
 
     class Meta:
         model = Staff
-        fields = '__all__'
+        exclude = ('photo_path',)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
