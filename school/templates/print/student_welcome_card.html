@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        :root { --purple:#2b002d; --purple2:#6f1b78; --gold:#ffe266; --soft:#fff8cd; --line:#eadff0; }
+        * { box-sizing:border-box; }
+        body { margin:0; background:#f4f5f8; color:#111827; font-family: Arial, Helvetica, sans-serif; }
+        .toolbar { max-width:1040px; margin:18px auto; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+        .toolbar h1 { margin:0; color:var(--purple); font-size:24px; }
+        .actions { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+        .actions a, .actions button { border:0; border-radius:999px; padding:10px 18px; background:var(--purple); color:#fff; font-weight:800; text-decoration:none; cursor:pointer; }
+        .actions select { border:1px solid var(--line); border-radius:999px; padding:10px 14px; min-width:230px; }
+        .check { display:flex; align-items:center; gap:8px; font-weight:700; color:var(--purple); }
+        .sheet { width: 210mm; margin:0 auto 24px; background:white; padding:12mm; box-shadow:0 18px 50px rgba(43,0,45,.12); }
+        .grid { display:grid; grid-template-columns:1fr 1fr; gap:12mm; }
+        .card { width:86mm; height:125mm; border:2px solid var(--purple); border-radius:18px; overflow:hidden; position:relative; background:white; break-inside:avoid; box-shadow:0 12px 28px rgba(43,0,45,.12); }
+        .card::before { content:""; position:absolute; inset:-40px -40px auto auto; width:120px; height:120px; border-radius:50%; background:var(--gold); opacity:.65; }
+        .head { background:linear-gradient(135deg,var(--purple),var(--purple2)); color:white; padding:18px 16px; position:relative; min-height:112px; }
+        .school { text-transform:uppercase; font-size:14px; font-weight:900; line-height:1.2; letter-spacing:.04em; }
+        .subtitle { color:var(--gold); font-size:11px; margin-top:6px; font-weight:800; }
+        .badge { position:absolute; right:14px; bottom:-24px; width:58px; height:58px; border-radius:18px; background:var(--gold); color:var(--purple); display:grid; place-items:center; font-weight:900; font-size:18px; border:4px solid #fff; }
+        .body { padding:34px 16px 12px; text-align:center; }
+        .welcome { color:var(--purple); font-size:22px; line-height:1.05; font-weight:900; text-transform:uppercase; letter-spacing:.03em; }
+        .name { margin-top:12px; font-size:24px; line-height:1.1; font-weight:900; color:#111827; }
+        .urdu { margin-top:5px; color:#4b5563; font-size:15px; }
+        .class { display:inline-block; margin-top:14px; padding:8px 16px; border-radius:999px; background:var(--soft); color:var(--purple); font-weight:900; border:1px solid var(--gold); }
+        .message { margin:18px 4px 0; font-size:13px; line-height:1.45; color:#374151; }
+        .details { margin:16px 0 0; border-top:1px dashed var(--line); padding-top:12px; display:grid; gap:6px; text-align:left; font-size:12px; }
+        .row { display:grid; grid-template-columns:88px 1fr; gap:8px; }
+        .label { color:var(--purple); font-weight:900; }
+        .footer { position:absolute; left:16px; right:16px; bottom:14px; display:flex; justify-content:space-between; align-items:end; gap:10px; font-size:10px; color:#4b5563; }
+        .sig { width:92px; border-top:1px solid #111; padding-top:5px; text-align:center; font-weight:800; color:#111; }
+        .status { position:absolute; top:10px; right:10px; padding:5px 9px; border-radius:999px; font-size:9px; font-weight:900; background:#dcfce7; color:#166534; }
+        .empty { max-width:760px; margin:40px auto; background:#fff; border-radius:18px; padding:30px; text-align:center; color:#6b7280; }
+        @media print {
+            body { background:#fff; }
+            .toolbar, .empty { display:none !important; }
+            .sheet { width:100%; margin:0; padding:6mm; box-shadow:none; }
+            .card { box-shadow:none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <h1>{{ title }}</h1>
+        <div class="actions">
+            {% if is_bulk %}
+            <form method="GET" class="actions">
+                <select name="grade" onchange="this.form.submit()">
+                    <option value="">Select class for welcome cards</option>
+                    {% for grade in grades %}
+                    <option value="{{ grade.id }}" {% if selected_grade_id == grade.id|stringformat:'s' %}selected{% endif %}>{{ grade.name }}</option>
+                    {% endfor %}
+                </select>
+                <label class="check"><input type="checkbox" name="pending" value="1" {% if pending_only %}checked{% endif %} onchange="this.form.submit()"> Pending only</label>
+            </form>
+            {% endif %}
+            <button onclick="window.print()">Print Welcome Cards</button>
+            <a href="{% url 'display_students' %}">Back</a>
+        </div>
+    </div>
+
+    {% if students %}
+    <main class="sheet">
+        <div class="grid">
+            {% for student in students %}
+            <article class="card">
+                {% if student.welcome_card_sent %}<div class="status">SENT</div>{% endif %}
+                <div class="head">
+                    <div class="school">Government Middle<br>School Shalgah</div>
+                    <div class="subtitle">A warm welcome to our school family</div>
+                    <div class="badge">★</div>
+                </div>
+                <div class="body">
+                    <div class="welcome">Welcome</div>
+                    <div class="name">{{ student.name }}</div>
+                    {% if student.student_name_urdu %}<div class="urdu">{{ student.student_name_urdu }}</div>{% endif %}
+                    <div class="class">Class: {{ student.grade }}</div>
+                    <div class="message">We are pleased to welcome you. May your school journey be full of learning, confidence, respect, and success.</div>
+                    <div class="details">
+                        <div class="row"><span class="label">Admission</span><span>{{ student.admission_no|default:student.id }}</span></div>
+                        <div class="row"><span class="label">Roll No</span><span>{{ student.roll_no|default:'-' }}</span></div>
+                        <div class="row"><span class="label">Guardian</span><span>{{ student.guardian_name|default:'-' }}</span></div>
+                        <div class="row"><span class="label">Enroll Date</span><span>{{ student.date_of_enrollment|date:'d M Y' }}</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div>Printed {{ print_date|date:'d M Y' }}</div>
+                    <div class="sig">Principal</div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </main>
+    {% else %}
+    <div class="empty">Select a class to generate welcome cards. If pending-only is checked, only students whose welcome card is not marked sent will appear.</div>
+    {% endif %}
+</body>
+</html>
