@@ -41,6 +41,7 @@ class StudentAdmin(admin.ModelAdmin):
         'guardian_cnic', 'phone', 'whatsapp_no', 'email', 'gr_no',
         'admission_no', 'roll_no',
     )
+    readonly_fields = ('photo_path', 'welcome_card_sent_at')
 
 
 class StaffAdmin(admin.ModelAdmin):
@@ -57,6 +58,7 @@ class StaffAdmin(admin.ModelAdmin):
         'name', 'staff_name_urdu', 'staff_code', 'father_or_husband_name',
         'cnic', 'phone', 'whatsapp_no', 'email', 'qualification', 'department',
     )
+    readonly_fields = ('photo_path',)
 
 
 class ClassAndTimingAdmin(admin.ModelAdmin):
