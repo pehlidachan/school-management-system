@@ -34,6 +34,8 @@
                     <td><span class="hub-status {{ invoice.status }}">{{ invoice.get_status_display }}</span></td>
                     <td class="text-end">
                         <div class="d-flex gap-2 justify-content-end flex-wrap">
+                            <a class="btn btn-sm btn-outline-dark rounded-pill" target="_blank" href="{% url 'fee_voucher' invoice.id %}">Voucher</a>
+                            <a class="btn btn-sm btn-outline-dark rounded-pill" target="_blank" href="{% url 'student_dues_statement' invoice.student.id %}">Dues</a>
                             <a class="btn btn-sm btn-outline-dark rounded-pill" target="_blank" href="{% url 'fee_receipt' invoice.id %}">Receipt</a>
                             {% if invoice.status != 'paid' %}
                             <form method="POST" action="{% url 'mark_fee_paid' invoice.id %}" class="d-inline">
