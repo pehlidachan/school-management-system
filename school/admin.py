@@ -230,3 +230,5 @@ safe_register(NonTeachingStaff, NonTeachingStaffAdmin)
 safe_register(ParentComplaint, ParentComplaintAdmin)
 safe_register(OnlineAdmissionApplication, OnlineAdmissionApplicationAdmin)
 safe_register(JobApplication, JobApplicationAdmin)
+
+from . import admin_mvp  # noqa: F401, E402
