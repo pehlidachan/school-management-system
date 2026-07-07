@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
@@ -63,6 +63,24 @@ def _build_result_rows(exam, students=None):
             "subjects": subject_rows,
         })
     return result_rows, exam_subjects
+
+
+def _build_datesheet_rows(exam):
+    rows = []
+    start = exam.start_date or timezone.localdate()
+    exam_subjects = list(exam.exam_subjects.select_related("subject").order_by("subject__name"))
+    for index, item in enumerate(exam_subjects):
+        paper_date = start + timedelta(days=index)
+        rows.append({
+            "serial": index + 1,
+            "date": paper_date,
+            "day": paper_date.strftime("%A"),
+            "subject": item.subject,
+            "total_marks": item.total_marks,
+            "passing_marks": item.passing_marks,
+            "time": "09:00 AM - 12:00 PM",
+        })
+    return rows
 
 
 @staff_required
@@ -155,6 +173,17 @@ def exam_results(request, exam_id):
     exam = get_object_or_404(Exam.objects.select_related("grade"), id=exam_id)
     result_rows, exam_subjects = _build_result_rows(exam)
     return render(request, "exam_results.html", {"exam": exam, "result_rows": result_rows, "exam_subjects": exam_subjects})
+
+
+@staff_required
+def exam_datesheet(request, exam_id):
+    exam = get_object_or_404(Exam.objects.select_related("grade"), id=exam_id)
+    rows = _build_datesheet_rows(exam)
+    return render(request, "exam_datesheet.html", {
+        "exam": exam,
+        "rows": rows,
+        "print_date": timezone.localdate(),
+    })
 
 
 @staff_required
