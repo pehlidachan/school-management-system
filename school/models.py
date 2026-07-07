@@ -1,5 +1,8 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 from django.db import models
+from django.utils import timezone
 
 
 class Grade(models.Model):
@@ -49,11 +52,40 @@ class Student(models.Model):
     previous_school = models.CharField(max_length=200, null=True, blank=True)
     blood_group = models.CharField(max_length=20, null=True, blank=True)
     fee_category = models.CharField(max_length=100, null=True, blank=True)
-    monthly_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    monthly_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0, validators=[MinValueValidator(0)])
     welcome_card_sent = models.BooleanField(default=False)
     welcome_card_sent_at = models.DateTimeField(null=True, blank=True)
     photo_path = models.CharField(max_length=255, null=True, blank=True)
     status = models.BooleanField(default=True)
+
+    def clean(self):
+        super().clean()
+        errors = {}
+        for field_name, label in (("gr_no", "GR number"), ("admission_no", "admission number")):
+            value = (getattr(self, field_name) or "").strip()
+            if not value:
+                continue
+            setattr(self, field_name, value)
+            duplicates = Student.objects.filter(**{f"{field_name}__iexact": value})
+            if self.pk:
+                duplicates = duplicates.exclude(pk=self.pk)
+            if duplicates.exists():
+                errors[field_name] = f"This {label} is already used by another student."
+        if errors:
+            raise ValidationError(errors)
+
+    def save(self, *args, **kwargs):
+        if self.welcome_card_sent:
+            if not self.welcome_card_sent_at:
+                self.welcome_card_sent_at = timezone.now()
+        else:
+            self.welcome_card_sent_at = None
+
+        update_fields = kwargs.get("update_fields")
+        if update_fields is not None and "welcome_card_sent" in update_fields:
+            kwargs["update_fields"] = set(update_fields) | {"welcome_card_sent_at"}
+
+        super().save(*args, **kwargs)
 
 
 class Role(models.Model):
@@ -106,6 +138,22 @@ class Staff(models.Model):
     birthday_card_sent = models.BooleanField(default=False)
     photo_path = models.CharField(max_length=255, null=True, blank=True)
     status = models.BooleanField(default=True)
+
+    def clean(self):
+        super().clean()
+        errors = {}
+        for field_name, label in (("staff_code", "staff code"), ("cnic", "CNIC")):
+            value = (getattr(self, field_name) or "").strip()
+            if not value:
+                continue
+            setattr(self, field_name, value)
+            duplicates = Staff.objects.filter(**{f"{field_name}__iexact": value})
+            if self.pk:
+                duplicates = duplicates.exclude(pk=self.pk)
+            if duplicates.exists():
+                errors[field_name] = f"This {label} is already used by another staff member."
+        if errors:
+            raise ValidationError(errors)
 
     def __str__(self):
         return f'{self.id}---{self.name}'
