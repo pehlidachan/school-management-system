@@ -15,6 +15,7 @@
             <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" title="Dashboard"><span class="icon"><i class="fa-solid fa-house"></i></span><span class="hub-label">Dashboard</span></a>
             <a href="{% url 'display_staff' %}" class="{% if request.resolver_match.url_name == 'display_staff' %}active{% endif %}" title="Teachers"><span class="icon"><i class="fa-solid fa-user-tie"></i></span><span class="hub-label">Teachers</span></a>
             <a href="{% url 'display_students' %}" class="{% if request.resolver_match.url_name == 'display_students' %}active{% endif %}" title="Students"><span class="icon"><i class="fa-solid fa-users"></i></span><span class="hub-label">Students</span></a>
+            <a href="{% url 'template_preview_center' %}" class="{% if request.resolver_match.url_name == 'template_preview_center' %}active{% endif %}" title="Templates"><span class="icon"><i class="fa-solid fa-window-restore"></i></span><span class="hub-label">Templates</span></a>
             <a href="{% url 'account_creator_dashboard' %}" class="{% if request.resolver_match.url_name == 'account_creator_dashboard' %}active{% endif %}" title="Login IDs"><span class="icon"><i class="fa-solid fa-id-card"></i></span><span class="hub-label">Login IDs</span></a>
             <a href="{% url 'attendance_dashboard' %}" class="{% if 'attendance' in request.resolver_match.url_name %}active{% endif %}" title="Attendance"><span class="icon"><i class="fa-solid fa-people-group"></i></span><span class="hub-label">Attendance</span></a>
             <a href="/exams/" title="Results"><span class="icon"><i class="fa-solid fa-file-lines"></i></span><span class="hub-label">Results</span></a>
@@ -29,7 +30,7 @@
     <div>
         <div class="hub-menu-label">Other</div>
         <nav class="hub-nav">
-            <a href="/admin/" title="Django Admin"><span class="icon"><i class="fa-solid fa-screwdriver-wrench"></i></span><span class="hub-label">Django Admin</span></a>
+            <a href="/admin/" title="Django Admin"><span class="icon"><i class="fa-solid fa-screwdriver-wrench"></i></span><span class="hub-label">Admin Panel</span></a>
             <a href="{% url 'home' %}" title="Public Home"><span class="icon"><i class="fa-solid fa-globe"></i></span><span class="hub-label">Public Home</span></a>
             <a href="{% url 'logout' %}" title="Log out"><span class="icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="hub-label">Log out</span></a>
         </nav>
