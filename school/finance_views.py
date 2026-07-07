@@ -41,6 +41,36 @@ def _refresh_overdue():
     FeeInvoice.objects.filter(status=FeeInvoice.PENDING, due_date__lt=today, amount_paid=0).update(status=FeeInvoice.OVERDUE)
 
 
+def _student_dues_summary(student):
+    invoices = list(FeeInvoice.objects.filter(student=student).select_related("student", "student__grade").order_by("due_date", "id"))
+    for invoice in invoices:
+        invoice.refresh_status(save=True)
+    unpaid = [invoice for invoice in invoices if invoice.balance_due > 0]
+    total_due = sum((invoice.balance_due for invoice in unpaid), Decimal("0"))
+    return invoices, unpaid, total_due
+
+
+def _whatsapp_dues_text(student, unpaid, total_due):
+    lines = [
+        "Assalam-o-Alaikum,",
+        f"Dear Parent/Guardian of {student.name},",
+        f"Class: {student.grade}",
+        "Fee dues detail:",
+    ]
+    if unpaid:
+        for invoice in unpaid:
+            label = invoice.billing_month or invoice.title or f"Invoice #{invoice.id}"
+            lines.append(f"- {label}: Rs. {invoice.balance_due} due by {invoice.due_date}")
+        lines.append(f"Total outstanding dues: Rs. {total_due}")
+    else:
+        lines.append("No outstanding dues are currently pending.")
+    lines.extend([
+        "Please clear dues at your earliest convenience.",
+        "Government Middle School Shalgah",
+    ])
+    return "\n".join(lines)
+
+
 @finance_required
 def finance_dashboard(request):
     _refresh_overdue()
@@ -194,6 +224,28 @@ def fee_receipt(request, invoice_id):
     invoice = get_object_or_404(FeeInvoice.objects.select_related("student", "student__grade", "created_by"), id=invoice_id)
     invoice.refresh_status(save=True)
     return render(request, "fee_receipt.html", {"invoice": invoice, "print_date": timezone.localdate()})
+
+
+@finance_required
+def fee_voucher(request, invoice_id):
+    invoice = get_object_or_404(FeeInvoice.objects.select_related("student", "student__grade", "created_by"), id=invoice_id)
+    invoice.refresh_status(save=True)
+    return render(request, "fee_voucher.html", {"invoice": invoice, "print_date": timezone.localdate()})
+
+
+@finance_required
+def student_dues_statement(request, student_id):
+    student = get_object_or_404(Student.objects.select_related("grade", "guardian_relation"), id=student_id)
+    invoices, unpaid, total_due = _student_dues_summary(student)
+    whatsapp_text = _whatsapp_dues_text(student, unpaid, total_due)
+    return render(request, "student_dues_statement.html", {
+        "student": student,
+        "invoices": invoices,
+        "unpaid_invoices": unpaid,
+        "total_due": total_due,
+        "whatsapp_text": whatsapp_text,
+        "print_date": timezone.localdate(),
+    })
 
 
 @finance_required
