@@ -17,7 +17,7 @@ class Vendor(models.Model):
     class Meta:
         app_label = "school"
         ordering = ["name"]
-        indexes = [models.Index(fields=["status"])]
+        indexes = [models.Index(fields=["status"], name="school_vend_status_9b1627_idx")]
 
     def __str__(self):
         return self.name
@@ -37,7 +37,10 @@ class VendorLedgerEntry(models.Model):
     class Meta:
         app_label = "school"
         ordering = ["-entry_date", "-created_at"]
-        indexes = [models.Index(fields=["entry_date"]), models.Index(fields=["vendor", "entry_date"])]
+        indexes = [
+            models.Index(fields=["entry_date"], name="school_vend_entry_d_06a5ef_idx"),
+            models.Index(fields=["vendor", "entry_date"], name="school_vend_vendor__79d79e_idx"),
+        ]
 
     @property
     def balance_effect(self):
@@ -61,7 +64,10 @@ class CashBankAccount(models.Model):
     class Meta:
         app_label = "school"
         ordering = ["account_type", "name"]
-        indexes = [models.Index(fields=["account_type"]), models.Index(fields=["status"])]
+        indexes = [
+            models.Index(fields=["account_type"], name="school_cash_account_70f2e9_idx"),
+            models.Index(fields=["status"], name="school_cash_status_e79a40_idx"),
+        ]
 
     def __str__(self):
         return f"{self.name} ({self.get_account_type_display()})"
@@ -85,7 +91,10 @@ class CashBankTransaction(models.Model):
     class Meta:
         app_label = "school"
         ordering = ["-transaction_date", "-created_at"]
-        indexes = [models.Index(fields=["transaction_date"]), models.Index(fields=["account", "transaction_type"])]
+        indexes = [
+            models.Index(fields=["transaction_date"], name="school_cash_transac_3fb9bb_idx"),
+            models.Index(fields=["account", "transaction_type"], name="school_cash_account_e9f9ee_idx"),
+        ]
 
     @property
     def signed_amount(self):
