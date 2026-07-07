@@ -1,0 +1,97 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% block 'title' %}Template Preview Center{% endblock %}
+{% block 'style' %}<link href="{% static 'css/template_preview_center.css' %}" rel="stylesheet" />{% endblock %}
+{% block 'content' %}
+<div class="hub-toolbar">
+    <div>
+        <h1 class="hub-page-title">Template Preview Center</h1>
+        <p class="text-muted mb-0">All MVP print and form templates in one preview box with popup screen preview.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-dark rounded-pill">Dashboard</a>
+        <a href="/admin/" class="btn btn-dark rounded-pill">Admin Control Panel</a>
+    </div>
+</div>
+
+<div class="preview-stage-box">
+    <div class="preview-stage-head">
+        <div>
+            <span class="preview-kicker">Live UI Gallery</span>
+            <h2>Print, Card, Report and Ledger Templates</h2>
+        </div>
+        <div class="preview-count">{{ templates|length }} Templates</div>
+    </div>
+    <div class="preview-grid">
+        {% for item in templates %}
+        <button type="button" class="preview-card" data-title="{{ item.title }}" data-category="{{ item.category }}" data-badge="{{ item.badge }}" data-description="{{ item.description }}" data-sample="{{ item.sample }}">
+            <span class="preview-card-icon"><i class="fa-solid {{ item.icon }}"></i></span>
+            <span class="preview-card-body">
+                <span class="preview-card-top"><strong>{{ item.title }}</strong><em>{{ item.badge }}</em></span>
+                <span class="preview-card-desc">{{ item.description }}</span>
+                <span class="preview-card-foot">{{ item.category }} <i class="fa-solid fa-up-right-and-down-left-from-center"></i></span>
+            </span>
+        </button>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="template-preview-overlay" id="templatePreviewOverlay" aria-hidden="true">
+    <div class="template-preview-modal" role="dialog" aria-modal="true" aria-labelledby="previewTitle">
+        <button type="button" class="template-preview-close" id="templatePreviewClose" aria-label="Close preview"><i class="fa-solid fa-xmark"></i></button>
+        <div class="template-screen-frame">
+            <div class="template-screen-toolbar">
+                <span></span><span></span><span></span>
+                <strong id="previewCategory">Preview</strong>
+            </div>
+            <div class="template-screen-body">
+                <div class="mock-document">
+                    <div class="mock-doc-ribbon" id="previewBadge">Template</div>
+                    <div class="mock-school">Government Middle School Shalgah</div>
+                    <h2 id="previewTitle">Template Preview</h2>
+                    <p id="previewDescription">Select a template card to preview.</p>
+                    <div class="mock-lines">
+                        <div></div><div></div><div></div><div></div>
+                    </div>
+                    <div class="mock-panel" id="previewSample">Sample fields will appear here.</div>
+                    <div class="mock-signatures"><span>Prepared By</span><span>Principal</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function(){
+    const overlay = document.getElementById('templatePreviewOverlay');
+    const closeBtn = document.getElementById('templatePreviewClose');
+    const title = document.getElementById('previewTitle');
+    const category = document.getElementById('previewCategory');
+    const badge = document.getElementById('previewBadge');
+    const description = document.getElementById('previewDescription');
+    const sample = document.getElementById('previewSample');
+
+    function openPreview(card){
+        title.textContent = card.dataset.title;
+        category.textContent = card.dataset.category + ' Preview';
+        badge.textContent = card.dataset.badge;
+        description.textContent = card.dataset.description;
+        sample.textContent = card.dataset.sample;
+        overlay.classList.add('is-open');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('template-modal-open');
+    }
+
+    function closePreview(){
+        overlay.classList.remove('is-open');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('template-modal-open');
+    }
+
+    document.querySelectorAll('.preview-card').forEach(card => card.addEventListener('click', () => openPreview(card)));
+    closeBtn.addEventListener('click', closePreview);
+    overlay.addEventListener('click', function(event){ if(event.target === overlay){ closePreview(); } });
+    document.addEventListener('keydown', function(event){ if(event.key === 'Escape'){ closePreview(); } });
+})();
+</script>
+{% endblock %}
