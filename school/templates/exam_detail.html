@@ -5,6 +5,7 @@
 <div class="hub-toolbar">
     <div><h1 class="hub-page-title">{{ exam.name }}</h1><p class="text-muted mb-0">{{ exam.grade }} • {{ exam.start_date }}</p></div>
     <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'exam_datesheet' exam.id %}" target="_blank" class="btn btn-outline-dark rounded-pill">Date Sheet</a>
         <a href="{% url 'add_exam_subject' exam.id %}" class="btn btn-success rounded-pill">+ Subject</a>
         <a href="{% url 'exam_results' exam.id %}" class="btn btn-dark rounded-pill">Summary</a>
         <a href="{% url 'exam_dashboard' %}" class="btn btn-outline-dark rounded-pill">Back</a>
