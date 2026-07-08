@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.admin.sites import AlreadyRegistered
 
 from .ledger_models import CashBankAccount, CashBankTransaction, Vendor, VendorLedgerEntry
+from .profile_settings_models import RoleProfileRule, SchoolBrandProfile, StaffLoginProfile, UserProfileSetting
 from .staff_attendance_models import StaffLectureAttendance, StaffLectureSession
 from .study_material_models import StudyMaterial
 
@@ -58,6 +59,29 @@ class CashBankTransactionAdmin(admin.ModelAdmin):
     date_hierarchy = 'transaction_date'
 
 
+class SchoolBrandProfileAdmin(admin.ModelAdmin):
+    list_display = ('school_name', 'campus_code', 'phone', 'is_active', 'updated_by', 'updated_at')
+    list_filter = ('is_active', 'updated_at')
+    search_fields = ('school_name', 'campus_code', 'address', 'phone', 'email')
+
+
+class UserProfileSettingAdmin(admin.ModelAdmin):
+    list_display = ('user', 'display_name', 'phone', 'updated_at')
+    search_fields = ('user__username', 'display_name', 'phone', 'note')
+
+
+class StaffLoginProfileAdmin(admin.ModelAdmin):
+    list_display = ('staff', 'user', 'created_by', 'created_at')
+    search_fields = ('staff__name', 'staff__staff_code', 'user__username')
+    list_filter = ('created_at',)
+
+
+class RoleProfileRuleAdmin(admin.ModelAdmin):
+    list_display = ('role', 'can_manage_branding', 'can_upload_self_photo', 'can_create_staff_accounts', 'can_change_own_password', 'can_manage_role_rules', 'dashboard_scope')
+    list_filter = ('can_manage_branding', 'can_create_staff_accounts', 'can_manage_role_rules')
+    search_fields = ('role__name', 'dashboard_scope', 'note')
+
+
 safe_mvp_register(StaffLectureSession, StaffLectureSessionAdmin)
 safe_mvp_register(StaffLectureAttendance, StaffLectureAttendanceAdmin)
 safe_mvp_register(StudyMaterial, StudyMaterialAdmin)
@@ -65,3 +89,7 @@ safe_mvp_register(Vendor, VendorAdmin)
 safe_mvp_register(VendorLedgerEntry, VendorLedgerEntryAdmin)
 safe_mvp_register(CashBankAccount, CashBankAccountAdmin)
 safe_mvp_register(CashBankTransaction, CashBankTransactionAdmin)
+safe_mvp_register(SchoolBrandProfile, SchoolBrandProfileAdmin)
+safe_mvp_register(UserProfileSetting, UserProfileSettingAdmin)
+safe_mvp_register(StaffLoginProfile, StaffLoginProfileAdmin)
+safe_mvp_register(RoleProfileRule, RoleProfileRuleAdmin)
