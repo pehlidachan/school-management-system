@@ -1,13 +1,14 @@
 from django.contrib import admin
 from django.urls import include, path
 
-from school import admin_online, advisory_letter_views, attendance_views, biodata_views, calendar_views, certificate_views, class_register_views, dashboard_views, exam_views, export_views, finance_views, guardian_reports, ledger_views, library_views, login_views, message_views, notice_views, online_center_views, person_record_views, promotion_views, staff_attendance_views, staff_card_views, staff_list_views, student_card_views, study_material_views, support_record_views, template_preview_views, welcome_card_views
+from school import admin_online, advisory_letter_views, attendance_views, biodata_views, calendar_views, certificate_views, class_register_views, dashboard_views, exam_views, export_views, finance_views, guardian_reports, ledger_views, library_views, login_views, message_views, notice_views, online_center_views, person_record_views, profile_settings_views, promotion_views, staff_attendance_views, staff_card_views, staff_list_views, student_card_views, study_material_views, support_record_views, template_preview_views, welcome_card_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', login_views.user_login, name='login'),
     path('dashboard/', dashboard_views.dashboard, name='dashboard'),
     path('portal/', admin_online.portal, name='portal'),
+    path('admin-profile/', profile_settings_views.admin_profile_center, name='admin_profile_center'),
     path('template-previews/', template_preview_views.template_preview_center, name='template_preview_center'),
     path('student/add/', person_record_views.add_student, name='add_student'),
     path('student/edit/<int:id>/', person_record_views.edit_student, name='edit_student'),
