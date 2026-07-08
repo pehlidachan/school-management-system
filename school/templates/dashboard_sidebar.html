@@ -13,6 +13,7 @@
         <div class="hub-menu-label">Menu</div>
         <nav class="hub-nav">
             <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" title="Dashboard"><span class="icon"><i class="fa-solid fa-house"></i></span><span class="hub-label">Dashboard</span></a>
+            <a href="{% url 'admin_profile_center' %}" class="{% if request.resolver_match.url_name == 'admin_profile_center' %}active{% endif %}" title="Admin Profile"><span class="icon"><i class="fa-solid fa-user-gear"></i></span><span class="hub-label">Admin Profile</span></a>
             <a href="{% url 'display_staff' %}" class="{% if request.resolver_match.url_name == 'display_staff' %}active{% endif %}" title="Teachers"><span class="icon"><i class="fa-solid fa-user-tie"></i></span><span class="hub-label">Teachers</span></a>
             <a href="{% url 'display_students' %}" class="{% if request.resolver_match.url_name == 'display_students' %}active{% endif %}" title="Students"><span class="icon"><i class="fa-solid fa-users"></i></span><span class="hub-label">Students</span></a>
             <a href="{% url 'template_preview_center' %}" class="{% if request.resolver_match.url_name == 'template_preview_center' %}active{% endif %}" title="Templates"><span class="icon"><i class="fa-solid fa-window-restore"></i></span><span class="hub-label">Templates</span></a>
