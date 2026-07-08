@@ -1,0 +1,127 @@
+:root {
+  --school-logo-main-opacity: 1;
+  --school-logo-watermark-opacity: .24;
+  --logo-a: #f39c12;
+  --logo-b: #2477c9;
+  --logo-c: #e84393;
+  --logo-d: #2ecc71;
+}
+
+body.brand-blue {
+  --logo-a: #0ea5e9;
+  --logo-b: #0369a1;
+  --logo-c: #38bdf8;
+  --logo-d: #075985;
+}
+
+body.brand-green {
+  --logo-a: #22c55e;
+  --logo-b: #15803d;
+  --logo-c: #84cc16;
+  --logo-d: #0f766e;
+}
+
+.school-logo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .22);
+  isolation: isolate;
+}
+
+.school-logo span {
+  width: 22px;
+  height: 22px;
+  display: block;
+  border-radius: 16px 16px 4px 16px;
+}
+
+.school-logo span:nth-child(1) { background: var(--logo-a); }
+.school-logo span:nth-child(2) { background: var(--logo-b); transform: rotate(90deg); }
+.school-logo span:nth-child(3) { background: var(--logo-c); transform: rotate(-90deg); }
+.school-logo span:nth-child(4) { background: var(--logo-d); }
+
+.school-logo-main {
+  width: 86px;
+  height: 86px;
+  opacity: var(--school-logo-main-opacity);
+}
+
+.school-logo-small {
+  width: 64px;
+  height: 64px;
+  padding: 12px;
+  gap: 4px;
+  opacity: 1;
+}
+
+.school-logo-small span {
+  width: 17px;
+  height: 17px;
+}
+
+.school-logo-watermark {
+  width: 470px;
+  height: 470px;
+  padding: 88px;
+  gap: 24px;
+  box-shadow: none;
+  background: transparent;
+  opacity: var(--school-logo-watermark-opacity);
+  filter: saturate(.95);
+}
+
+.school-logo-watermark span {
+  width: 126px;
+  height: 126px;
+  border-radius: 72px 72px 16px 72px;
+}
+
+.school-logo-clickable {
+  cursor: pointer;
+  outline: 3px solid transparent;
+  transition: transform .18s ease, outline-color .18s ease;
+}
+
+.school-logo-clickable:hover {
+  transform: scale(1.04);
+  outline-color: rgba(255, 226, 102, .75);
+}
+
+.print-logo-watermark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.print-content-layer,
+.content,
+.ref-content-layer {
+  position: relative;
+  z-index: 2;
+}
+
+.brand-hint {
+  position: absolute;
+  left: 18px;
+  bottom: 16px;
+  background: rgba(43, 0, 45, .92);
+  color: #ffe266;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 900;
+  z-index: 5;
+}
+
+@media print {
+  .brand-hint { display: none; }
+  .school-logo-main { opacity: 1; }
+  .school-logo-watermark { opacity: .22; }
+}
