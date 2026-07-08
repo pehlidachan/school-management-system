@@ -1,59 +1,33 @@
 {% extends 'dashboard_base.html' %}
 {% load static %}
 {% block 'title' %}Template Preview Center{% endblock %}
-{% block 'style' %}<link href="{% static 'css/template_preview_center.css' %}" rel="stylesheet" />{% endblock %}
+{% block 'style' %}<link href="{% static 'css/school_logo.css' %}" rel="stylesheet" /><link href="{% static 'css/template_preview_center.css' %}" rel="stylesheet" />{% endblock %}
 {% block 'content' %}
 <div class="hub-toolbar">
     <div>
         <h1 class="hub-page-title">Template Preview Center</h1>
-        <p class="text-muted mb-0">Reference-style live previews with dynamic Django variables.</p>
+        <p class="text-muted mb-0">Logo is now separate: clear front logo and low-opacity watermark logo. Click preview logo to change demo brand.</p>
     </div>
-    <div class="d-flex gap-2 flex-wrap">
-        <a href="{% url 'dashboard' %}" class="btn btn-outline-dark rounded-pill">Dashboard</a>
-        <a href="/admin/" class="btn btn-dark rounded-pill">Admin Control Panel</a>
-    </div>
+    <div class="d-flex gap-2 flex-wrap"><a href="{% url 'dashboard' %}" class="btn btn-outline-dark rounded-pill">Dashboard</a><a href="/admin/" class="btn btn-dark rounded-pill">Admin Control Panel</a></div>
 </div>
 
 <div class="preview-stage-box">
-    <div class="preview-stage-head">
-        <div>
-            <span class="preview-kicker">Reference Preview Gallery</span>
-            <h2>Bio Data, Certificates, Vouchers, WhatsApp Cards and Reports</h2>
-        </div>
-        <div class="preview-count">{{ templates|length }} Templates</div>
-    </div>
+    <div class="preview-stage-head"><div><span class="preview-kicker">Reference Preview Gallery</span><h2>Bio Data, Certificates, Vouchers, WhatsApp Cards and Reports</h2></div><div class="preview-count">{{ templates|length }} Templates</div></div>
     <div class="preview-grid">
         {% for item in templates %}
-        <button type="button" class="preview-card" data-title="{{ item.title }}" data-category="{{ item.category }}" data-badge="{{ item.badge }}" data-description="{{ item.description }}" data-sample="{{ item.sample }}" data-fields-id="previewFields{{ forloop.counter }}">
+        <button type="button" class="preview-card" data-title="{{ item.title }}" data-category="{{ item.category }}" data-description="{{ item.description }}" data-fields-id="previewFields{{ forloop.counter }}">
             <span class="preview-card-icon"><i class="fa-solid {{ item.icon }}"></i></span>
-            <span class="preview-card-body">
-                <span class="preview-card-top"><strong>{{ item.title }}</strong><em>{{ item.badge }}</em></span>
-                <span class="preview-card-desc">{{ item.description }}</span>
-                <span class="preview-card-foot">{{ item.category }} <i class="fa-solid fa-up-right-and-down-left-from-center"></i></span>
-            </span>
+            <span class="preview-card-body"><span class="preview-card-top"><strong>{{ item.title }}</strong><em>{{ item.badge }}</em></span><span class="preview-card-desc">{{ item.description }}</span><span class="preview-card-foot">{{ item.category }} <i class="fa-solid fa-up-right-and-down-left-from-center"></i></span></span>
         </button>
-        <div class="preview-fields-source" id="previewFields{{ forloop.counter }}">
-            {% for field in item.fields %}
-            <div class="dynamic-field-box">
-                <span class="dynamic-field-label">{{ field.label }}</span>
-                <code>{{ field.value }}</code>
-            </div>
-            {% endfor %}
-        </div>
+        <div class="preview-fields-source" id="previewFields{{ forloop.counter }}">{% for field in item.fields %}<div class="dynamic-field-box"><span class="dynamic-field-label">{{ field.label }}</span><code>{{ field.value }}</code></div>{% endfor %}</div>
         {% endfor %}
     </div>
 </div>
 
 <div class="template-preview-overlay" id="templatePreviewOverlay" aria-hidden="true">
-    <div class="template-preview-modal" role="dialog" aria-modal="true" aria-labelledby="previewTitle">
+    <div class="template-preview-modal" role="dialog" aria-modal="true">
         <button type="button" class="template-preview-close" id="templatePreviewClose" aria-label="Close preview"><i class="fa-solid fa-xmark"></i></button>
-        <div class="template-screen-frame">
-            <div class="template-screen-toolbar">
-                <span></span><span></span><span></span>
-                <strong id="previewCategory">Preview</strong>
-            </div>
-            <div class="template-screen-body" id="previewCanvas"></div>
-        </div>
+        <div class="template-screen-frame"><div class="template-screen-toolbar"><span></span><span></span><span></span><strong id="previewCategory">Preview</strong></div><div class="template-screen-body" id="previewCanvas"></div></div>
     </div>
 </div>
 
@@ -63,114 +37,32 @@
     const closeBtn = document.getElementById('templatePreviewClose');
     const category = document.getElementById('previewCategory');
     const canvas = document.getElementById('previewCanvas');
+    const brandClasses = ['', 'brand-blue', 'brand-green'];
+    let brandIndex = 0;
 
-    function escapeHtml(value){
-        return String(value || '').replace(/[&<>'"]/g, function(char){
-            return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char];
-        });
-    }
+    function escapeHtml(value){ return String(value || '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+    function readFields(card){ const source = document.getElementById(card.dataset.fieldsId); if(!source){ return []; } return Array.from(source.querySelectorAll('.dynamic-field-box')).map(box => ({ label: box.querySelector('.dynamic-field-label')?.textContent.trim() || '', value: box.querySelector('code')?.textContent.trim() || '' })); }
+    function fieldRows(fields, limit){ return fields.slice(0, limit || fields.length).map(f => '<div class="ref-row"><span>' + escapeHtml(f.label) + '</span><b>' + escapeHtml(f.value) + '</b></div>').join(''); }
+    function fieldPills(fields, limit){ return fields.slice(0, limit || fields.length).map(f => '<div class="ref-pill"><small>' + escapeHtml(f.label) + '</small><code>' + escapeHtml(f.value) + '</code></div>').join(''); }
+    function logo(){ return '<span class="school-logo school-logo-small school-logo-main school-logo-clickable" title="Click to change school brand"><span></span><span></span><span></span><span></span></span>'; }
+    function watermark(){ return '<div class="print-logo-watermark"><span class="school-logo school-logo-watermark"><span></span><span></span><span></span><span></span></span></div>'; }
 
-    function readFields(card){
-        const source = document.getElementById(card.dataset.fieldsId);
-        if(!source){ return []; }
-        return Array.from(source.querySelectorAll('.dynamic-field-box')).map(function(box){
-            return {
-                label: box.querySelector('.dynamic-field-label')?.textContent.trim() || '',
-                value: box.querySelector('code')?.textContent.trim() || ''
-            };
-        });
-    }
+    function buildBio(title, description, fields){ return '<article class="ref-biodata">' + watermark() + '<div class="brand-hint">Click clear logo to change school brand</div><div class="ref-content-layer"><header class="ref-bio-head">' + logo() + '<div><h2>Government Middle School Shalgah</h2><p>Official School ERP Record</p><h3>' + escapeHtml(title) + '</h3></div><aside>Ref # : <b>DYN-ID</b><br>Printing Date : <b>print_date</b></aside></header><section class="ref-section"><div class="ref-section-title">' + escapeHtml(title.replace('Bio Data','Data')) + '</div><div class="ref-main-grid"><div class="ref-photo">PHOTO<br>photo_path</div><div class="ref-lines">' + fieldRows(fields,5) + '</div></div><div class="ref-two-col">' + fieldRows(fields.slice(5),8) + '</div></section><section class="ref-section"><div class="ref-section-title">Parent / Official Data</div><div class="ref-two-col">' + fieldRows(fields.slice(2,10),8) + '</div></section><div class="ref-sign">Campus Head\'s Signature</div></div></article>'; }
+    function buildCertificate(title, description, fields){ return '<article class="ref-cert"><div class="cert-wave top"></div><div class="cert-wave bottom"></div>' + watermark() + '<div class="brand-hint">Click clear logo to change school brand</div><div class="cert-inner ref-content-layer"><header class="cert-head">' + logo() + '<div><h2>Government Middle School Shalgah</h2><p>Official Certificate Record</p></div><aside>Certificate Ref# : <b>certificate_ref</b><br>Issuance Date : <b>print_date</b></aside></header><h1>' + escapeHtml(title) + '</h1><p class="cert-intro">This preview uses separate front logo and watermark logo. Live print can use tenant school branding.</p><div class="cert-photo">PHOTO<br>student.photo_path</div><div class="cert-table">' + fieldRows(fields,12) + '</div><div class="cert-sigs"><span>GR In-Charge</span><span>Principal</span></div></div></article>'; }
+    function buildWhatsApp(title, description, fields){ return '<article class="ref-whatsapp"><div class="wa-image">' + logo() + '</div><div class="wa-bubble"><div class="wa-date">Request On : <b>request_date</b></div><h2>💖 ' + escapeHtml(title) + ' 💖</h2><hr><div class="wa-identity">' + fieldRows(fields,4) + '</div><div class="wa-label">===== ' + escapeHtml(title.replace('Student ','')) + ' =====</div><div class="wa-body">' + fieldPills(fields.slice(4),8) + '</div><hr><b>GOVERNMENT MIDDLE SCHOOL SHALGAH</b><time>time</time></div></article>'; }
+    function buildVoucher(title, description, fields){ return '<article class="ref-voucher">' + watermark() + '<div class="brand-hint">Click clear logo to change school brand</div><div class="ref-content-layer"><header>' + logo() + '<h2>Government Middle School Shalgah</h2><p>Fee / Finance Dynamic Preview</p></header><h1>' + escapeHtml(title) + '</h1><div class="voucher-copies"><div>School Copy</div><div>Parent Copy</div></div><div class="voucher-table">' + fieldRows(fields,10) + '</div><div class="voucher-total">Total / Balance is filled from live invoice context.</div></div></article>'; }
+    function buildProfile(title, description, fields){ return '<article class="ref-profile"><header><h2>Government Middle School Shalgah</h2><button>×</button></header><section><div class="profile-photo">' + logo() + '</div><div><h1>' + escapeHtml(title) + '</h1><p>' + escapeHtml(description) + '</p><b class="profile-active">( Active status )</b></div></section><div class="profile-grid">' + fieldRows(fields,16) + '</div><footer><button>Close Window</button><button>Print Bio Data</button></footer></article>'; }
+    function buildTableReport(title, description, fields){ return '<article class="ref-report">' + watermark() + '<div class="brand-hint">Click clear logo to change school brand</div><div class="ref-content-layer"><header>' + logo() + '<h2>Government Middle School Shalgah</h2><p>' + escapeHtml(description) + '</p></header><h1>' + escapeHtml(title) + '</h1><table><thead><tr><th>Field</th><th>Dynamic HTML value</th></tr></thead><tbody>' + fields.map(f => '<tr><td>' + escapeHtml(f.label) + '</td><td><code>' + escapeHtml(f.value) + '</code></td></tr>').join('') + '</tbody></table><div class="report-sig">Prepared By ____________ Principal ____________</div></div></article>'; }
 
-    function fieldRows(fields, limit){
-        return fields.slice(0, limit || fields.length).map(function(field){
-            return '<div class="ref-row"><span>' + escapeHtml(field.label) + '</span><b>' + escapeHtml(field.value) + '</b></div>';
-        }).join('');
-    }
-
-    function fieldPills(fields, limit){
-        return fields.slice(0, limit || fields.length).map(function(field){
-            return '<div class="ref-pill"><small>' + escapeHtml(field.label) + '</small><code>' + escapeHtml(field.value) + '</code></div>';
-        }).join('');
-    }
-
-    function logo(){
-        return '<div class="ref-logo"><i></i><i></i><i></i><i></i></div>';
-    }
-
-    function buildBio(title, description, fields){
-        return '<article class="ref-biodata">'
-            + '<header class="ref-bio-head">' + logo() + '<div><h2>Government Middle School Shalgah</h2><p>Official School ERP Record</p><h3>' + escapeHtml(title) + '</h3></div><aside>Ref # : <b>DYN-{{ id }}</b><br>Printing Date : <b>{{ print_date }}</b></aside></header>'
-            + '<section class="ref-section"><div class="ref-section-title">' + escapeHtml(title.replace('Bio Data','Data')) + '</div><div class="ref-main-grid"><div class="ref-photo">PHOTO<br>{{ photo_path }}</div><div class="ref-lines">' + fieldRows(fields, 5) + '</div></div><div class="ref-two-col">' + fieldRows(fields.slice(5), 8) + '</div></section>'
-            + '<section class="ref-section"><div class="ref-section-title">Parent / Official Data</div><div class="ref-two-col">' + fieldRows(fields.slice(2, 10), 8) + '</div></section>'
-            + '<section class="ref-section"><div class="ref-section-title">Current Status</div><div class="ref-two-col">' + fieldRows(fields.slice(0, 4), 4) + '</div></section>'
-            + '<div class="ref-sign">Campus Head\'s Signature</div></article>';
-    }
-
-    function buildCertificate(title, description, fields){
-        return '<article class="ref-cert"><div class="cert-wave top"></div><div class="cert-wave bottom"></div><div class="cert-watermark">GMS</div><div class="cert-inner">'
-            + '<header class="cert-head">' + logo() + '<div><h2>Government Middle School Shalgah</h2><p>Official Certificate Record</p></div><aside>Certificate Ref# : <b>{{ certificate_ref }}</b><br>Issuance Date : <b>{{ print_date }}</b></aside></header>'
-            + '<h1>' + escapeHtml(title) + '</h1><p class="cert-intro">This certificate is generated dynamically from school ERP values. The following fields are inserted by HTML template variables.</p>'
-            + '<div class="cert-photo">PHOTO<br>{{ student.photo_path }}</div><div class="cert-table">' + fieldRows(fields, 12) + '</div>'
-            + '<p class="cert-close">This preview shows the certificate structure only. Live print uses actual student and school data.</p><div class="cert-sigs"><span>GR In-Charge</span><span>Principal</span></div></div></article>';
-    }
-
-    function buildWhatsApp(title, description, fields){
-        return '<article class="ref-whatsapp"><div class="wa-image"></div><div class="wa-bubble">'
-            + '<div class="wa-date">🗓️ Request On : <b>{{ request_date }}</b></div><h2>💖 ' + escapeHtml(title) + ' 💖</h2><hr>'
-            + '<div class="wa-identity">' + fieldRows(fields, 4) + '</div><div class="wa-label">===== ' + escapeHtml(title.replace('Student ','')) + ' =====</div>'
-            + '<div class="wa-body">' + fieldPills(fields.slice(4), 8) + '</div><hr><b>GOVERNMENT MIDDLE SCHOOL SHALGAH</b><time>{{ time }}</time></div></article>';
-    }
-
-    function buildVoucher(title, description, fields){
-        return '<article class="ref-voucher"><header><h2>Government Middle School Shalgah</h2><p>Fee / Finance Dynamic Preview</p></header><h1>' + escapeHtml(title) + '</h1><div class="voucher-copies"><div>School Copy</div><div>Parent Copy</div></div><div class="voucher-table">' + fieldRows(fields, 10) + '</div><div class="voucher-total">Total / Balance is filled from live invoice context.</div></article>';
-    }
-
-    function buildProfile(title, description, fields){
-        return '<article class="ref-profile"><header><h2>Government Middle School Shalgah</h2><button>×</button></header><section><div class="profile-photo">{{ photo }}</div><div><h1>' + escapeHtml(title) + '</h1><p>' + escapeHtml(description) + '</p><b class="profile-active">( Active status )</b></div></section><div class="profile-grid">' + fieldRows(fields, 16) + '</div><footer><button>Close Window</button><button>Print Bio Data</button></footer></article>';
-    }
-
-    function buildTableReport(title, description, fields){
-        return '<article class="ref-report"><header><h2>Government Middle School Shalgah</h2><p>' + escapeHtml(description) + '</p></header><h1>' + escapeHtml(title) + '</h1><table><thead><tr><th>Field</th><th>Dynamic HTML value</th></tr></thead><tbody>' + fields.map(function(field){ return '<tr><td>' + escapeHtml(field.label) + '</td><td><code>' + escapeHtml(field.value) + '</code></td></tr>'; }).join('') + '</tbody></table><div class="report-sig">Prepared By ____________ Principal ____________</div></article>';
-    }
-
-    function pickLayout(title, category){
-        const lower = title.toLowerCase();
-        if(lower.includes('bio data')) return 'bio';
-        if(lower.includes('certificate')) return 'certificate';
-        if(lower.includes('voucher') || lower.includes('dues')) return 'voucher';
-        if(lower.includes('advisory') || lower.includes('warning') || lower.includes('marksheet') || lower.includes('result card')) return 'whatsapp';
-        if(lower.includes('id card') || lower.includes('welcome card')) return 'profile';
-        if(category === 'Ledger' || category === 'Attendance' || category === 'Study' || category === 'Exams') return 'report';
-        return 'report';
-    }
-
-    function openPreview(card){
-        const title = card.dataset.title;
-        const categoryName = card.dataset.category;
-        const fields = readFields(card);
-        const layout = pickLayout(title, categoryName);
-        category.textContent = categoryName + ' Reference Preview';
-        if(layout === 'bio') canvas.innerHTML = buildBio(title, card.dataset.description, fields);
-        else if(layout === 'certificate') canvas.innerHTML = buildCertificate(title, card.dataset.description, fields);
-        else if(layout === 'voucher') canvas.innerHTML = buildVoucher(title, card.dataset.description, fields);
-        else if(layout === 'whatsapp') canvas.innerHTML = buildWhatsApp(title, card.dataset.description, fields);
-        else if(layout === 'profile') canvas.innerHTML = buildProfile(title, card.dataset.description, fields);
-        else canvas.innerHTML = buildTableReport(title, card.dataset.description, fields);
-        overlay.classList.add('is-open');
-        overlay.setAttribute('aria-hidden', 'false');
-        document.body.classList.add('template-modal-open');
-    }
-
-    function closePreview(){
-        overlay.classList.remove('is-open');
-        overlay.setAttribute('aria-hidden', 'true');
-        document.body.classList.remove('template-modal-open');
-    }
-
+    function pickLayout(title, category){ const lower = title.toLowerCase(); if(lower.includes('bio data')) return 'bio'; if(lower.includes('certificate')) return 'certificate'; if(lower.includes('voucher') || lower.includes('dues')) return 'voucher'; if(lower.includes('advisory') || lower.includes('warning') || lower.includes('marksheet') || lower.includes('result card')) return 'whatsapp'; if(lower.includes('id card') || lower.includes('welcome card')) return 'profile'; return 'report'; }
+    function cycleBrand(){ document.body.classList.remove('brand-blue','brand-green'); brandIndex = (brandIndex + 1) % brandClasses.length; if(brandClasses[brandIndex]){ document.body.classList.add(brandClasses[brandIndex]); } }
+    function attachLogoClicks(){ canvas.querySelectorAll('.school-logo-clickable').forEach(el => el.addEventListener('click', cycleBrand)); }
+    function openPreview(card){ const title = card.dataset.title; const fields = readFields(card); const layout = pickLayout(title, card.dataset.category); category.textContent = card.dataset.category + ' Reference Preview'; if(layout === 'bio') canvas.innerHTML = buildBio(title, card.dataset.description, fields); else if(layout === 'certificate') canvas.innerHTML = buildCertificate(title, card.dataset.description, fields); else if(layout === 'voucher') canvas.innerHTML = buildVoucher(title, card.dataset.description, fields); else if(layout === 'whatsapp') canvas.innerHTML = buildWhatsApp(title, card.dataset.description, fields); else if(layout === 'profile') canvas.innerHTML = buildProfile(title, card.dataset.description, fields); else canvas.innerHTML = buildTableReport(title, card.dataset.description, fields); attachLogoClicks(); overlay.classList.add('is-open'); overlay.setAttribute('aria-hidden','false'); document.body.classList.add('template-modal-open'); }
+    function closePreview(){ overlay.classList.remove('is-open'); overlay.setAttribute('aria-hidden','true'); document.body.classList.remove('template-modal-open'); }
     document.querySelectorAll('.preview-card').forEach(card => card.addEventListener('click', () => openPreview(card)));
     closeBtn.addEventListener('click', closePreview);
-    overlay.addEventListener('click', function(event){ if(event.target === overlay){ closePreview(); } });
-    document.addEventListener('keydown', function(event){ if(event.key === 'Escape'){ closePreview(); } });
+    overlay.addEventListener('click', event => { if(event.target === overlay){ closePreview(); } });
+    document.addEventListener('keydown', event => { if(event.key === 'Escape'){ closePreview(); } });
 })();
 </script>
 {% endblock %}
