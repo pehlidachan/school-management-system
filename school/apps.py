@@ -11,3 +11,4 @@ class SchoolConfig(AppConfig):
         from . import staff_attendance_models  # noqa: F401
         from . import study_material_models  # noqa: F401
         from . import ledger_models  # noqa: F401
+        from . import profile_settings_models  # noqa: F401
