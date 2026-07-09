@@ -1,30 +1,37 @@
 {% extends 'dashboard_base.html' %}
 {% load static %}
-{% block 'title' %}Assessment Detail{% endblock %}
+{% block 'title' %}Exam Schema Detail{% endblock %}
 {% block 'content' %}
 <div class="hub-toolbar">
-    <div><h1 class="hub-page-title">{{ exam.name }}</h1><p class="text-muted mb-0">{{ exam.grade }} • {{ exam.start_date }}</p></div>
+    <div><h1 class="hub-page-title">{{ exam.get_exam_type_display }}</h1><p class="text-muted mb-0">{{ exam.name }} • {{ exam.grade }} • {{ exam.academic_year }} • Sequence {{ exam.sequence }} • Weight {{ exam.result_weight }}%</p></div>
     <div class="d-flex gap-2 flex-wrap">
         <a href="{% url 'exam_datesheet' exam.id %}" target="_blank" class="btn btn-outline-dark rounded-pill">Date Sheet</a>
-        <a href="{% url 'add_exam_subject' exam.id %}" class="btn btn-success rounded-pill">+ Subject</a>
+        {% if not exam.is_locked %}<a href="{% url 'add_exam_subject' exam.id %}" class="btn btn-success rounded-pill">+ Subject</a>{% endif %}
         <a href="{% url 'exam_results' exam.id %}" class="btn btn-dark rounded-pill">Summary</a>
         <a href="{% url 'exam_dashboard' %}" class="btn btn-outline-dark rounded-pill">Back</a>
     </div>
 </div>
+<div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="hub-card p-3"><b>Type</b><br>{{ exam.get_exam_type_display }}</div></div>
+    <div class="col-md-3"><div class="hub-card p-3"><b>Term</b><br>{{ exam.term_label|default:'-' }}</div></div>
+    <div class="col-md-3"><div class="hub-card p-3"><b>Start / End</b><br>{{ exam.start_date }}{% if exam.end_date %} → {{ exam.end_date }}{% endif %}</div></div>
+    <div class="col-md-3"><div class="hub-card p-3"><b>Status</b><br>{% if exam.is_locked %}<span class="hub-status danger">Locked</span>{% elif exam.is_published %}<span class="hub-status active">Published</span>{% else %}<span class="hub-status pending">Draft</span>{% endif %}</div></div>
+</div>
 <div class="hub-table-card">
     <div class="table-responsive">
         <table class="table align-middle">
-            <thead><tr><th>Subject</th><th>Total</th><th>Passing</th><th class="text-end">Action</th></tr></thead>
+            <thead><tr><th>Subject</th><th>Total</th><th>Passing</th><th>Date Sheet</th><th class="text-end">Action</th></tr></thead>
             <tbody>
                 {% for item in exam_subjects %}
                 <tr>
                     <td><strong>{{ item.subject.name }}</strong></td>
                     <td>{{ item.total_marks }}</td>
                     <td>{{ item.passing_marks }}</td>
-                    <td class="text-end"><a class="btn btn-sm btn-success rounded-pill" href="{% url 'marks_entry' item.id %}">Marks</a></td>
+                    <td>{% if item.date_sheet_item %}{{ item.date_sheet_item.paper_date }} • {{ item.date_sheet_item.start_time }}{% else %}<span class="text-muted">Auto on print</span>{% endif %}</td>
+                    <td class="text-end">{% if exam.is_locked %}<span class="text-muted small">Locked</span>{% else %}<a class="btn btn-sm btn-success rounded-pill" href="{% url 'marks_entry' item.id %}">Marks</a>{% endif %}</td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="4" class="text-center text-muted py-5">No subjects added.</td></tr>
+                <tr><td colspan="5" class="text-center text-muted py-5">No subjects added.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
