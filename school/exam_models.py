@@ -161,8 +161,8 @@ class Exam(models.Model):
         ]
         constraints = [
             models.UniqueConstraint(
-                fields=["academic_year", "grade", "exam_type", "name"],
-                name="unique_exam_schema_per_grade_year",
+                fields=["scheme", "academic_year", "grade", "exam_type", "name"],
+                name="unique_exam_scheme_per_grade_year",
             ),
         ]
 
