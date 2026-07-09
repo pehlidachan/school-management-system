@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from django import forms
 
-from ..models import Gender, Grade, GuardianRelation, Student
+from ..models import AcademicClass, Gender, Grade, GuardianRelation, Student
 
 
 class AddStudentForm(forms.ModelForm):
@@ -13,6 +13,7 @@ class AddStudentForm(forms.ModelForm):
     student_name_urdu = forms.CharField(max_length=150, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'dir': 'rtl'}))
     father_name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     grade = forms.ModelChoiceField(queryset=Grade.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    academic_class = forms.ModelChoiceField(required=False, queryset=AcademicClass.objects.filter(status=True).select_related('academic_session', 'grade'), widget=forms.Select(attrs={'class': 'form-control'}))
     age = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}))
     gender = forms.ModelChoiceField(queryset=Gender.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
     dob = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control','type':'date'}))
