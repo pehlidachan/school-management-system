@@ -1,3 +1,11 @@
-<span class="school-logo {{ logo_class|default:'school-logo-main' }}" aria-hidden="true">
-    <span></span><span></span><span></span><span></span>
-</span>
+{% if brand and brand.main_logo_path and 'school-logo-watermark' not in logo_class %}
+    <img class="school-logo-img {{ logo_class|default:'school-logo-main' }}" src="/{{ brand.main_logo_path }}" alt="{{ brand.school_name|default:'School logo' }}">
+{% elif brand and brand.watermark_logo_path and 'school-logo-watermark' in logo_class %}
+    <img class="school-logo-img {{ logo_class|default:'school-logo-watermark' }}" src="/{{ brand.watermark_logo_path }}" alt="{{ brand.school_name|default:'School watermark' }}">
+{% elif brand and brand.main_logo_path and 'school-logo-watermark' in logo_class %}
+    <img class="school-logo-img {{ logo_class|default:'school-logo-watermark' }}" src="/{{ brand.main_logo_path }}" alt="{{ brand.school_name|default:'School watermark' }}">
+{% else %}
+    <span class="school-logo {{ logo_class|default:'school-logo-main' }}" aria-hidden="true">
+        <span></span><span></span><span></span><span></span>
+    </span>
+{% endif %}

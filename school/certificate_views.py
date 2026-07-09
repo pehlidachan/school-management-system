@@ -4,6 +4,7 @@ from django.utils import timezone
 
 from .access_control import admin_required
 from .models import Grade, Student
+from .profile_settings_models import SchoolBrandProfile
 
 
 CERTIFICATE_TYPES = {
@@ -47,6 +48,10 @@ def _get_certificate(certificate_type):
         raise Http404("Certificate type not found") from exc
 
 
+def _active_brand():
+    return SchoolBrandProfile.objects.filter(is_active=True).first()
+
+
 @admin_required
 def student_certificate(request, student_id, certificate_type="character"):
     certificate = _get_certificate(certificate_type)
@@ -62,6 +67,7 @@ def student_certificate(request, student_id, certificate_type="character"):
         "print_date": timezone.localdate(),
         "is_bulk": False,
         "title": certificate["title"],
+        "brand": _active_brand(),
     })
 
 
@@ -91,4 +97,5 @@ def bulk_student_certificates(request):
         "print_date": timezone.localdate(),
         "is_bulk": True,
         "title": f"Bulk {certificate['title']}",
+        "brand": _active_brand(),
     })
