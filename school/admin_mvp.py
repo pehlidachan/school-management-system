@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin.sites import AlreadyRegistered
 
+from .exam_models import Exam, ExamDateSheetItem, ExamSubject, StudentMark
 from .ledger_models import CashBankAccount, CashBankTransaction, Vendor, VendorLedgerEntry
 from .profile_settings_models import RoleProfileRule, SchoolBrandProfile, StaffLoginProfile, UserProfileSetting
 from .staff_attendance_models import StaffLectureAttendance, StaffLectureSession
@@ -82,6 +83,32 @@ class RoleProfileRuleAdmin(admin.ModelAdmin):
     search_fields = ('role__name', 'dashboard_scope', 'note')
 
 
+class ExamAdmin(admin.ModelAdmin):
+    list_display = ('name', 'exam_type', 'academic_year', 'grade', 'sequence', 'result_weight', 'is_locked', 'is_published', 'start_date')
+    list_filter = ('exam_type', 'academic_year', 'grade', 'is_locked', 'is_published')
+    search_fields = ('name', 'term_label', 'grade__name')
+    date_hierarchy = 'start_date'
+
+
+class ExamSubjectAdmin(admin.ModelAdmin):
+    list_display = ('exam', 'subject', 'total_marks', 'passing_marks')
+    list_filter = ('exam__exam_type', 'exam__academic_year', 'exam__grade')
+    search_fields = ('exam__name', 'subject__name')
+
+
+class ExamDateSheetItemAdmin(admin.ModelAdmin):
+    list_display = ('exam_subject', 'paper_date', 'start_time', 'end_time', 'room', 'sort_order')
+    list_filter = ('paper_date', 'exam_subject__exam__exam_type', 'exam_subject__exam__grade')
+    search_fields = ('exam_subject__exam__name', 'exam_subject__subject__name', 'room', 'instructions')
+    date_hierarchy = 'paper_date'
+
+
+class StudentMarkAdmin(admin.ModelAdmin):
+    list_display = ('student', 'exam_subject', 'marks_obtained', 'marked_by', 'updated_at')
+    list_filter = ('exam_subject__exam__exam_type', 'exam_subject__exam__academic_year', 'exam_subject__exam__grade')
+    search_fields = ('student__name', 'student__gr_no', 'exam_subject__exam__name', 'exam_subject__subject__name')
+
+
 safe_mvp_register(StaffLectureSession, StaffLectureSessionAdmin)
 safe_mvp_register(StaffLectureAttendance, StaffLectureAttendanceAdmin)
 safe_mvp_register(StudyMaterial, StudyMaterialAdmin)
@@ -93,3 +120,7 @@ safe_mvp_register(SchoolBrandProfile, SchoolBrandProfileAdmin)
 safe_mvp_register(UserProfileSetting, UserProfileSettingAdmin)
 safe_mvp_register(StaffLoginProfile, StaffLoginProfileAdmin)
 safe_mvp_register(RoleProfileRule, RoleProfileRuleAdmin)
+safe_mvp_register(Exam, ExamAdmin)
+safe_mvp_register(ExamSubject, ExamSubjectAdmin)
+safe_mvp_register(ExamDateSheetItem, ExamDateSheetItemAdmin)
+safe_mvp_register(StudentMark, StudentMarkAdmin)
