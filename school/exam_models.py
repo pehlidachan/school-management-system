@@ -5,6 +5,75 @@ from django.db import models
 from django.utils import timezone
 
 
+class ExamScheme(models.Model):
+    name = models.CharField(max_length=120, default="Scheme 1")
+    code = models.SlugField(max_length=80, unique=True, default="scheme-1")
+    description = models.TextField(blank=True)
+    school_brand = models.ForeignKey(
+        "school.SchoolBrandProfile",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="exam_schemes",
+        help_text="Optional. Attach this scheme to a specific school/tenant in future SaaS mode.",
+    )
+    is_default = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_exam_schemes",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        app_label = "school"
+        ordering = ["-is_default", "name"]
+        indexes = [
+            models.Index(fields=["code"], name="exam_scheme_code_idx"),
+            models.Index(fields=["is_active"], name="exam_scheme_active_idx"),
+            models.Index(fields=["is_default"], name="exam_scheme_default_idx"),
+        ]
+
+    def __str__(self):
+        return self.name
+
+
+class ExamSchemeItem(models.Model):
+    scheme = models.ForeignKey(
+        ExamScheme,
+        on_delete=models.CASCADE,
+        related_name="items",
+    )
+    item_key = models.SlugField(max_length=80)
+    display_name = models.CharField(max_length=120)
+    sequence = models.PositiveSmallIntegerField(default=20)
+    result_weight = models.DecimalField(max_digits=5, decimal_places=2, default=10)
+    default_total_marks = models.DecimalField(max_digits=7, decimal_places=2, default=100)
+    default_passing_marks = models.DecimalField(max_digits=7, decimal_places=2, default=33)
+    include_in_final_result = models.BooleanField(default=True)
+    is_major_exam = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    note = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        app_label = "school"
+        ordering = ["scheme", "sequence", "display_name"]
+        constraints = [
+            models.UniqueConstraint(fields=["scheme", "item_key"], name="unique_item_per_exam_scheme"),
+        ]
+        indexes = [
+            models.Index(fields=["scheme", "sequence"], name="exam_scheme_item_order_idx"),
+            models.Index(fields=["is_active"], name="exam_scheme_item_active_idx"),
+        ]
+
+    def __str__(self):
+        return f"{self.scheme.name} - {self.display_name}"
+
+
 class Exam(models.Model):
     WEEKLY_TEST = "weekly_test"
     MONTHLY_TEST = "monthly_test"
@@ -40,6 +109,20 @@ class Exam(models.Model):
         FINAL: Decimal("25.00"),
     }
 
+    scheme = models.ForeignKey(
+        ExamScheme,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="exams",
+    )
+    scheme_item = models.ForeignKey(
+        ExamSchemeItem,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="exams",
+    )
     name = models.CharField(max_length=180)
     exam_type = models.CharField(max_length=30, choices=EXAM_TYPE_CHOICES, default=MONTHLY_TEST)
     academic_year = models.CharField(max_length=20, default="2026")
@@ -71,18 +154,25 @@ class Exam(models.Model):
         indexes = [
             models.Index(fields=["grade", "start_date"]),
             models.Index(fields=["academic_year", "grade", "exam_type"], name="exam_year_grade_type_idx"),
+            models.Index(fields=["scheme", "academic_year", "grade"], name="exam_scheme_year_grade_idx"),
             models.Index(fields=["sequence"], name="exam_sequence_idx"),
             models.Index(fields=["is_published"]),
             models.Index(fields=["is_locked"], name="exam_locked_idx"),
         ]
         constraints = [
             models.UniqueConstraint(
-                fields=["academic_year", "grade", "exam_type", "name"],
-                name="unique_exam_schema_per_grade_year",
+                fields=["scheme", "academic_year", "grade", "exam_type", "name"],
+                name="unique_exam_scheme_per_grade_year",
             ),
         ]
 
     def save(self, *args, **kwargs):
+        if self.scheme_item:
+            self.scheme = self.scheme_item.scheme
+            self.sequence = self.scheme_item.sequence
+            self.result_weight = self.scheme_item.result_weight
+            if not self.name:
+                self.name = self.scheme_item.display_name
         if not self.sequence:
             self.sequence = self.EXAM_SEQUENCE.get(self.exam_type, 20)
         if self.result_weight in (None, Decimal("0"), 0):
@@ -93,10 +183,13 @@ class Exam(models.Model):
 
     @property
     def is_major_exam(self):
+        if self.scheme_item:
+            return self.scheme_item.is_major_exam
         return self.exam_type in {self.MID_TERM, self.PRE_FINAL, self.FINAL}
 
     def __str__(self):
-        return f"{self.get_exam_type_display()} - {self.grade} - {self.academic_year}"
+        scheme = f"{self.scheme.name} - " if self.scheme else ""
+        return f"{scheme}{self.name} - {self.grade} - {self.academic_year}"
 
 
 class ExamSubject(models.Model):

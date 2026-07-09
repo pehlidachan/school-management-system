@@ -1,36 +1,37 @@
 {% extends 'dashboard_base.html' %}
 {% load static %}
-{% block 'title' %}Exam Schema{% endblock %}
+{% block 'title' %}Exam Schemes{% endblock %}
 {% block 'content' %}
 <div class="hub-toolbar">
     <div>
-        <h1 class="hub-page-title">Exam Schema</h1>
-        <p class="text-muted mb-0">Weekly, Monthly, Quarterly, Mid Term, Pre Final and Final Exam frame.</p>
+        <h1 class="hub-page-title">Exam Schemes</h1>
+        <p class="text-muted mb-0">Scheme 1 default branch/sancha. Future schools can use Scheme 2 or any custom scheme.</p>
     </div>
-    <a href="{% url 'add_exam' %}" class="btn btn-success rounded-pill">+ Add Exam Schema</a>
+    <div class="d-flex gap-2 flex-wrap"><a href="{% url 'add_exam' %}" class="btn btn-success rounded-pill">+ Add Exam From Scheme</a><a href="/admin/school/examscheme/" class="btn btn-outline-dark rounded-pill">Manage Schemes</a></div>
 </div>
 
 <div class="row g-4 mb-4">
-    <div class="col-6 col-xl-3"><div class="hub-metric yellow"><div class="label">Total</div><div class="value">{{ total_exams }}</div></div></div>
+    <div class="col-6 col-xl-3"><div class="hub-metric yellow"><div class="label">Schemes</div><div class="value">{{ total_schemes }}</div></div></div>
     <div class="col-6 col-xl-3"><div class="hub-metric purple"><div class="label">Published</div><div class="value">{{ published_exams }}</div></div></div>
     <div class="col-6 col-xl-3"><div class="hub-metric green"><div class="label">Locked</div><div class="value">{{ locked_exams }}</div></div></div>
     <div class="col-6 col-xl-3"><div class="hub-metric blue"><div class="label">Marks</div><div class="value">{{ total_marks }}</div></div></div>
 </div>
 
-<div class="hub-card p-3 mb-4">
-    <div class="d-flex gap-2 flex-wrap">
-        {% for value,label in exam_types %}<span class="badge rounded-pill text-bg-light border px-3 py-2">{{ label }}</span>{% endfor %}
-    </div>
+<div class="row g-3 mb-4">
+    {% for scheme in schemes %}
+    <div class="col-lg-6"><div class="hub-card p-3 h-100"><div class="d-flex justify-content-between align-items-start"><div><h5 class="mb-1">{{ scheme.name }} {% if scheme.is_default %}<span class="badge text-bg-success">Default</span>{% endif %}</h5><p class="text-muted small mb-2">{{ scheme.description|default:'No description' }}</p></div><span class="badge rounded-pill text-bg-light border">{{ scheme.items.count }} items</span></div><div class="d-flex gap-2 flex-wrap">{% for item in scheme.items.all %}<span class="badge rounded-pill text-bg-light border px-3 py-2">{{ item.display_name }} • {{ item.result_weight }}%</span>{% endfor %}</div></div></div>
+    {% empty %}<div class="col-12"><div class="alert alert-warning">No exam scheme found. Run migrations to seed Scheme 1.</div></div>{% endfor %}
 </div>
 
 <div class="hub-table-card">
     <div class="table-responsive">
         <table class="table align-middle">
-            <thead><tr><th>Type</th><th>Name</th><th>Year</th><th>Class</th><th>Sequence</th><th>Weight</th><th>Start</th><th>Subjects</th><th>Status</th><th class="text-end">Action</th></tr></thead>
+            <thead><tr><th>Scheme</th><th>Type</th><th>Name</th><th>Year</th><th>Class</th><th>Sequence</th><th>Weight</th><th>Start</th><th>Subjects</th><th>Status</th><th class="text-end">Action</th></tr></thead>
             <tbody>
                 {% for exam in exams %}
                 <tr>
-                    <td><strong>{{ exam.get_exam_type_display }}</strong></td>
+                    <td>{{ exam.scheme.name|default:'Manual' }}</td>
+                    <td><strong>{% if exam.scheme_item %}{{ exam.scheme_item.display_name }}{% else %}{{ exam.get_exam_type_display }}{% endif %}</strong></td>
                     <td>{{ exam.name }}</td>
                     <td>{{ exam.academic_year }}</td>
                     <td>{{ exam.grade }}</td>
@@ -42,7 +43,7 @@
                     <td class="text-end"><a class="btn btn-sm btn-dark rounded-pill" href="{% url 'exam_detail' exam.id %}">Open</a></td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="10" class="text-center text-muted py-5">No exam schema records yet.</td></tr>
+                <tr><td colspan="11" class="text-center text-muted py-5">No exam records yet.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
