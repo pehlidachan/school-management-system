@@ -112,9 +112,17 @@ class Migration(migrations.Migration):
             name='scheme_item',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='exams', to='school.examschemeitem'),
         ),
+        migrations.RemoveConstraint(
+            model_name='exam',
+            name='unique_exam_schema_per_grade_year',
+        ),
         migrations.AddIndex(
             model_name='exam',
             index=models.Index(fields=['scheme', 'academic_year', 'grade'], name='exam_scheme_year_grade_idx'),
+        ),
+        migrations.AddConstraint(
+            model_name='exam',
+            constraint=models.UniqueConstraint(fields=('scheme', 'academic_year', 'grade', 'exam_type', 'name'), name='unique_exam_scheme_per_grade_year'),
         ),
         migrations.RunPython(seed_scheme_one, migrations.RunPython.noop),
     ]
