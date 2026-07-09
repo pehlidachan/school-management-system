@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from .access_control import staff_required
-from .exam_models import Exam, ExamDateSheetItem, ExamSubject, StudentMark
+from .exam_models import Exam, ExamDateSheetItem, ExamScheme, ExamSchemeItem, ExamSubject, StudentMark
 from .models import Grade, Student, Subject
 
 
@@ -30,6 +30,10 @@ def _decimal(value, default="0"):
 def _default_academic_year():
     today = timezone.localdate()
     return str(today.year)
+
+
+def _get_default_scheme():
+    return ExamScheme.objects.filter(is_default=True, is_active=True).first() or ExamScheme.objects.filter(is_active=True).first()
 
 
 def _build_result_rows(exam, students=None):
@@ -108,9 +112,11 @@ def _build_datesheet_rows(exam):
 
 @staff_required
 def exam_dashboard(request):
-    exams = Exam.objects.select_related("grade", "created_by").annotate(subject_count=Count("exam_subjects"))[:50]
+    exams = Exam.objects.select_related("grade", "created_by", "scheme", "scheme_item").annotate(subject_count=Count("exam_subjects"))[:50]
     context = {
         "exams": exams,
+        "schemes": ExamScheme.objects.prefetch_related("items").all(),
+        "total_schemes": ExamScheme.objects.count(),
         "total_exams": Exam.objects.count(),
         "published_exams": Exam.objects.filter(is_published=True).count(),
         "locked_exams": Exam.objects.filter(is_locked=True).count(),
@@ -123,13 +129,19 @@ def exam_dashboard(request):
 @staff_required
 def add_exam(request):
     grades = Grade.objects.filter(status=True).order_by("name")
+    schemes = ExamScheme.objects.filter(is_active=True).prefetch_related("items").order_by("-is_default", "name")
+    default_scheme = _get_default_scheme()
     if request.method == "POST":
         grade = get_object_or_404(Grade, id=request.POST.get("grade"))
-        exam_type = request.POST.get("exam_type") or Exam.MONTHLY_TEST
+        scheme = get_object_or_404(ExamScheme, id=request.POST.get("scheme")) if request.POST.get("scheme") else default_scheme
+        scheme_item = get_object_or_404(ExamSchemeItem, id=request.POST.get("scheme_item"), scheme=scheme) if request.POST.get("scheme_item") else None
+        exam_type = scheme_item.item_key if scheme_item else (request.POST.get("exam_type") or Exam.MONTHLY_TEST)
         name = (request.POST.get("name") or "").strip()
         if not name:
-            name = dict(Exam.EXAM_TYPE_CHOICES).get(exam_type, "Monthly Test")
+            name = scheme_item.display_name if scheme_item else dict(Exam.EXAM_TYPE_CHOICES).get(exam_type, "Monthly Test")
         exam = Exam.objects.create(
+            scheme=scheme,
+            scheme_item=scheme_item,
             name=name,
             exam_type=exam_type,
             academic_year=(request.POST.get("academic_year") or _default_academic_year()).strip(),
@@ -137,16 +149,18 @@ def add_exam(request):
             grade=grade,
             start_date=_date_or_none(request.POST.get("start_date")) or timezone.localdate(),
             end_date=_date_or_none(request.POST.get("end_date")),
-            sequence=int(request.POST.get("sequence") or Exam.EXAM_SEQUENCE.get(exam_type, 20)),
-            result_weight=_decimal(request.POST.get("result_weight"), str(Exam.DEFAULT_WEIGHT.get(exam_type, Decimal("10.00")))),
+            sequence=int(request.POST.get("sequence") or (scheme_item.sequence if scheme_item else Exam.EXAM_SEQUENCE.get(exam_type, 20))),
+            result_weight=_decimal(request.POST.get("result_weight"), str(scheme_item.result_weight if scheme_item else Exam.DEFAULT_WEIGHT.get(exam_type, Decimal("10.00")))),
             is_published=bool(request.POST.get("is_published")),
             is_locked=bool(request.POST.get("is_locked")),
             created_by=request.user,
         )
-        messages.success(request, f"{exam.get_exam_type_display()} schema created successfully.")
+        messages.success(request, f"{exam.name} created from {scheme.name if scheme else 'manual schema'}.")
         return redirect("exam_dashboard")
     return render(request, "exam_form.html", {
         "grades": grades,
+        "schemes": schemes,
+        "default_scheme": default_scheme,
         "today": timezone.localdate(),
         "academic_year": _default_academic_year(),
         "exam_types": Exam.EXAM_TYPE_CHOICES,
@@ -157,26 +171,28 @@ def add_exam(request):
 
 @staff_required
 def exam_detail(request, exam_id):
-    exam = get_object_or_404(Exam.objects.select_related("grade"), id=exam_id)
+    exam = get_object_or_404(Exam.objects.select_related("grade", "scheme", "scheme_item"), id=exam_id)
     exam_subjects = exam.exam_subjects.select_related("subject")
     return render(request, "exam_detail.html", {"exam": exam, "exam_subjects": exam_subjects})
 
 
 @staff_required
 def add_exam_subject(request, exam_id):
-    exam = get_object_or_404(Exam.objects.select_related("grade"), id=exam_id)
+    exam = get_object_or_404(Exam.objects.select_related("grade", "scheme_item"), id=exam_id)
     if exam.is_locked:
         messages.error(request, "This exam is locked. Unlock it before changing subjects.")
         return redirect("exam_detail", exam_id=exam.id)
     subjects = Subject.objects.order_by("name")
     if request.method == "POST":
         subject = get_object_or_404(Subject, id=request.POST.get("subject"))
+        total_default = str(exam.scheme_item.default_total_marks) if exam.scheme_item else "100"
+        passing_default = str(exam.scheme_item.default_passing_marks) if exam.scheme_item else "33"
         exam_subject, _ = ExamSubject.objects.update_or_create(
             exam=exam,
             subject=subject,
             defaults={
-                "total_marks": _decimal(request.POST.get("total_marks"), "100"),
-                "passing_marks": _decimal(request.POST.get("passing_marks"), "33"),
+                "total_marks": _decimal(request.POST.get("total_marks"), total_default),
+                "passing_marks": _decimal(request.POST.get("passing_marks"), passing_default),
             },
         )
         ExamDateSheetItem.objects.get_or_create(
@@ -218,14 +234,14 @@ def marks_entry(request, exam_subject_id):
 
 @staff_required
 def exam_results(request, exam_id):
-    exam = get_object_or_404(Exam.objects.select_related("grade"), id=exam_id)
+    exam = get_object_or_404(Exam.objects.select_related("grade", "scheme", "scheme_item"), id=exam_id)
     result_rows, exam_subjects = _build_result_rows(exam)
     return render(request, "exam_results.html", {"exam": exam, "result_rows": result_rows, "exam_subjects": exam_subjects})
 
 
 @staff_required
 def exam_datesheet(request, exam_id):
-    exam = get_object_or_404(Exam.objects.select_related("grade"), id=exam_id)
+    exam = get_object_or_404(Exam.objects.select_related("grade", "scheme", "scheme_item"), id=exam_id)
     rows = _build_datesheet_rows(exam)
     return render(request, "exam_datesheet.html", {
         "exam": exam,
@@ -236,7 +252,7 @@ def exam_datesheet(request, exam_id):
 
 @staff_required
 def student_result_card(request, exam_id, student_id):
-    exam = get_object_or_404(Exam.objects.select_related("grade"), id=exam_id)
+    exam = get_object_or_404(Exam.objects.select_related("grade", "scheme", "scheme_item"), id=exam_id)
     student = get_object_or_404(Student.objects.select_related("grade", "gender", "guardian_relation"), id=student_id, grade=exam.grade)
     result_rows, exam_subjects = _build_result_rows(exam, students=[student])
     result = result_rows[0] if result_rows else None
@@ -251,7 +267,7 @@ def student_result_card(request, exam_id, student_id):
 
 @staff_required
 def bulk_result_cards(request, exam_id):
-    exam = get_object_or_404(Exam.objects.select_related("grade"), id=exam_id)
+    exam = get_object_or_404(Exam.objects.select_related("grade", "scheme", "scheme_item"), id=exam_id)
     result_rows, exam_subjects = _build_result_rows(exam)
     return render(request, "bulk_result_cards.html", {
         "exam": exam,
