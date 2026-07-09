@@ -1,9 +1,10 @@
 from django import forms
-from ..models import ClassAndTiming, Staff, Subject, Grade
+from ..models import AcademicClass, ClassAndTiming, Staff, Subject, Grade
 
 
 class AddClassAndTimingForm(forms.ModelForm):
     class_name = forms.ModelChoiceField(queryset=Grade.objects.all(), widget=forms.Select(attrs={'class':'form-control'}))
+    academic_class = forms.ModelChoiceField(required=False, queryset=AcademicClass.objects.filter(status=True).select_related('academic_session', 'grade'), widget=forms.Select(attrs={'class':'form-control'}))
     period_one_subject = forms.ModelChoiceField(queryset=Subject.objects.all(), widget=forms.Select(attrs={'class':'form-control'}))
     period_one_teacher = forms.ModelChoiceField(required=False, queryset=Staff.objects.all(), widget=forms.Select(attrs={'class':'form-control'}))
     period_one_from = forms.TimeField(widget=forms.TimeInput(attrs={'class':'form-control','type': 'time'}))
@@ -33,7 +34,6 @@ class AddClassAndTimingForm(forms.ModelForm):
     period_seven_from = forms.TimeField(widget=forms.TimeInput(attrs={'class':'form-control','type': 'time'}))
     period_seven_to = forms.TimeField(widget=forms.TimeInput(attrs={'class':'form-control','type': 'time'}))
     status = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class':'form-check-input'}), initial=True)
-
 
     class Meta():
         model = ClassAndTiming

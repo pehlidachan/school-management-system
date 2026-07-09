@@ -3,6 +3,7 @@ from django.contrib.admin.sites import AlreadyRegistered
 
 from .exam_models import Exam, ExamDateSheetItem, ExamScheme, ExamSchemeItem, ExamSubject, StudentMark
 from .ledger_models import CashBankAccount, CashBankTransaction, Vendor, VendorLedgerEntry
+from .models import AcademicClass, AcademicClassSubject, AcademicSession
 from .profile_settings_models import RoleProfileRule, SchoolBrandProfile, StaffLoginProfile, UserProfileSetting
 from .staff_attendance_models import StaffLectureAttendance, StaffLectureSession
 from .study_material_models import StudyMaterial
@@ -83,6 +84,32 @@ class RoleProfileRuleAdmin(admin.ModelAdmin):
     search_fields = ('role__name', 'dashboard_scope', 'note')
 
 
+class AcademicClassSubjectInline(admin.TabularInline):
+    model = AcademicClassSubject
+    extra = 1
+    fields = ('subject', 'teacher', 'is_core', 'weekly_periods', 'total_marks', 'passing_marks', 'sort_order', 'status')
+
+
+class AcademicSessionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'code', 'school_brand', 'start_date', 'end_date', 'is_active', 'is_admission_open')
+    list_filter = ('is_active', 'is_admission_open', 'school_brand')
+    search_fields = ('name', 'code', 'note', 'school_brand__school_name')
+    date_hierarchy = 'start_date'
+
+
+class AcademicClassAdmin(admin.ModelAdmin):
+    list_display = ('class_label', 'class_code', 'academic_session', 'school_brand', 'grade', 'section', 'level_order', 'room', 'capacity', 'class_teacher', 'admission_open', 'monthly_fee', 'status')
+    list_filter = ('academic_session', 'school_brand', 'grade', 'section', 'admission_open', 'status')
+    search_fields = ('class_label', 'class_code', 'room', 'note', 'grade__name', 'class_teacher__name')
+    inlines = [AcademicClassSubjectInline]
+
+
+class AcademicClassSubjectAdmin(admin.ModelAdmin):
+    list_display = ('academic_class', 'subject', 'teacher', 'is_core', 'weekly_periods', 'total_marks', 'passing_marks', 'sort_order', 'status')
+    list_filter = ('academic_class__academic_session', 'academic_class__grade', 'subject', 'teacher', 'is_core', 'status')
+    search_fields = ('academic_class__class_label', 'subject__name', 'teacher__name', 'note')
+
+
 class ExamSchemeItemInline(admin.TabularInline):
     model = ExamSchemeItem
     extra = 1
@@ -139,6 +166,9 @@ safe_mvp_register(SchoolBrandProfile, SchoolBrandProfileAdmin)
 safe_mvp_register(UserProfileSetting, UserProfileSettingAdmin)
 safe_mvp_register(StaffLoginProfile, StaffLoginProfileAdmin)
 safe_mvp_register(RoleProfileRule, RoleProfileRuleAdmin)
+safe_mvp_register(AcademicSession, AcademicSessionAdmin)
+safe_mvp_register(AcademicClass, AcademicClassAdmin)
+safe_mvp_register(AcademicClassSubject, AcademicClassSubjectAdmin)
 safe_mvp_register(ExamScheme, ExamSchemeAdmin)
 safe_mvp_register(ExamSchemeItem, ExamSchemeItemAdmin)
 safe_mvp_register(Exam, ExamAdmin)
