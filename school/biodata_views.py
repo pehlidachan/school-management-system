@@ -3,6 +3,11 @@ from django.utils import timezone
 
 from .access_control import admin_required
 from .models import Grade, Role, Staff, Student
+from .profile_settings_models import SchoolBrandProfile
+
+
+def _active_brand():
+    return SchoolBrandProfile.objects.filter(is_active=True).first()
 
 
 @admin_required
@@ -16,6 +21,7 @@ def student_biodata_print(request, student_id):
         "print_date": timezone.localdate(),
         "title": f"Student Bio Data - {student.name}",
         "is_bulk": False,
+        "brand": _active_brand(),
     })
 
 
@@ -40,6 +46,7 @@ def bulk_student_biodata(request):
         "print_date": timezone.localdate(),
         "title": "Bulk Student Bio Data",
         "is_bulk": True,
+        "brand": _active_brand(),
     })
 
 
@@ -54,6 +61,7 @@ def staff_biodata_print(request, staff_id):
         "print_date": timezone.localdate(),
         "title": f"Staff Bio Data - {staff.name}",
         "is_bulk": False,
+        "brand": _active_brand(),
     })
 
 
@@ -78,4 +86,5 @@ def bulk_staff_biodata(request):
         "print_date": timezone.localdate(),
         "title": "Bulk Staff Bio Data",
         "is_bulk": True,
+        "brand": _active_brand(),
     })
