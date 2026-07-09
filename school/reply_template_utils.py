@@ -12,6 +12,12 @@ def _brand_value(brand, field_name, default=""):
     return getattr(brand, field_name, None) or default
 
 
+def _display_time(value):
+    if not hasattr(value, "strftime"):
+        return ""
+    return value.strftime("%I:%M %p").lstrip("0").lower()
+
+
 def get_student_class_label(student):
     academic_class = getattr(student, "academic_class", None)
     if academic_class:
@@ -38,6 +44,13 @@ def get_marksheet_exam_list(student, only_published=True):
     return queryset.order_by("sequence", "start_date", "id")
 
 
+def _svg_exam_rows(exams, start_y=572, line_gap=19, limit=6):
+    rows = []
+    for index, exam in enumerate(exams[:limit]):
+        rows.append({"exam": exam, "y": start_y + (index * line_gap)})
+    return rows
+
+
 def build_marksheet_exams_list_context(student, exams=None, brand=None, request_date=None, reply_time=None, only_published=True):
     request_date = request_date or timezone.localdate()
     reply_time = reply_time or timezone.localtime()
@@ -53,10 +66,11 @@ def build_marksheet_exams_list_context(student, exams=None, brand=None, request_
         "parent_name": get_student_parent_name(student),
         "student_photo_url": get_student_photo_url(student),
         "exams": exams,
+        "exam_svg_rows": _svg_exam_rows(exams),
         "request_date": request_date,
         "request_date_display": request_date.strftime("%a, %d-%b-%Y"),
         "reply_time": reply_time,
-        "reply_time_display": reply_time.strftime("%-I:%M %p").lower() if hasattr(reply_time, "strftime") else "",
+        "reply_time_display": _display_time(reply_time),
         "reply_title": "Marksheet Exams List",
         "section_label": "Exams List",
         "school_name": school_name,
