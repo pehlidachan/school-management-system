@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from .access_control import staff_required
-from .exam_models import Exam, ExamSubject, StudentMark
+from .exam_models import Exam, ExamDateSheetItem, ExamSubject, StudentMark
 from .models import Grade, Student, Subject
 
 
@@ -25,6 +25,11 @@ def _decimal(value, default="0"):
         return Decimal(str(value or default))
     except (InvalidOperation, ValueError):
         return Decimal(default)
+
+
+def _default_academic_year():
+    today = timezone.localdate()
+    return str(today.year)
 
 
 def _build_result_rows(exam, students=None):
@@ -61,24 +66,42 @@ def _build_result_rows(exam, students=None):
             "percentage": percentage.quantize(Decimal("0.01")) if total else Decimal("0"),
             "status": "Fail" if failed else "Pass",
             "subjects": subject_rows,
+            "exam_weight": exam.result_weight,
+            "weighted_score": (percentage * exam.result_weight / Decimal("100")).quantize(Decimal("0.01")) if total else Decimal("0"),
         })
     return result_rows, exam_subjects
 
 
-def _build_datesheet_rows(exam):
-    rows = []
+def _ensure_datesheet_items(exam):
     start = exam.start_date or timezone.localdate()
     exam_subjects = list(exam.exam_subjects.select_related("subject").order_by("subject__name"))
     for index, item in enumerate(exam_subjects):
-        paper_date = start + timedelta(days=index)
+        ExamDateSheetItem.objects.get_or_create(
+            exam_subject=item,
+            defaults={
+                "paper_date": start + timedelta(days=index),
+                "sort_order": index + 1,
+                "start_time": "09:00",
+                "end_time": "12:00",
+            },
+        )
+
+
+def _build_datesheet_rows(exam):
+    _ensure_datesheet_items(exam)
+    rows = []
+    items = ExamDateSheetItem.objects.filter(exam_subject__exam=exam).select_related("exam_subject", "exam_subject__subject")
+    for index, item in enumerate(items, start=1):
         rows.append({
-            "serial": index + 1,
-            "date": paper_date,
-            "day": paper_date.strftime("%A"),
-            "subject": item.subject,
-            "total_marks": item.total_marks,
-            "passing_marks": item.passing_marks,
-            "time": "09:00 AM - 12:00 PM",
+            "serial": index,
+            "date": item.paper_date,
+            "day": item.paper_date.strftime("%A"),
+            "subject": item.exam_subject.subject,
+            "total_marks": item.exam_subject.total_marks,
+            "passing_marks": item.exam_subject.passing_marks,
+            "time": f"{item.start_time.strftime('%I:%M %p')} - {item.end_time.strftime('%I:%M %p')}",
+            "room": item.room,
+            "instructions": item.instructions,
         })
     return rows
 
@@ -90,7 +113,9 @@ def exam_dashboard(request):
         "exams": exams,
         "total_exams": Exam.objects.count(),
         "published_exams": Exam.objects.filter(is_published=True).count(),
+        "locked_exams": Exam.objects.filter(is_locked=True).count(),
         "total_marks": StudentMark.objects.count(),
+        "exam_types": Exam.EXAM_TYPE_CHOICES,
     }
     return render(request, "exam_dashboard.html", context)
 
@@ -100,21 +125,34 @@ def add_exam(request):
     grades = Grade.objects.filter(status=True).order_by("name")
     if request.method == "POST":
         grade = get_object_or_404(Grade, id=request.POST.get("grade"))
+        exam_type = request.POST.get("exam_type") or Exam.MONTHLY_TEST
         name = (request.POST.get("name") or "").strip()
         if not name:
-            messages.error(request, "Exam name is required.")
-            return redirect("add_exam")
-        Exam.objects.create(
+            name = dict(Exam.EXAM_TYPE_CHOICES).get(exam_type, "Monthly Test")
+        exam = Exam.objects.create(
             name=name,
+            exam_type=exam_type,
+            academic_year=(request.POST.get("academic_year") or _default_academic_year()).strip(),
+            term_label=(request.POST.get("term_label") or "").strip(),
             grade=grade,
             start_date=_date_or_none(request.POST.get("start_date")) or timezone.localdate(),
             end_date=_date_or_none(request.POST.get("end_date")),
+            sequence=int(request.POST.get("sequence") or Exam.EXAM_SEQUENCE.get(exam_type, 20)),
+            result_weight=_decimal(request.POST.get("result_weight"), str(Exam.DEFAULT_WEIGHT.get(exam_type, Decimal("10.00")))),
             is_published=bool(request.POST.get("is_published")),
+            is_locked=bool(request.POST.get("is_locked")),
             created_by=request.user,
         )
-        messages.success(request, "Exam created successfully.")
+        messages.success(request, f"{exam.get_exam_type_display()} schema created successfully.")
         return redirect("exam_dashboard")
-    return render(request, "exam_form.html", {"grades": grades, "today": timezone.localdate()})
+    return render(request, "exam_form.html", {
+        "grades": grades,
+        "today": timezone.localdate(),
+        "academic_year": _default_academic_year(),
+        "exam_types": Exam.EXAM_TYPE_CHOICES,
+        "default_sequence": 20,
+        "default_weight": "10.00",
+    })
 
 
 @staff_required
@@ -127,10 +165,13 @@ def exam_detail(request, exam_id):
 @staff_required
 def add_exam_subject(request, exam_id):
     exam = get_object_or_404(Exam.objects.select_related("grade"), id=exam_id)
+    if exam.is_locked:
+        messages.error(request, "This exam is locked. Unlock it before changing subjects.")
+        return redirect("exam_detail", exam_id=exam.id)
     subjects = Subject.objects.order_by("name")
     if request.method == "POST":
         subject = get_object_or_404(Subject, id=request.POST.get("subject"))
-        ExamSubject.objects.update_or_create(
+        exam_subject, _ = ExamSubject.objects.update_or_create(
             exam=exam,
             subject=subject,
             defaults={
@@ -138,7 +179,11 @@ def add_exam_subject(request, exam_id):
                 "passing_marks": _decimal(request.POST.get("passing_marks"), "33"),
             },
         )
-        messages.success(request, "Subject added to exam.")
+        ExamDateSheetItem.objects.get_or_create(
+            exam_subject=exam_subject,
+            defaults={"paper_date": exam.start_date, "sort_order": exam.exam_subjects.count()},
+        )
+        messages.success(request, "Subject added to exam schema.")
         return redirect("exam_detail", exam_id=exam.id)
     return render(request, "exam_subject_form.html", {"exam": exam, "subjects": subjects})
 
@@ -146,6 +191,9 @@ def add_exam_subject(request, exam_id):
 @staff_required
 def marks_entry(request, exam_subject_id):
     exam_subject = get_object_or_404(ExamSubject.objects.select_related("exam", "exam__grade", "subject"), id=exam_subject_id)
+    if exam_subject.exam.is_locked:
+        messages.error(request, "This exam is locked. Marks cannot be changed.")
+        return redirect("exam_detail", exam_id=exam_subject.exam.id)
     students = Student.objects.filter(grade=exam_subject.exam.grade, status=True).order_by("name")
     existing = {item.student_id: item for item in StudentMark.objects.filter(exam_subject=exam_subject)}
 
