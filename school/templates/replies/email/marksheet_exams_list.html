@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ reply_title }}</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f6fb;font-family:Arial,Helvetica,sans-serif;color:#111827;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f4f6fb;padding:24px 0;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="640" cellspacing="0" cellpadding="0" style="max-width:640px;background:#ffffff;border-radius:18px;overflow:hidden;border:1px solid #e5e7eb;">
+          <tr>
+            <td style="padding:22px 26px;background:#0f172a;color:#fff;">
+              <h1 style="margin:0;font-size:22px;line-height:1.3;">{{ school_name }}</h1>
+              <p style="margin:6px 0 0;color:#cbd5e1;font-size:13px;">{{ reply_title }} • {{ request_date_display }}</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:24px 26px;">
+              <p style="margin:0 0 16px;">Dear <strong>{{ parent_name }}</strong>,</p>
+              <p style="margin:0 0 18px;line-height:1.55;">This is an automated reply from <strong>{{ school_name }}</strong>. Below is the available marksheet exam list for the requested student.</p>
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;margin:0 0 20px;">
+                <tr><td style="padding:8px 0;color:#64748b;width:130px;">Student</td><td style="padding:8px 0;"><strong>{{ student_id_name }}</strong></td></tr>
+                <tr><td style="padding:8px 0;color:#64748b;">Class</td><td style="padding:8px 0;"><strong>{{ class_label }}</strong></td></tr>
+                <tr><td style="padding:8px 0;color:#64748b;">Parent</td><td style="padding:8px 0;"><strong>{{ parent_name }}</strong></td></tr>
+              </table>
+              <h2 style="font-size:17px;margin:0 0 12px;">Available Exams</h2>
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+                {% for exam in exams %}
+                <tr>
+                  <td style="padding:12px 14px;border-bottom:1px solid #e5e7eb;width:80px;color:#475569;">({{ exam.id }})</td>
+                  <td style="padding:12px 14px;border-bottom:1px solid #e5e7eb;"><strong>{{ exam.name }}</strong></td>
+                </tr>
+                {% empty %}
+                <tr><td style="padding:14px;color:#64748b;">No published exam found yet.</td></tr>
+                {% endfor %}
+              </table>
+              <p style="margin:18px 0 0;line-height:1.55;color:#475569;">Please reply with the exam number if you want the detailed marksheet/result card.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:16px 26px;background:#f8fafc;color:#64748b;font-size:12px;">
+              {{ short_school_name }}{% if brand.email %} • {{ brand.email }}{% endif %}{% if brand.phone %} • {{ brand.phone }}{% endif %}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
