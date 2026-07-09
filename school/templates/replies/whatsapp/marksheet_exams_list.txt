@@ -1,0 +1,14 @@
+📅 Request On : {{ request_date_display }}
+💖 {{ reply_title }} 💖
+
+Student : {{ student_id_name }}
+Class : {{ class_label }}
+Parent : {{ parent_name }}
+
+====== {{ section_label }} ======
+
+{% for exam in exams %}({{ exam.id }}) {{ exam.name }}
+{% empty %}No published exam found yet.
+{% endfor %}
+------------------------------------------------
+{{ short_school_name }}

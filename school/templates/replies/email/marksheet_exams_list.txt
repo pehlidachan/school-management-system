@@ -1,0 +1,18 @@
+Dear {{ parent_name }},
+
+This is an automated reply from {{ school_name }}.
+
+Student: {{ student_id_name }}
+Class: {{ class_label }}
+Request: {{ reply_title }}
+Request Date: {{ request_date_display }}
+
+Available exams:
+{% for exam in exams %}- ({{ exam.id }}) {{ exam.name }}
+{% empty %}- No published exam found yet.
+{% endfor %}
+
+Please reply with the exam number if you want the detailed marksheet/result card.
+
+Regards,
+{{ short_school_name }}

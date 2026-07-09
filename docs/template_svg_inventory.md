@@ -39,6 +39,7 @@ Dynamic data should use Django variables such as:
 | WhatsApp Square | 1080px x 1080px | Share image preview |
 | WhatsApp Portrait | 1080px x 1350px | Voucher/marksheet share preview |
 | WhatsApp Status | 1080px x 1920px | Full screen status/share card |
+| WhatsApp Reply Screenshot | 522px x 715px | App/chat reply reference style |
 
 ## Logo rule for all templates
 
@@ -84,7 +85,7 @@ Status legend:
 | 20 | whatsapp_dues_message | WhatsApp Dues Message | 1080px x 1350px | `whatsapp_dues_message.svg` | Existing dues text area / future image | `Student`, invoice list | MISSING SVG - IMAGE TEMPLATE NEEDED |
 | 21 | exam_datesheet | Exam Date Sheet | A4 Portrait or Landscape | `exam_datesheet.svg` | `school/templates/print/exam_datesheet.html` | `Exam`, `ExamSubject` | MISSING SVG |
 | 22 | result_card | Result Card / DMC | A4 Landscape | `result_card.svg` | `school/templates/print/result_card.html` | `Exam`, `Student`, marks | MISSING SVG |
-| 23 | marksheet_whatsapp_list | WhatsApp Marksheet Exams List | 1080px x 1350px | `marksheet_whatsapp_list.svg` | To be added/linked | `Student`, exam list | MISSING SVG - ROUTE/TEMPLATE ALSO NEEDED |
+| 23 | marksheet_whatsapp_list | WhatsApp Marksheet Exams List | WhatsApp Reply Screenshot / 522px x 715px | `marksheet_whatsapp_list.svg` | `school/templates/replies/whatsapp/marksheet_exams_list_card.svg` | `Student`, published exam list, active school | DYNAMIC DONE |
 | 24 | marksheet_whatsapp_detail | WhatsApp Student Exam Marksheet | 1080px x 1350px | `marksheet_whatsapp_detail.svg` | To be added/linked | `Student`, `Exam`, result image | MISSING SVG - ROUTE/TEMPLATE ALSO NEEDED |
 | 25 | warning_list_whatsapp | WhatsApp Issued Warnings List | 1080px x 1350px | `warning_list_whatsapp.svg` | To be added/linked | `Student`, warning list | MISSING SVG - MODULE NEEDED |
 | 26 | warning_detail_letter | Warning Detail Letter | A4 Portrait | `warning_detail_letter.svg` | Advisory letter template existing | `Student`, letter context | MISSING SVG |
