@@ -356,6 +356,16 @@ class ClassAndTiming(models.Model):
     period_seven_to = models.TimeField(default='00:00:00')
     status = models.BooleanField(default=True)
 
+    def clean(self):
+        super().clean()
+        if self.academic_class_id and self.class_name_id and self.academic_class.grade_id != self.class_name_id:
+            raise ValidationError({"academic_class": "Academic class grade must match class name / grade."})
+
+    def save(self, *args, **kwargs):
+        if self.academic_class_id and self.academic_class:
+            self.class_name = self.academic_class.grade
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f'{self.id}---{self.academic_class or self.class_name}'
 
