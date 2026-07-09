@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
+from django.utils.text import slugify
 
 
 class Grade(models.Model):
@@ -11,6 +12,120 @@ class Grade(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class AcademicSession(models.Model):
+    name = models.CharField(max_length=120, default="Session 2026")
+    code = models.SlugField(max_length=80, unique=True, default="session-2026")
+    school_brand = models.ForeignKey(
+        "school.SchoolBrandProfile",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="academic_sessions",
+        help_text="Optional school/campus attachment for future SaaS mode.",
+    )
+    start_date = models.DateField(default=timezone.localdate)
+    end_date = models.DateField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+    is_admission_open = models.BooleanField(default=True)
+    note = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        app_label = "school"
+        ordering = ["-is_active", "-start_date", "name"]
+        indexes = [
+            models.Index(fields=["code"], name="academic_session_code_idx"),
+            models.Index(fields=["is_active"], name="academic_session_active_idx"),
+            models.Index(fields=["school_brand"], name="academic_session_school_idx"),
+        ]
+
+    def __str__(self):
+        return self.name
+
+
+class AcademicClass(models.Model):
+    school_brand = models.ForeignKey(
+        "school.SchoolBrandProfile",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="academic_classes",
+        help_text="Optional school/campus attachment for future SaaS mode.",
+    )
+    academic_session = models.ForeignKey(
+        AcademicSession,
+        on_delete=models.CASCADE,
+        related_name="classes",
+    )
+    grade = models.ForeignKey(Grade, on_delete=models.CASCADE, related_name="academic_classes")
+    section = models.CharField(max_length=20, default="A")
+    class_label = models.CharField(max_length=140, blank=True)
+    class_code = models.SlugField(max_length=120, unique=True, blank=True)
+    level_order = models.PositiveSmallIntegerField(default=1)
+    room = models.CharField(max_length=80, blank=True)
+    capacity = models.PositiveSmallIntegerField(default=40)
+    class_teacher = models.ForeignKey(
+        "school.Staff",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="managed_academic_classes",
+    )
+    admission_open = models.BooleanField(default=True)
+    monthly_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0, validators=[MinValueValidator(0)])
+    promotion_target = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="promotion_sources",
+    )
+    status = models.BooleanField(default=True)
+    note = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        app_label = "school"
+        ordering = ["academic_session__name", "level_order", "grade__name", "section"]
+        indexes = [
+            models.Index(fields=["school_brand", "academic_session"], name="acad_class_school_session_idx"),
+            models.Index(fields=["academic_session", "grade", "section"], name="acad_class_session_grade_idx"),
+            models.Index(fields=["class_code"], name="academic_class_code_idx"),
+            models.Index(fields=["status"], name="academic_class_status_idx"),
+            models.Index(fields=["admission_open"], name="academic_class_adm_idx"),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["academic_session", "grade", "section", "school_brand"],
+                name="unique_academic_class_per_session",
+            ),
+        ]
+
+    def save(self, *args, **kwargs):
+        if not self.class_label:
+            self.class_label = f"{self.grade} - {self.section}"
+        if not self.class_code:
+            brand_key = "default"
+            if self.school_brand_id and self.school_brand:
+                brand_key = self.school_brand.campus_code or self.school_brand.school_name or "school"
+            session_key = self.academic_session.code if self.academic_session_id and self.academic_session else "session"
+            self.class_code = slugify(f"{brand_key}-{session_key}-{self.grade}-{self.section}")[:120]
+        super().save(*args, **kwargs)
+
+    @property
+    def enrolled_students_count(self):
+        return self.students.filter(status=True).count()
+
+    @property
+    def seats_available(self):
+        return max(int(self.capacity or 0) - int(self.enrolled_students_count or 0), 0)
+
+    def __str__(self):
+        return self.class_label or f"{self.grade} - {self.section}"
 
 
 class Gender(models.Model):
@@ -35,6 +150,13 @@ class Student(models.Model):
     student_name_urdu = models.CharField(max_length=150, null=True, blank=True)
     father_name = models.CharField(max_length=255, null=True, blank=True)
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE)
+    academic_class = models.ForeignKey(
+        AcademicClass,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="students",
+    )
     age = models.IntegerField()
     gender = models.ForeignKey(Gender, on_delete=models.CASCADE)
     dob = models.DateField()
@@ -71,10 +193,14 @@ class Student(models.Model):
                 duplicates = duplicates.exclude(pk=self.pk)
             if duplicates.exists():
                 errors[field_name] = f"This {label} is already used by another student."
+        if self.academic_class_id and self.grade_id and self.academic_class.grade_id != self.grade_id:
+            errors["academic_class"] = "Academic class must belong to the selected grade."
         if errors:
             raise ValidationError(errors)
 
     def save(self, *args, **kwargs):
+        if self.academic_class_id and self.academic_class and self.grade_id != self.academic_class.grade_id:
+            self.grade = self.academic_class.grade
         if self.welcome_card_sent:
             if not self.welcome_card_sent_at:
                 self.welcome_card_sent_at = timezone.now()
@@ -159,8 +285,47 @@ class Staff(models.Model):
         return f'{self.id}---{self.name}'
 
 
+class AcademicClassSubject(models.Model):
+    academic_class = models.ForeignKey(
+        AcademicClass,
+        on_delete=models.CASCADE,
+        related_name="subject_scheme",
+    )
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name="academic_class_subjects")
+    teacher = models.ForeignKey(
+        Staff,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="academic_subject_assignments",
+    )
+    is_core = models.BooleanField(default=True)
+    weekly_periods = models.PositiveSmallIntegerField(default=5)
+    total_marks = models.DecimalField(max_digits=7, decimal_places=2, default=100)
+    passing_marks = models.DecimalField(max_digits=7, decimal_places=2, default=33)
+    sort_order = models.PositiveSmallIntegerField(default=1)
+    status = models.BooleanField(default=True)
+    note = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        app_label = "school"
+        ordering = ["academic_class", "sort_order", "subject__name"]
+        constraints = [
+            models.UniqueConstraint(fields=["academic_class", "subject"], name="unique_subject_per_academic_class"),
+        ]
+        indexes = [
+            models.Index(fields=["academic_class", "sort_order"], name="acad_class_subject_order_idx"),
+            models.Index(fields=["teacher"], name="acad_class_subject_teacher_idx"),
+            models.Index(fields=["status"], name="acad_class_subject_status_idx"),
+        ]
+
+    def __str__(self):
+        return f"{self.academic_class} - {self.subject}"
+
+
 class ClassAndTiming(models.Model):
     class_name = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True)
+    academic_class = models.ForeignKey(AcademicClass, on_delete=models.SET_NULL, null=True, blank=True, related_name="timetables")
     period_one_subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, blank=True, related_name='period_one_subject')
     period_one_teacher = models.ForeignKey(Staff, on_delete=models.SET_NULL, null=True, blank=True, related_name='period_one_teacher')
     period_one_from = models.TimeField(default='00:00:00')
@@ -192,7 +357,7 @@ class ClassAndTiming(models.Model):
     status = models.BooleanField(default=True)
 
     def __str__(self):
-        return f'{self.id}---{self.class_name}'
+        return f'{self.id}---{self.academic_class or self.class_name}'
 
 
 class ClassIncharge(models.Model):
