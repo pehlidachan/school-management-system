@@ -44,10 +44,19 @@ body.brand-green {
 .school-logo span:nth-child(3) { background: var(--logo-c); transform: rotate(-90deg); }
 .school-logo span:nth-child(4) { background: var(--logo-d); }
 
-.school-logo-main {
+.school-logo-main,
+.school-logo-img.school-logo-main {
   width: 86px;
   height: 86px;
   opacity: var(--school-logo-main-opacity);
+}
+
+.school-logo-img.school-logo-main {
+  object-fit: contain;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .22);
+  padding: 6px;
 }
 
 .school-logo-small {
@@ -63,7 +72,8 @@ body.brand-green {
   height: 17px;
 }
 
-.school-logo-watermark {
+.school-logo-watermark,
+.school-logo-img.school-logo-watermark {
   width: 470px;
   height: 470px;
   padding: 88px;
@@ -72,6 +82,12 @@ body.brand-green {
   background: transparent;
   opacity: var(--school-logo-watermark-opacity);
   filter: saturate(.95);
+}
+
+.school-logo-img.school-logo-watermark {
+  object-fit: contain;
+  padding: 0;
+  border-radius: 0;
 }
 
 .school-logo-watermark span {
@@ -122,6 +138,8 @@ body.brand-green {
 
 @media print {
   .brand-hint { display: none; }
-  .school-logo-main { opacity: 1; }
-  .school-logo-watermark { opacity: .22; }
+  .school-logo-main,
+  .school-logo-img.school-logo-main { opacity: 1; }
+  .school-logo-watermark,
+  .school-logo-img.school-logo-watermark { opacity: .22; }
 }
