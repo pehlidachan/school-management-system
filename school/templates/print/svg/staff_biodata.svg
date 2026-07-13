@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="987" height="1376" viewBox="0 0 987 1376" role="img" aria-label="Staff Bio Data">
+  <defs>
+    <style>
+      .font{font-family:Arial,Helvetica,sans-serif;fill:#111}.small{font-size:17px}.label{font-size:20px}.value{font-size:21px;font-weight:700}.heading{font-size:31px;font-weight:900;font-style:italic}.school{font-size:36px;font-weight:900}.section{fill:#666}.sectionText{font-size:24px;font-weight:900;fill:white}.line{stroke:#111;stroke-width:2.2}.thin{stroke:#111;stroke-width:1.4}.box{fill:#fff;stroke:#111;stroke-width:2.4}.photoBox{fill:#f2f2f2;stroke:#aaa;stroke-width:2}.placeholder{fill:#777;font-size:20px;font-weight:700}.wmText{fill:#777;font-size:34px;font-weight:900;opacity:.20}.quote{font-size:20px;font-weight:700}
+    </style>
+    <filter id="staffShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="4" dy="6" stdDeviation="4" flood-opacity=".28"/></filter>
+    <clipPath id="staffPhotoClip"><rect x="72" y="324" width="214" height="214"/></clipPath>
+    <clipPath id="staffLogoClip"><rect x="78" y="72" width="118" height="118" rx="7"/></clipPath>
+  </defs>
+
+  <rect width="987" height="1376" fill="#f4f4f4"/>
+  <rect x="48" y="42" width="891" height="1290" fill="#fff" stroke="#111" stroke-width="3"/>
+
+  <g opacity=".18">
+    {% if brand.watermark_logo_path %}
+      <image href="/{{ brand.watermark_logo_path }}" x="295" y="505" width="397" height="397" preserveAspectRatio="xMidYMid meet" opacity=".38"/>
+    {% else %}
+      <circle cx="493.5" cy="715" r="188" fill="#d9d9d9" stroke="#777" stroke-width="5"/>
+      <text x="493.5" y="704" text-anchor="middle" class="font wmText">{{ watermark_logo|default:'WATERMARK LOGO' }}</text>
+      <text x="493.5" y="748" text-anchor="middle" class="font wmText">{{ brand.school_name|default:'SCHOOL' }}</text>
+    {% endif %}
+  </g>
+
+  <rect x="78" y="72" width="118" height="118" rx="7" class="photoBox"/>
+  <g clip-path="url(#staffLogoClip)">
+    {% if brand.main_logo_path %}
+      <image href="/{{ brand.main_logo_path }}" x="78" y="72" width="118" height="118" preserveAspectRatio="xMidYMid meet"/>
+    {% else %}
+      <text x="137" y="125" text-anchor="middle" class="font placeholder">{{ logo|default:'LOGO' }}</text>
+      <text x="137" y="154" text-anchor="middle" class="font placeholder">SCHOOL</text>
+    {% endif %}
+  </g>
+
+  <text x="493.5" y="104" text-anchor="middle" class="font school">{{ brand.school_name|default:'Government Middle School Shalgah' }}</text>
+  <text x="493.5" y="139" text-anchor="middle" class="font small">{{ brand.address|default:'Official School ERP Record' }}</text>
+  <text x="493.5" y="166" text-anchor="middle" class="font small">Phone: {{ brand.phone|default:'-' }}  |  Campus: {{ brand.campus_code|default:'GMS' }}</text>
+  <text x="493.5" y="213" text-anchor="middle" class="font heading">Staff's Bio Data</text>
+
+  <text x="714" y="104" class="font small">Bio Data Ref # :</text>
+  <text x="850" y="104" class="font value">TBD-{{ member.id }}-{{ brand.campus_code|default:'GMS' }}</text>
+  <text x="714" y="150" class="font small">Printing Date :</text>
+  <text x="850" y="150" class="font value">{{ print_date|date:'d-M-Y' }}</text>
+
+  <rect x="72" y="260" width="843" height="350" class="box"/>
+  <rect x="72" y="260" width="843" height="48" class="section"/>
+  <text x="94" y="292" class="font sectionText">Staff's Data</text>
+
+  <rect x="72" y="324" width="214" height="214" class="photoBox" filter="url(#staffShadow)"/>
+  <g clip-path="url(#staffPhotoClip)">
+    {% if member.photo_path %}
+      <image href="/{{ member.photo_path }}" x="72" y="324" width="214" height="214" preserveAspectRatio="xMidYMid slice"/>
+    {% else %}
+      <rect x="72" y="324" width="214" height="214" fill="#eee"/>
+      <text x="179" y="420" text-anchor="middle" class="font placeholder">{{ photo|default:'PHOTO' }}</text>
+      <text x="179" y="452" text-anchor="middle" class="font placeholder">STAFF PHOTO</text>
+    {% endif %}
+  </g>
+
+  <text x="320" y="345" class="font label">Staff's Name:</text><line x1="490" y1="350" x2="880" y2="350" class="line"/><text x="502" y="342" class="font value">{{ member.name }}</text>
+  <text x="320" y="397" class="font label">Designation:</text><line x1="490" y1="402" x2="880" y2="402" class="line"/><text x="502" y="394" class="font value">{{ member.role }}</text>
+  <text x="320" y="449" class="font label">Phone Number:</text><line x1="490" y1="454" x2="880" y2="454" class="line"/><text x="502" y="446" class="font value">{{ member.phone }}</text>
+  <text x="320" y="501" class="font label">Date of Birth:</text><line x1="490" y1="506" x2="880" y2="506" class="line"/><text x="502" y="498" class="font value">{{ member.dob|date:'d F Y' }}</text>
+  <text x="320" y="553" class="font label">DOB in Words:</text><line x1="490" y1="558" x2="880" y2="558" class="line"/><text x="502" y="550" class="font value">{{ member.dob|date:'d F Y' }}</text>
+
+  <text x="96" y="650" class="font label">NIC Number:</text><line x1="220" y1="655" x2="405" y2="655" class="line"/><text x="232" y="647" class="font value">{{ member.cnic|default:'-' }}</text>
+  <text x="455" y="650" class="font label">Employment:</text><line x1="575" y1="655" x2="890" y2="655" class="line"/><text x="587" y="647" class="font value">{{ member.employment_status }}</text>
+  <text x="96" y="702" class="font label">Qualification:</text><line x1="240" y1="707" x2="405" y2="707" class="line"/><text x="252" y="699" class="font value">{{ member.qualification }}</text>
+  <text x="455" y="702" class="font label">Work Experience:</text><line x1="625" y1="707" x2="890" y2="707" class="line"/><text x="637" y="699" class="font value">{{ member.experience|default:'-' }}</text>
+  <text x="96" y="754" class="font label">Subject:</text><line x1="185" y1="759" x2="405" y2="759" class="line"/><text x="197" y="751" class="font value">{{ member.subject|default:'-' }}</text>
+  <text x="455" y="754" class="font label">Staff Category:</text><line x1="610" y1="759" x2="890" y2="759" class="line"/><text x="622" y="751" class="font value">{{ member.department|default:member.role }}</text>
+  <text x="96" y="806" class="font label">Appointment Date:</text><line x1="270" y1="811" x2="405" y2="811" class="line"/><text x="282" y="803" class="font value">{{ member.joining_date|date:'d F Y' }}</text>
+  <text x="455" y="806" class="font label">Current Salary:</text><line x1="610" y1="811" x2="890" y2="811" class="line"/><text x="622" y="803" class="font value">Rs. {{ member.salary }}</text>
+  <text x="96" y="858" class="font label">Postal Address:</text><line x1="250" y1="863" x2="890" y2="863" class="line"/><text x="262" y="855" class="font value">{{ member.address }}</text>
+
+  <rect x="72" y="905" width="843" height="210" class="box"/><rect x="72" y="905" width="843" height="48" class="section"/><text x="94" y="937" class="font sectionText">Employer's Recommendations</text>
+  <text x="96" y="1002" class="font label">Remarks:</text><line x1="205" y1="1007" x2="890" y2="1007" class="line"/>
+  <text x="216" y="997" class="font quote">{{ member.contract_details|default:'It is the supreme art of the teacher to awaken joy in creative expression and knowledge.' }}</text>
+  <line x1="205" y1="1056" x2="890" y2="1056" class="line"/>
+
+  <rect x="72" y="1160" width="843" height="136" class="box"/><rect x="72" y="1160" width="843" height="48" class="section"/><text x="94" y="1192" class="font sectionText">Current Status</text>
+  <text x="96" y="1250" class="font label">Joining Date:</text><line x1="230" y1="1255" x2="405" y2="1255" class="line"/><text x="242" y="1247" class="font value">{{ member.joining_date|date:'d-M-Y' }}</text>
+  <text x="455" y="1250" class="font label">Status:</text><line x1="535" y1="1255" x2="665" y2="1255" class="line"/><text x="547" y="1247" class="font value">{% if member.status %}Active{% else %}Inactive{% endif %}</text>
+  <text x="695" y="1250" class="font label">Left Reason:</text><line x1="815" y1="1255" x2="890" y2="1255" class="line"/><text x="827" y="1247" class="font value">-</text>
+
+  <line x1="645" y1="1328" x2="900" y2="1328" class="thin"/>
+  <text x="772" y="1355" text-anchor="middle" class="font label">Campus Head's Signature</text>
+</svg>
