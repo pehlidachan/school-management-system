@@ -33,15 +33,18 @@ def _camera_upload(data_url, name="camera.jpg"):
         return None
     header, encoded = data_url.split(";base64,", 1)
     ext = ".jpg"
+    content_type = "image/jpeg"
     if "image/png" in header:
         ext = ".png"
+        content_type = "image/png"
     elif "image/webp" in header:
         ext = ".webp"
+        content_type = "image/webp"
     try:
         payload = base64.b64decode(encoded)
     except Exception:
         return None
-    return SimpleUploadedFile(name.replace(".jpg", ext), payload, content_type="image/jpeg")
+    return SimpleUploadedFile(name.replace(".jpg", ext), payload, content_type=content_type)
 
 
 def _get_brand():
@@ -60,6 +63,13 @@ def _sync_role_rules():
             rule.can_manage_role_rules = True
             rule.dashboard_scope = "full-admin"
             rule.save()
+
+
+def _save_optional_upload(area, record_id, uploaded_file):
+    if not uploaded_file:
+        return ""
+    saved_path = save_person_file(area, record_id, uploaded_file)
+    return saved_path or ""
 
 
 @admin_required
@@ -82,16 +92,24 @@ def admin_profile_center(request):
             brand.accent_color = _safe_color(request.POST.get("accent_color"), brand.accent_color)
             brand.updated_by = request.user
             brand.save()
+
+            uploaded_labels = []
             main_logo = request.FILES.get("main_logo")
             watermark_logo = request.FILES.get("watermark_logo")
-            if main_logo:
-                brand.main_logo_path = save_person_file("school_brand_main_logo", brand.id, main_logo)
-            if watermark_logo:
-                brand.watermark_logo_path = save_person_file("school_brand_watermark_logo", brand.id, watermark_logo)
-            if main_logo or watermark_logo:
+            main_logo_path = _save_optional_upload("school_brand_main_logo", brand.id, main_logo)
+            watermark_logo_path = _save_optional_upload("school_brand_watermark_logo", brand.id, watermark_logo)
+            if main_logo_path:
+                brand.main_logo_path = main_logo_path
+                uploaded_labels.append("main logo")
+            if watermark_logo_path:
+                brand.watermark_logo_path = watermark_logo_path
+                uploaded_labels.append("watermark logo")
+            if uploaded_labels:
                 brand.updated_by = request.user
                 brand.save(update_fields=["main_logo_path", "watermark_logo_path", "updated_by", "updated_at"])
-            messages.success(request, "School branding settings saved.")
+                messages.success(request, f"School branding saved with uploaded {', '.join(uploaded_labels)}.")
+            else:
+                messages.success(request, "School branding text/colors saved. No new logo file was selected.")
             return redirect("admin_profile_center")
 
         if action == "save_profile":
@@ -99,11 +117,21 @@ def admin_profile_center(request):
             profile.phone = (request.POST.get("phone") or "").strip()
             profile.note = (request.POST.get("note") or "").strip()
             profile.save()
-            upload = request.FILES.get("profile_photo") or _camera_upload(request.POST.get("camera_image_data"), "profile_camera.jpg")
-            if upload:
-                profile.profile_photo_path = save_person_file("user_profile_photos", request.user.id, upload)
+
+            if request.POST.get("remove_profile_photo"):
+                profile.profile_photo_path = ""
                 profile.save(update_fields=["profile_photo_path", "updated_at"])
-            messages.success(request, "Your profile settings saved.")
+                messages.success(request, "Profile details saved and profile photo removed.")
+                return redirect("admin_profile_center")
+
+            upload = request.FILES.get("profile_photo") or _camera_upload(request.POST.get("camera_image_data"), "profile_camera.jpg")
+            uploaded_path = _save_optional_upload("user_profile_photos", request.user.id, upload)
+            if uploaded_path:
+                profile.profile_photo_path = uploaded_path
+                profile.save(update_fields=["profile_photo_path", "updated_at"])
+                messages.success(request, "Profile saved and new profile picture uploaded successfully.")
+            else:
+                messages.success(request, "Profile details saved. No new picture file was selected.")
             return redirect("admin_profile_center")
 
         if action == "change_password":
