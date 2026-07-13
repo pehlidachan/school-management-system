@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="987" height="1376" viewBox="0 0 987 1376" role="img" aria-label="Student Bio Data">
+  <defs>
+    <style>
+      .font{font-family:Arial,Helvetica,sans-serif;fill:#111}.small{font-size:17px}.label{font-size:20px}.value{font-size:21px;font-weight:700}.heading{font-size:31px;font-weight:900;font-style:italic}.school{font-size:36px;font-weight:900}.section{fill:#666}.sectionText{font-size:24px;font-weight:900;fill:white}.line{stroke:#111;stroke-width:2.2}.thin{stroke:#111;stroke-width:1.4}.box{fill:#fff;stroke:#111;stroke-width:2.4}.photoBox{fill:#f2f2f2;stroke:#aaa;stroke-width:2}.placeholder{fill:#777;font-size:20px;font-weight:700}.wmText{fill:#777;font-size:34px;font-weight:900;opacity:.20}
+    </style>
+    <filter id="studentShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="4" dy="6" stdDeviation="4" flood-opacity=".28"/></filter>
+    <clipPath id="studentPhotoClip"><rect x="72" y="324" width="214" height="214"/></clipPath>
+    <clipPath id="studentLogoClip"><rect x="78" y="72" width="118" height="118" rx="7"/></clipPath>
+  </defs>
+
+  <rect width="987" height="1376" fill="#f4f4f4"/>
+  <rect x="48" y="42" width="891" height="1290" fill="#fff" stroke="#111" stroke-width="3"/>
+
+  <g opacity=".18">
+    {% if brand.watermark_logo_path %}
+      <image href="/{{ brand.watermark_logo_path }}" x="295" y="505" width="397" height="397" preserveAspectRatio="xMidYMid meet" opacity=".38"/>
+    {% else %}
+      <circle cx="493.5" cy="715" r="188" fill="#d9d9d9" stroke="#777" stroke-width="5"/>
+      <text x="493.5" y="704" text-anchor="middle" class="font wmText">{{ watermark_logo|default:'WATERMARK LOGO' }}</text>
+      <text x="493.5" y="748" text-anchor="middle" class="font wmText">{{ brand.school_name|default:'SCHOOL' }}</text>
+    {% endif %}
+  </g>
+
+  <rect x="78" y="72" width="118" height="118" rx="7" class="photoBox"/>
+  <g clip-path="url(#studentLogoClip)">
+    {% if brand.main_logo_path %}
+      <image href="/{{ brand.main_logo_path }}" x="78" y="72" width="118" height="118" preserveAspectRatio="xMidYMid meet"/>
+    {% else %}
+      <text x="137" y="125" text-anchor="middle" class="font placeholder">{{ logo|default:'LOGO' }}</text>
+      <text x="137" y="154" text-anchor="middle" class="font placeholder">SCHOOL</text>
+    {% endif %}
+  </g>
+
+  <text x="493.5" y="104" text-anchor="middle" class="font school">{{ brand.school_name|default:'Government Middle School Shalgah' }}</text>
+  <text x="493.5" y="139" text-anchor="middle" class="font small">{{ brand.address|default:'Official School ERP Record' }}</text>
+  <text x="493.5" y="166" text-anchor="middle" class="font small">Phone: {{ brand.phone|default:'-' }}  |  Campus: {{ brand.campus_code|default:'GMS' }}</text>
+  <text x="493.5" y="213" text-anchor="middle" class="font heading">Student's Bio Data</text>
+
+  <text x="714" y="104" class="font small">Bio Data Ref # :</text>
+  <text x="850" y="104" class="font value">SD-{{ student.id }}-{{ brand.campus_code|default:'GMS' }}</text>
+  <text x="714" y="150" class="font small">Printing Date :</text>
+  <text x="850" y="150" class="font value">{{ print_date|date:'d-M-Y' }}</text>
+
+  <rect x="72" y="260" width="843" height="350" class="box"/>
+  <rect x="72" y="260" width="843" height="48" class="section"/>
+  <text x="94" y="292" class="font sectionText">Student's Data</text>
+
+  <rect x="72" y="324" width="214" height="214" class="photoBox" filter="url(#studentShadow)"/>
+  <g clip-path="url(#studentPhotoClip)">
+    {% if student.photo_path %}
+      <image href="/{{ student.photo_path }}" x="72" y="324" width="214" height="214" preserveAspectRatio="xMidYMid slice"/>
+    {% else %}
+      <rect x="72" y="324" width="214" height="214" fill="#eee"/>
+      <text x="179" y="420" text-anchor="middle" class="font placeholder">{{ photo|default:'PHOTO' }}</text>
+      <text x="179" y="452" text-anchor="middle" class="font placeholder">STUDENT PHOTO</text>
+    {% endif %}
+  </g>
+
+  <text x="320" y="345" class="font label">Student's Name:</text><line x1="490" y1="350" x2="880" y2="350" class="line"/><text x="502" y="342" class="font value">{{ student.name }}</text>
+  <text x="320" y="397" class="font label">GR#:</text><line x1="490" y1="402" x2="880" y2="402" class="line"/><text x="502" y="394" class="font value">{{ student.gr_no|default:'-' }}</text>
+  <text x="320" y="449" class="font label">Class:</text><line x1="490" y1="454" x2="880" y2="454" class="line"/><text x="502" y="446" class="font value">{% if student.academic_class %}{{ student.academic_class }}{% else %}{{ student.grade }}{% endif %}</text>
+  <text x="320" y="501" class="font label">Date of Birth:</text><line x1="490" y1="506" x2="880" y2="506" class="line"/><text x="502" y="498" class="font value">{{ student.dob|date:'d F Y' }}</text>
+  <text x="320" y="553" class="font label">DOB in Words:</text><line x1="490" y1="558" x2="880" y2="558" class="line"/><text x="502" y="550" class="font value">{{ student.dob|date:'d F Y' }}</text>
+
+  <text x="96" y="650" class="font label">Gender:</text><line x1="190" y1="655" x2="405" y2="655" class="line"/><text x="202" y="647" class="font value">{{ student.gender }}</text>
+  <text x="455" y="650" class="font label">Student B-Form:</text><line x1="620" y1="655" x2="890" y2="655" class="line"/><text x="632" y="647" class="font value">{{ student.guardian_cnic|default:'-' }}</text>
+  <text x="96" y="702" class="font label">Previous School:</text><line x1="260" y1="707" x2="405" y2="707" class="line"/><text x="270" y="699" class="font value">{{ student.previous_school|default:'Nil' }}</text>
+  <text x="455" y="702" class="font label">Study Group:</text><line x1="590" y1="707" x2="890" y2="707" class="line"/><text x="602" y="699" class="font value">{{ student.grade }}</text>
+  <text x="96" y="754" class="font label">Postal Address:</text><line x1="250" y1="759" x2="890" y2="759" class="line"/><text x="262" y="751" class="font value">{{ student.address }}</text>
+
+  <rect x="72" y="796" width="843" height="214" class="box"/><rect x="72" y="796" width="843" height="48" class="section"/><text x="94" y="828" class="font sectionText">Parent's Data</text>
+  <text x="96" y="883" class="font label">Parent/Guardian:</text><line x1="260" y1="888" x2="555" y2="888" class="line"/><text x="272" y="880" class="font value">{{ student.guardian_name }}</text>
+  <text x="585" y="883" class="font label">Family ID:</text><line x1="690" y1="888" x2="890" y2="888" class="line"/><text x="702" y="880" class="font value">{{ student.id }}</text>
+  <text x="96" y="932" class="font label">Profession:</text><line x1="220" y1="937" x2="405" y2="937" class="line"/><text x="232" y="929" class="font value">-</text>
+  <text x="455" y="932" class="font label">Phone:</text><line x1="535" y1="937" x2="890" y2="937" class="line"/><text x="547" y="929" class="font value">{{ student.phone }}</text>
+  <text x="96" y="981" class="font label">NIC Number:</text><line x1="235" y1="986" x2="405" y2="986" class="line"/><text x="247" y="978" class="font value">{{ student.guardian_cnic|default:'-' }}</text>
+  <text x="455" y="981" class="font label">Guardian If Any:</text><line x1="625" y1="986" x2="890" y2="986" class="line"/><text x="637" y="978" class="font value">{{ student.guardian_relation }}</text>
+
+  <rect x="72" y="1038" width="843" height="132" class="box"/><rect x="72" y="1038" width="843" height="48" class="section"/><text x="94" y="1070" class="font sectionText">Mother's Data</text>
+  <text x="96" y="1126" class="font label">Mother's Name:</text><line x1="245" y1="1131" x2="405" y2="1131" class="line"/><text x="257" y="1123" class="font value">-</text>
+  <text x="455" y="1126" class="font label">Profession:</text><line x1="575" y1="1131" x2="700" y2="1131" class="line"/><text x="587" y="1123" class="font value">-</text>
+  <text x="730" y="1126" class="font label">Phone:</text><line x1="795" y1="1131" x2="890" y2="1131" class="line"/><text x="807" y="1123" class="font value">{{ student.mother_mobile|default:'-' }}</text>
+
+  <rect x="72" y="1198" width="843" height="98" class="box"/><rect x="72" y="1198" width="843" height="48" class="section"/><text x="94" y="1230" class="font sectionText">Current Status</text>
+  <text x="96" y="1278" class="font label">Admission Date:</text><line x1="250" y1="1283" x2="405" y2="1283" class="line"/><text x="262" y="1275" class="font value">{{ student.date_of_enrollment|date:'d-M-Y' }}</text>
+  <text x="455" y="1278" class="font label">Status:</text><line x1="535" y1="1283" x2="665" y2="1283" class="line"/><text x="547" y="1275" class="font value">{% if student.status %}Active{% else %}Inactive{% endif %}</text>
+  <text x="695" y="1278" class="font label">Left Reason:</text><line x1="815" y1="1283" x2="890" y2="1283" class="line"/><text x="827" y="1275" class="font value">-</text>
+
+  <line x1="645" y1="1328" x2="900" y2="1328" class="thin"/>
+  <text x="772" y="1355" text-anchor="middle" class="font label">Campus Head's Signature</text>
+</svg>
