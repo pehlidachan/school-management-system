@@ -2,7 +2,7 @@
 {% block 'title' %}Admin Profile Settings{% endblock %}
 {% block 'style' %}
 <style>
-.profile-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.settings-card{background:#fff;border:1px solid rgba(43,0,45,.10);border-radius:24px;box-shadow:0 18px 45px rgba(43,0,45,.10);padding:22px;margin-bottom:18px}.settings-card h3{color:#2b002d;font-weight:900;margin-bottom:14px}.settings-card label{font-weight:800;color:#374151}.brand-preview{background:linear-gradient(135deg,{{ brand.primary_color }},{{ brand.secondary_color }});border-radius:22px;color:#fff;padding:22px;position:relative;overflow:hidden;min-height:190px}.brand-watermark{position:absolute;right:-30px;bottom:-45px;font-size:130px;font-weight:900;opacity:.22}.brand-preview h2{position:relative;font-weight:900}.profile-avatar{width:132px;height:132px;border-radius:50%;background:#f3f4f6;box-shadow:0 8px 24px rgba(43,0,45,.18);display:grid;place-items:center;overflow:hidden;font-size:46px;font-weight:900;color:#2b002d}.profile-avatar img{width:100%;height:100%;object-fit:cover}.camera-box{border:2px dashed #d1d5db;border-radius:18px;padding:12px;background:#fafafa}video,canvas{width:100%;border-radius:14px;background:#111;max-height:240px;object-fit:cover}.rule-row{display:grid;grid-template-columns:190px repeat(5,1fr) 150px 90px;gap:8px;align-items:center;border-bottom:1px solid #eee;padding:10px 0}.rule-row.head{font-weight:900;color:#2b002d}.mini-table{width:100%;border-collapse:collapse}.mini-table th{background:#2b002d;color:#ffe266}.mini-table td,.mini-table th{padding:10px;border:1px solid #eee}.pill{display:inline-block;background:#fff8cd;color:#2b002d;border-radius:999px;padding:5px 10px;font-weight:900;font-size:12px}@media(max-width:1100px){.profile-grid{grid-template-columns:1fr}.rule-row{grid-template-columns:1fr 1fr}.rule-row.head{display:none}}
+.profile-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.settings-card{background:#fff;border:1px solid rgba(43,0,45,.10);border-radius:24px;box-shadow:0 18px 45px rgba(43,0,45,.10);padding:22px;margin-bottom:18px}.settings-card h3{color:#2b002d;font-weight:900;margin-bottom:14px}.settings-card label{font-weight:800;color:#374151}.brand-preview{background:linear-gradient(135deg,{{ brand.primary_color }},{{ brand.secondary_color }});border-radius:22px;color:#fff;padding:22px;position:relative;overflow:hidden;min-height:190px}.brand-watermark{position:absolute;right:-30px;bottom:-45px;font-size:130px;font-weight:900;opacity:.22}.brand-preview h2{position:relative;font-weight:900}.profile-avatar{width:132px;height:132px;border-radius:50%;background:#f3f4f6;box-shadow:0 8px 24px rgba(43,0,45,.18);display:grid;place-items:center;overflow:hidden;font-size:46px;font-weight:900;color:#2b002d}.profile-avatar img{width:100%;height:100%;object-fit:cover}.camera-box{border:2px dashed #d1d5db;border-radius:18px;padding:12px;background:#fafafa}video,canvas{width:100%;border-radius:14px;background:#111;max-height:240px;object-fit:cover}.rule-row{display:grid;grid-template-columns:190px repeat(5,1fr) 150px 90px;gap:8px;align-items:center;border-bottom:1px solid #eee;padding:10px 0}.rule-row.head{font-weight:900;color:#2b002d}.mini-table{width:100%;border-collapse:collapse}.mini-table th{background:#2b002d;color:#ffe266}.mini-table td,.mini-table th{padding:10px;border:1px solid #eee}.pill{display:inline-block;background:#fff8cd;color:#2b002d;border-radius:999px;padding:5px 10px;font-weight:900;font-size:12px}.file-preview{border:1px solid #e5e7eb;border-radius:18px;background:#f9fafb;padding:12px;display:flex;gap:12px;align-items:center;min-height:92px}.file-preview img{width:74px;height:74px;border-radius:16px;object-fit:cover;background:#fff;border:1px solid #e5e7eb}.file-preview .empty-thumb{width:74px;height:74px;border-radius:16px;background:#eee;display:grid;place-items:center;font-weight:900;color:#777}.save-strip{position:sticky;bottom:14px;z-index:5;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border:1px solid #e5e7eb;border-radius:18px;padding:12px;box-shadow:0 12px 30px rgba(0,0,0,.10)}.help-note{font-size:13px;color:#6b7280}.current-path{font-size:12px;color:#6b7280;word-break:break-all}.upload-status{font-size:13px;font-weight:800;color:#166534;background:#dcfce7;border-radius:999px;padding:5px 10px;display:inline-block;margin-top:7px}@media(max-width:1100px){.profile-grid{grid-template-columns:1fr}.rule-row{grid-template-columns:1fr 1fr}.rule-row.head{display:none}}
 </style>
 {% endblock %}
 {% block 'content' %}
@@ -25,9 +25,9 @@
         <div class="col-md-4"><label>Primary Color</label><input type="color" name="primary_color" value="{{ brand.primary_color }}" class="form-control form-control-color"></div>
         <div class="col-md-4"><label>Secondary Color</label><input type="color" name="secondary_color" value="{{ brand.secondary_color }}" class="form-control form-control-color"></div>
         <div class="col-md-4"><label>Accent Color</label><input type="color" name="accent_color" value="{{ brand.accent_color }}" class="form-control form-control-color"></div>
-        <div class="col-md-6"><label>Main Logo Upload 100%</label><input type="file" name="main_logo" accept="image/*" class="form-control"><small class="text-muted">Current: {{ brand.main_logo_path|default:'not uploaded' }}</small></div>
-        <div class="col-md-6"><label>Watermark Logo Upload 20-30%</label><input type="file" name="watermark_logo" accept="image/*" class="form-control"><small class="text-muted">Current: {{ brand.watermark_logo_path|default:'not uploaded' }}</small></div>
-        <div class="col-12"><button class="btn btn-success rounded-pill px-4">Save Branding</button></div>
+        <div class="col-md-6"><label>Main Logo Upload 100%</label><input type="file" name="main_logo" accept="image/*" class="form-control js-file-input" data-preview="mainLogoPreview"><div class="file-preview mt-2" id="mainLogoPreview">{% if brand.main_logo_path %}<img src="/{{ brand.main_logo_path }}" alt="Main logo"><div><b>Main logo saved</b><div class="current-path">{{ brand.main_logo_path }}</div></div>{% else %}<span class="empty-thumb">Logo</span><div><b>No main logo yet</b><div class="help-note">Upload logo then press Save Branding.</div></div>{% endif %}</div></div>
+        <div class="col-md-6"><label>Watermark Logo Upload 20-30%</label><input type="file" name="watermark_logo" accept="image/*" class="form-control js-file-input" data-preview="watermarkLogoPreview"><div class="file-preview mt-2" id="watermarkLogoPreview">{% if brand.watermark_logo_path %}<img src="/{{ brand.watermark_logo_path }}" alt="Watermark logo"><div><b>Watermark saved</b><div class="current-path">{{ brand.watermark_logo_path }}</div></div>{% else %}<span class="empty-thumb">WM</span><div><b>No watermark yet</b><div class="help-note">Upload watermark logo then press Save Branding.</div></div>{% endif %}</div></div>
+        <div class="col-12 save-strip d-flex justify-content-between align-items-center flex-wrap gap-2"><div><b>Branding changes ready?</b><div class="help-note">Logo select karne ke baad yahan Save Branding zaroor press karein.</div></div><button type="submit" class="btn btn-success rounded-pill px-4"><i class="fa-solid fa-floppy-disk"></i> Save Branding</button></div>
       </form>
     </div>
 
@@ -35,7 +35,7 @@
       <h3><i class="fa-solid fa-user-lock"></i> Change My Password</h3>
       <form method="POST" class="row g-3">{% csrf_token %}<input type="hidden" name="action" value="change_password">
         {% for field in password_form %}<div class="col-md-4"><label>{{ field.label }}</label>{{ field }}{% if field.errors %}<div class="text-danger small">{{ field.errors|striptags }}</div>{% endif %}</div>{% endfor %}
-        <div class="col-12"><button class="btn btn-dark rounded-pill px-4">Change Password</button></div>
+        <div class="col-12"><button type="submit" class="btn btn-dark rounded-pill px-4">Change Password</button></div>
       </form>
     </div>
   </div>
@@ -43,14 +43,16 @@
   <div>
     <div class="settings-card">
       <h3><i class="fa-solid fa-camera"></i> My Profile Picture</h3>
-      <form method="POST" enctype="multipart/form-data" class="row g-3">{% csrf_token %}<input type="hidden" name="action" value="save_profile"><input type="hidden" name="camera_image_data" id="cameraImageData">
-        <div class="d-flex gap-3 align-items-center"><div class="profile-avatar">{% if profile.profile_photo_path %}<img src="/{{ profile.profile_photo_path }}" alt="profile">{% else %}{{ request.user.username|slice:':1'|upper }}{% endif %}</div><div><b>{{ request.user.username }}</b><br><span class="text-muted">{{ request.user.email|default:'No email' }}</span></div></div>
+      <form method="POST" enctype="multipart/form-data" class="row g-3" id="profilePhotoForm">{% csrf_token %}<input type="hidden" name="action" value="save_profile"><input type="hidden" name="camera_image_data" id="cameraImageData">
+        <div class="d-flex gap-3 align-items-center"><div class="profile-avatar" id="profileAvatarPreview">{% if profile.profile_photo_path %}<img src="/{{ profile.profile_photo_path }}" alt="profile">{% else %}{{ request.user.username|slice:':1'|upper }}{% endif %}</div><div><b>{{ request.user.username }}</b><br><span class="text-muted">{{ request.user.email|default:'No email' }}</span>{% if profile.profile_photo_path %}<div class="current-path mt-1">Saved: {{ profile.profile_photo_path }}</div>{% endif %}</div></div>
+        <div class="col-12 save-strip d-flex justify-content-between align-items-center flex-wrap gap-2"><div><b>Picture/profile save karna hai?</b><div class="help-note">Upload/capture ke baad yahi green button press karein.</div></div><button type="submit" class="btn btn-success rounded-pill px-4"><i class="fa-solid fa-floppy-disk"></i> Save Profile & Picture</button></div>
         <div class="col-12"><label>Display Name</label><input name="display_name" value="{{ profile.display_name }}" class="form-control"></div>
         <div class="col-12"><label>Phone</label><input name="phone" value="{{ profile.phone }}" class="form-control"></div>
-        <div class="col-12"><label>Upload Picture</label><input type="file" name="profile_photo" accept="image/*" class="form-control"></div>
-        <div class="col-12 camera-box"><video id="cameraVideo" autoplay playsinline style="display:none"></video><canvas id="cameraCanvas" style="display:none"></canvas><div class="d-flex gap-2 mt-2"><button type="button" class="btn btn-outline-dark rounded-pill" id="startCamera">Open Camera</button><button type="button" class="btn btn-outline-success rounded-pill" id="captureCamera">Capture</button></div></div>
+        <div class="col-12"><label>Upload Picture</label><input type="file" name="profile_photo" accept="image/*" class="form-control" id="profilePhotoInput"><div id="profileUploadStatus" class="upload-status" style="display:none">New picture selected. Press Save Profile & Picture.</div></div>
+        <div class="col-12 camera-box"><video id="cameraVideo" autoplay playsinline style="display:none"></video><canvas id="cameraCanvas" style="display:none"></canvas><div class="d-flex gap-2 mt-2 flex-wrap"><button type="button" class="btn btn-outline-dark rounded-pill" id="startCamera">Open Camera</button><button type="button" class="btn btn-outline-success rounded-pill" id="captureCamera">Capture</button></div><div id="cameraStatus" class="upload-status" style="display:none">Camera picture captured. Press Save Profile & Picture.</div></div>
         <div class="col-12"><label>Note</label><textarea name="note" class="form-control" rows="2">{{ profile.note }}</textarea></div>
-        <div class="col-12"><button class="btn btn-success rounded-pill px-4">Save My Profile</button></div>
+        {% if profile.profile_photo_path %}<div class="col-12"><label class="form-check"><input type="checkbox" name="remove_profile_photo" class="form-check-input"> Remove current profile photo on save</label></div>{% endif %}
+        <div class="col-12"><button type="submit" class="btn btn-success rounded-pill px-4 w-100"><i class="fa-solid fa-floppy-disk"></i> Save Profile & Picture</button></div>
       </form>
     </div>
 
@@ -62,7 +64,7 @@
         <div class="col-md-6"><label>Password</label><input name="password" type="password" class="form-control" required></div>
         <div class="col-md-6"><label>Group / Role</label><select name="group_name" class="form-select"><option>Teacher</option><option>Head of Department</option><option>Accountant</option><option>Principal</option><option>School Admin</option></select></div>
         <div class="col-md-6 d-flex align-items-end"><label class="form-check"><input type="checkbox" name="is_staff" class="form-check-input"> Django admin access</label></div>
-        <div class="col-12"><button class="btn btn-success rounded-pill px-4">Create Staff Account</button></div>
+        <div class="col-12"><button type="submit" class="btn btn-success rounded-pill px-4">Create Staff Account</button></div>
       </form>
     </div>
   </div>
@@ -71,7 +73,7 @@
 <div class="settings-card">
   <h3><i class="fa-solid fa-shield-halved"></i> Role Profile Rules</h3>
   <div class="rule-row head"><div>Role</div><div>Branding</div><div>Self Photo</div><div>Staff Accounts</div><div>Password</div><div>Role Rules</div><div>Scope</div><div>Save</div></div>
-  {% for rule in role_rules %}<form method="POST" class="rule-row">{% csrf_token %}<input type="hidden" name="action" value="save_role_rule"><input type="hidden" name="rule_id" value="{{ rule.id }}"><div><b>{{ rule.role.name }}</b></div><label><input type="checkbox" name="can_manage_branding" {% if rule.can_manage_branding %}checked{% endif %}> Branding</label><label><input type="checkbox" name="can_upload_self_photo" {% if rule.can_upload_self_photo %}checked{% endif %}> Photo</label><label><input type="checkbox" name="can_create_staff_accounts" {% if rule.can_create_staff_accounts %}checked{% endif %}> Accounts</label><label><input type="checkbox" name="can_change_own_password" {% if rule.can_change_own_password %}checked{% endif %}> Password</label><label><input type="checkbox" name="can_manage_role_rules" {% if rule.can_manage_role_rules %}checked{% endif %}> Rules</label><input name="dashboard_scope" value="{{ rule.dashboard_scope }}" class="form-control form-control-sm"><button class="btn btn-sm btn-dark rounded-pill">Save</button></form>{% endfor %}
+  {% for rule in role_rules %}<form method="POST" class="rule-row">{% csrf_token %}<input type="hidden" name="action" value="save_role_rule"><input type="hidden" name="rule_id" value="{{ rule.id }}"><div><b>{{ rule.role.name }}</b></div><label><input type="checkbox" name="can_manage_branding" {% if rule.can_manage_branding %}checked{% endif %}> Branding</label><label><input type="checkbox" name="can_upload_self_photo" {% if rule.can_upload_self_photo %}checked{% endif %}> Photo</label><label><input type="checkbox" name="can_create_staff_accounts" {% if rule.can_create_staff_accounts %}checked{% endif %}> Accounts</label><label><input type="checkbox" name="can_change_own_password" {% if rule.can_change_own_password %}checked{% endif %}> Password</label><label><input type="checkbox" name="can_manage_role_rules" {% if rule.can_manage_role_rules %}checked{% endif %}> Rules</label><input name="dashboard_scope" value="{{ rule.dashboard_scope }}" class="form-control form-control-sm"><button type="submit" class="btn btn-sm btn-dark rounded-pill">Save</button></form>{% endfor %}
 </div>
 
 <div class="settings-card">
@@ -81,11 +83,35 @@
 
 <script>
 (function(){
+  function previewImage(file, targetId){
+    if(!file || !file.type || !file.type.startsWith('image/')) return;
+    const target=document.getElementById(targetId);
+    if(!target) return;
+    const reader=new FileReader();
+    reader.onload=function(e){target.innerHTML='<img src="'+e.target.result+'" alt="preview"><div><b>New image selected</b><div class="help-note">Save button press karna zaroori hai.</div></div>';};
+    reader.readAsDataURL(file);
+  }
+  document.querySelectorAll('.js-file-input').forEach(function(input){
+    input.addEventListener('change',function(){previewImage(input.files && input.files[0], input.dataset.preview);});
+  });
+
+  const profileInput=document.getElementById('profilePhotoInput');
+  const profileAvatar=document.getElementById('profileAvatarPreview');
+  const profileStatus=document.getElementById('profileUploadStatus');
+  profileInput?.addEventListener('change', function(){
+    const file=profileInput.files && profileInput.files[0];
+    if(!file || !file.type.startsWith('image/')) return;
+    const reader=new FileReader();
+    reader.onload=function(e){profileAvatar.innerHTML='<img src="'+e.target.result+'" alt="profile preview">';profileStatus.style.display='inline-block';};
+    reader.readAsDataURL(file);
+  });
+
   const startBtn=document.getElementById('startCamera');
   const captureBtn=document.getElementById('captureCamera');
   const video=document.getElementById('cameraVideo');
   const canvas=document.getElementById('cameraCanvas');
   const hidden=document.getElementById('cameraImageData');
+  const cameraStatus=document.getElementById('cameraStatus');
   let stream=null;
   startBtn?.addEventListener('click', async function(){
     try{stream=await navigator.mediaDevices.getUserMedia({video:true});video.srcObject=stream;video.style.display='block';}
@@ -93,7 +119,7 @@
   });
   captureBtn?.addEventListener('click', function(){
     if(!video.srcObject){alert('Pehle camera open karein.');return;}
-    canvas.width=video.videoWidth||640;canvas.height=video.videoHeight||480;canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);canvas.style.display='block';hidden.value=canvas.toDataURL('image/jpeg',0.9);
+    canvas.width=video.videoWidth||640;canvas.height=video.videoHeight||480;canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);canvas.style.display='block';hidden.value=canvas.toDataURL('image/jpeg',0.9);profileAvatar.innerHTML='<img src="'+hidden.value+'" alt="camera preview">';cameraStatus.style.display='inline-block';
   });
 })();
 </script>
