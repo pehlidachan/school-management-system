@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block 'title' %}{{ title }}{% endblock %}
+{% block 'style' %}
+<style>
+    .ttm-form-card { border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 10px 24px rgba(15, 23, 42, .06); }
+    .ttm-help { color: #64748b; font-size: .9rem; }
+</style>
+{% endblock %}
+{% block 'content' %}
+<div class="container py-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+        <div>
+            <h1 class="mb-1">{{ title }}</h1>
+            <div class="ttm-help">Subject + teacher + time assign karein. System teacher/class/room clash check karega.</div>
+        </div>
+        <a href="{% url 'timetable_dashboard' %}" class="btn btn-primary">Back to Timetable</a>
+    </div>
+
+    <div class="card ttm-form-card">
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class="row g-3">
+                    {% for field in form %}
+                        <div class="col-md-{% if field.name == 'note' %}12{% elif field.name == 'is_break' or field.name == 'status' %}6{% else %}6{% endif %}">
+                            {% if field.field.widget.input_type == 'checkbox' %}
+                                <div class="form-check mt-4">
+                                    {{ field }}
+                                    <label class="form-check-label fw-bold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                </div>
+                            {% else %}
+                                <label class="form-label fw-bold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}
+                            {% endif %}
+                            {% if field.help_text %}<div class="ttm-help">{{ field.help_text }}</div>{% endif %}
+                            {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <button class="btn btn-success px-4" type="submit">{{ submit_label }}</button>
+                    {% if slot %}
+                        <button type="submit" form="delete-timetable-slot-form" class="btn btn-danger" onclick="return confirm('Delete this timetable period?');">Delete Period</button>
+                    {% endif %}
+                </div>
+            </form>
+            {% if slot %}
+                <form id="delete-timetable-slot-form" action="{% url 'delete_timetable_slot' slot.id %}" method="post" class="d-none">
+                    {% csrf_token %}
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

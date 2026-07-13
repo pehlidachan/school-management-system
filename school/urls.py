@@ -1,5 +1,5 @@
 from django.urls import path
-from . import finance_summary_views, gatepass_views, non_teaching_views, online_requests_views, public_form_views, staff_cards_bulk, student_list_views, views
+from . import finance_summary_views, gatepass_views, non_teaching_views, online_requests_views, public_form_views, staff_cards_bulk, student_list_views, timetable_views, views
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -53,6 +53,11 @@ urlpatterns = [
     path('classes/add/', views.add_class, name='add_class'),
     path('class/edit/<int:id>/', views.edit_class, name='edit_class'),
     path('class/delete/<int:id>/', views.delete_class, name='delete_class'),
+    path('timetable/', timetable_views.timetable_dashboard, name='timetable_dashboard'),
+    path('timetable/add/', timetable_views.add_timetable_slot, name='add_timetable_slot'),
+    path('timetable/slot/<int:slot_id>/edit/', timetable_views.edit_timetable_slot, name='edit_timetable_slot'),
+    path('timetable/slot/<int:slot_id>/delete/', timetable_views.delete_timetable_slot, name='delete_timetable_slot'),
+    path('timetable/<int:class_id>/print/', timetable_views.timetable_print, name='timetable_print'),
     path('class/incharges/', views.display_class_incharges, name='display_class_incharges'),
     path('class/incharge/add/', views.add_class_incharge, name='add_class_incharge'),
     path('class/incharge/edit/<int:id>/', views.edit_class_incharge, name='edit_class_incharge'),

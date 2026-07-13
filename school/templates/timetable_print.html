@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Weekly Timetable - {{ academic_class.class_label }}</title>
+    <style>
+        @page { size: A4 landscape; margin: 12mm; }
+        body { font-family: Arial, sans-serif; color: #111827; margin: 0; }
+        .sheet { border: 2px solid #111; padding: 16px; min-height: 180mm; }
+        .header { text-align: center; border-bottom: 2px solid #111; padding-bottom: 10px; margin-bottom: 14px; }
+        .school { font-size: 26px; font-weight: 700; }
+        .meta { display: flex; justify-content: space-between; font-size: 13px; margin-top: 8px; }
+        .class-title { font-size: 20px; font-weight: 700; margin: 12px 0; text-align: center; }
+        .day-title { background: #555; color: #fff; padding: 7px 10px; font-weight: 700; margin-top: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th, td { border: 1px solid #333; padding: 6px; text-align: left; vertical-align: top; }
+        th { background: #efefef; }
+        .empty { text-align: center; color: #666; }
+        .signature { margin-top: 30px; text-align: right; padding-right: 55px; }
+        @media print { .no-print { display: none; } }
+    </style>
+</head>
+<body>
+    <div class="no-print" style="margin: 12px; text-align: right;"><button onclick="window.print()">Print</button></div>
+    <div class="sheet">
+        <div class="header">
+            <div class="school">{% if brand %}{{ brand.school_name }}{% else %}School Weekly Timetable{% endif %}</div>
+            {% if brand %}<div>{{ brand.address }}</div><div>{{ brand.phone }}{% if brand.email %} | {{ brand.email }}{% endif %}</div>{% endif %}
+            <div class="meta">
+                <span>Class: <strong>{{ academic_class.class_label }}</strong></span>
+                <span>Session: <strong>{{ academic_class.academic_session }}</strong></span>
+                <span>Printed: <strong>{{ printed_on|date:"d-M-Y" }}</strong></span>
+            </div>
+        </div>
+        <div class="class-title">Weekly Timetable</div>
+
+        {% for day in days %}
+            <div class="day-title">{{ day.label }}</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 9%;">Period</th>
+                        <th style="width: 16%;">Time</th>
+                        <th style="width: 22%;">Subject</th>
+                        <th style="width: 25%;">Teacher</th>
+                        <th style="width: 13%;">Room</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for slot in day.slots %}
+                        <tr>
+                            <td>P{{ slot.period_number }}</td>
+                            <td>{{ slot.time_range_display }}</td>
+                            <td>{% if slot.is_break %}Break / Free{% else %}{{ slot.subject }}{% endif %}</td>
+                            <td>{% if slot.is_break %}-{% else %}{{ slot.teacher }}{% endif %}</td>
+                            <td>{{ slot.room|default:"-" }}</td>
+                            <td>{{ slot.note|default:"-" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="6" class="empty">No period assigned.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+
+        <div class="signature">_____________________________<br>Principal / Campus Head</div>
+    </div>
+</body>
+</html>

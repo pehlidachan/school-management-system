@@ -1,0 +1,103 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block 'title' %}Weekly Timetable{% endblock %}
+{% block 'style' %}
+<style>
+    .ttm-card { border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 10px 24px rgba(15, 23, 42, .06); }
+    .ttm-day-title { background: #343a40; color: #fff; border-radius: 12px 12px 0 0; padding: 10px 14px; font-weight: 700; }
+    .ttm-stat { border-radius: 14px; background: #f8fafc; border: 1px solid #e5e7eb; padding: 14px; }
+    .ttm-period { font-weight: 800; color: #0f172a; }
+    .ttm-muted { color: #64748b; font-size: .92rem; }
+</style>
+{% endblock %}
+{% block 'content' %}
+<div class="container-fluid py-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+        <div>
+            <h1 class="mb-1">Weekly Timetable</h1>
+            <div class="text-muted">Class wise day/period subject + teacher assignment</div>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            {% if selected_class %}
+                <a class="btn btn-success" href="{% url 'add_timetable_slot' %}?class_id={{ selected_class.id }}">Assign Period</a>
+                <a class="btn btn-outline-dark" target="_blank" href="{% url 'timetable_print' selected_class.id %}">Print Timetable</a>
+            {% else %}
+                <a class="btn btn-success" href="{% url 'add_timetable_slot' %}">Assign Period</a>
+            {% endif %}
+            <a class="btn btn-primary" href="{% url 'display_classes' %}">Legacy Class Timing</a>
+        </div>
+    </div>
+
+    <div class="card ttm-card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-8">
+                    <label class="form-label fw-bold">Academic Class</label>
+                    <select name="class_id" class="form-control" onchange="this.form.submit()">
+                        {% for class_obj in classes %}
+                            <option value="{{ class_obj.id }}" {% if selected_class and selected_class.id == class_obj.id %}selected{% endif %}>{{ class_obj.class_label }} — {{ class_obj.academic_session }}</option>
+                        {% empty %}
+                            <option value="">No academic class found</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-dark w-100" type="submit">Load Timetable</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if selected_class %}
+        <div class="row g-3 mb-4">
+            <div class="col-md-3"><div class="ttm-stat"><div class="ttm-muted">Class</div><div class="fs-5 fw-bold">{{ selected_class.class_label }}</div></div></div>
+            <div class="col-md-3"><div class="ttm-stat"><div class="ttm-muted">Total Periods</div><div class="fs-5 fw-bold">{{ total_slots }}</div></div></div>
+            <div class="col-md-3"><div class="ttm-stat"><div class="ttm-muted">Teachers Assigned</div><div class="fs-5 fw-bold">{{ teacher_count }}</div></div></div>
+            <div class="col-md-3"><div class="ttm-stat"><div class="ttm-muted">Subjects Assigned</div><div class="fs-5 fw-bold">{{ subject_count }}</div></div></div>
+        </div>
+
+        {% for day in days %}
+            <div class="card ttm-card mb-4" id="day-{{ day.value }}">
+                <div class="ttm-day-title d-flex justify-content-between align-items-center">
+                    <span>{{ day.label }}</span>
+                    <a class="btn btn-sm btn-light" href="{% url 'add_timetable_slot' %}?class_id={{ selected_class.id }}&day={{ day.value }}">Add {{ day.label }} Period</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 90px;">Period</th>
+                                <th>Time</th>
+                                <th>Subject</th>
+                                <th>Teacher</th>
+                                <th>Room</th>
+                                <th>Status</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for slot in day.slots %}
+                                <tr>
+                                    <td class="ttm-period">P{{ slot.period_number }}</td>
+                                    <td>{{ slot.time_range_display }}</td>
+                                    <td>{% if slot.is_break %}<span class="badge bg-warning text-dark">Break / Free</span>{% else %}{{ slot.subject }}{% endif %}</td>
+                                    <td>{% if slot.is_break %}-{% else %}{{ slot.teacher }}{% endif %}</td>
+                                    <td>{{ slot.room|default:"-" }}</td>
+                                    <td>{% if slot.status %}<span class="badge bg-success">Active</span>{% else %}<span class="badge bg-secondary">Inactive</span>{% endif %}</td>
+                                    <td class="text-end"><a class="btn btn-sm btn-outline-primary" href="{% url 'edit_timetable_slot' slot.id %}">Edit</a></td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="7" class="text-center text-muted py-4">No period assigned for {{ day.label }} yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-warning">
+            No Academic Class found. Create Academic Session and Academic Classes first, then assign timetable periods.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

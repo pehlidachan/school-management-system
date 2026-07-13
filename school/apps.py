@@ -12,3 +12,4 @@ class SchoolConfig(AppConfig):
         from . import study_material_models  # noqa: F401
         from . import ledger_models  # noqa: F401
         from . import profile_settings_models  # noqa: F401
+        from . import timetable_models  # noqa: F401

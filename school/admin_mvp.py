@@ -7,6 +7,7 @@ from .models import AcademicClass, AcademicClassSubject, AcademicSession
 from .profile_settings_models import RoleProfileRule, SchoolBrandProfile, StaffLoginProfile, UserProfileSetting
 from .staff_attendance_models import StaffLectureAttendance, StaffLectureSession
 from .study_material_models import StudyMaterial
+from .timetable_models import WeeklyTimetableSlot
 
 
 def safe_mvp_register(model, model_admin=None):
@@ -110,6 +111,17 @@ class AcademicClassSubjectAdmin(admin.ModelAdmin):
     search_fields = ('academic_class__class_label', 'subject__name', 'teacher__name', 'note')
 
 
+class WeeklyTimetableSlotAdmin(admin.ModelAdmin):
+    list_display = ('academic_class', 'day_name', 'period_number', 'subject', 'teacher', 'start_time', 'end_time', 'room', 'is_break', 'status')
+    list_filter = ('academic_class__academic_session', 'academic_class__grade', 'day_of_week', 'teacher', 'subject', 'is_break', 'status')
+    search_fields = ('academic_class__class_label', 'teacher__name', 'teacher__staff_code', 'subject__name', 'room', 'note')
+    ordering = ('academic_class', 'day_of_week', 'period_number')
+
+    def day_name(self, obj):
+        return obj.get_day_of_week_display()
+    day_name.short_description = 'Day'
+
+
 class ExamSchemeItemInline(admin.TabularInline):
     model = ExamSchemeItem
     extra = 1
@@ -169,6 +181,7 @@ safe_mvp_register(RoleProfileRule, RoleProfileRuleAdmin)
 safe_mvp_register(AcademicSession, AcademicSessionAdmin)
 safe_mvp_register(AcademicClass, AcademicClassAdmin)
 safe_mvp_register(AcademicClassSubject, AcademicClassSubjectAdmin)
+safe_mvp_register(WeeklyTimetableSlot, WeeklyTimetableSlotAdmin)
 safe_mvp_register(ExamScheme, ExamSchemeAdmin)
 safe_mvp_register(ExamSchemeItem, ExamSchemeItemAdmin)
 safe_mvp_register(Exam, ExamAdmin)
