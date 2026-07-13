@@ -48,10 +48,25 @@ def _camera_upload(data_url, name="camera.jpg"):
 
 
 def _get_brand():
-    brand = SchoolBrandProfile.objects.filter(is_active=True).first()
+    """Return one deterministic active brand and clean up duplicate active profiles."""
+    brand = SchoolBrandProfile.objects.filter(is_active=True).order_by("-updated_at", "-id").first()
+    if not brand:
+        brand = SchoolBrandProfile.objects.order_by("-updated_at", "-id").first()
     if not brand:
         brand = SchoolBrandProfile.objects.create(is_active=True)
+    if not brand.is_active:
+        brand.is_active = True
+        brand.save(update_fields=["is_active", "updated_at"])
+    SchoolBrandProfile.objects.exclude(pk=brand.pk).filter(is_active=True).update(is_active=False)
     return brand
+
+
+def _get_posted_brand(request, fallback_brand):
+    """Use the exact form brand id when posted so name/color edits do not hit another active record."""
+    brand_id = request.POST.get("brand_id")
+    if not brand_id:
+        return fallback_brand
+    return SchoolBrandProfile.objects.filter(id=brand_id).first() or fallback_brand
 
 
 def _sync_role_rules():
@@ -82,16 +97,21 @@ def admin_profile_center(request):
         action = request.POST.get("action")
 
         if action == "save_brand":
-            brand.school_name = (request.POST.get("school_name") or brand.school_name).strip()
+            brand = _get_posted_brand(request, brand)
+            posted_school_name = (request.POST.get("school_name") or "").strip()
+            brand.school_name = posted_school_name or brand.school_name or "Government Middle School Shalgah"
             brand.campus_code = (request.POST.get("campus_code") or "").strip()
             brand.address = (request.POST.get("address") or "").strip()
             brand.phone = (request.POST.get("phone") or "").strip()
             brand.email = (request.POST.get("email") or "").strip()
-            brand.primary_color = _safe_color(request.POST.get("primary_color"), brand.primary_color)
-            brand.secondary_color = _safe_color(request.POST.get("secondary_color"), brand.secondary_color)
-            brand.accent_color = _safe_color(request.POST.get("accent_color"), brand.accent_color)
+            brand.primary_color = _safe_color(request.POST.get("primary_color"), brand.primary_color or "#2b002d")
+            brand.secondary_color = _safe_color(request.POST.get("secondary_color"), brand.secondary_color or "#6f1b78")
+            brand.accent_color = _safe_color(request.POST.get("accent_color"), brand.accent_color or "#ffe266")
+            brand.is_active = True
             brand.updated_by = request.user
-            brand.save()
+            with transaction.atomic():
+                brand.save()
+                SchoolBrandProfile.objects.exclude(pk=brand.pk).filter(is_active=True).update(is_active=False)
 
             uploaded_labels = []
             main_logo = request.FILES.get("main_logo")
@@ -107,9 +127,15 @@ def admin_profile_center(request):
             if uploaded_labels:
                 brand.updated_by = request.user
                 brand.save(update_fields=["main_logo_path", "watermark_logo_path", "updated_by", "updated_at"])
-                messages.success(request, f"School branding saved with uploaded {', '.join(uploaded_labels)}.")
+                messages.success(
+                    request,
+                    f"School name/colors saved and uploaded {', '.join(uploaded_labels)}. Active school: {brand.school_name}.",
+                )
             else:
-                messages.success(request, "School branding text/colors saved. No new logo file was selected.")
+                messages.success(
+                    request,
+                    f"School name/colors saved successfully. Active school: {brand.school_name}.",
+                )
             return redirect("admin_profile_center")
 
         if action == "save_profile":
