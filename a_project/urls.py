@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
@@ -95,3 +97,6 @@ urlpatterns = [
     path('exams/<int:exam_id>/student/<int:student_id>/card/', exam_views.student_result_card, name='student_result_card'),
     path('', include('school.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static('/person_files/', document_root=settings.BASE_DIR / 'person_files')
