@@ -63,8 +63,8 @@ Status legend:
 
 | # | Template key | User-facing template | Standard size | Expected SVG filename | Current Django template / route | Dynamic source | Status |
 |---:|---|---|---|---|---|---|---|
-| 1 | student_biodata | Student Bio Data | A4 Portrait | `student_biodata.svg` | `school/templates/print/student_biodata.html` | `Student` | MISSING SVG |
-| 2 | staff_biodata | Staff Bio Data | A4 Portrait | `staff_biodata.svg` | `school/templates/print/staff_biodata.html` | `Staff` | MISSING SVG |
+| 1 | student_biodata | Student Bio Data | A4 Portrait | `school/templates/print/svg/student_biodata.svg` | `school/templates/print/student_biodata.html` | `Student`, active school | DYNAMIC DONE |
+| 2 | staff_biodata | Staff Bio Data | A4 Portrait | `school/templates/print/svg/staff_biodata.svg` | `school/templates/print/staff_biodata.html` | `Staff`, active school | DYNAMIC DONE |
 | 3 | school_leaving_certificate | School Leaving Certificate | A4 Portrait | `school_leaving_certificate.svg` | `school/templates/print/student_certificate.html` | `Student`, certificate context | MISSING SVG |
 | 4 | character_certificate | Character Certificate | A4 Portrait | `character_certificate.svg` | `school/templates/print/student_certificate.html` | `Student`, certificate context | MISSING SVG |
 | 5 | hope_certificate | Hope Certificate | A4 Portrait | `hope_certificate.svg` | `school/templates/print/student_certificate.html` | `Student`, certificate context | MISSING SVG |
@@ -115,18 +115,32 @@ Status legend:
 
 ---
 
+## Current sync count
+
+```text
+Total templates: 49
+Dynamic synced templates: 3
+Pending templates: 46
+```
+
+Synced templates:
+
+1. `student_biodata`
+2. `staff_biodata`
+3. `marksheet_whatsapp_list`
+
+---
+
 ## Priority conversion order
 
-1. `student_biodata.svg`
-2. `staff_biodata.svg`
-3. `school_leaving_certificate.svg`
-4. `experience_certificate.svg`
-5. `fee_voucher.svg`
-6. `result_card.svg`
-7. `student_id_card_front.svg` and `student_id_card_back.svg`
-8. `staff_id_card_front.svg` and `staff_id_card_back.svg`
-9. WhatsApp image templates
-10. Remaining reports and slips
+1. `school_leaving_certificate.svg`
+2. `experience_certificate.svg`
+3. `fee_voucher.svg`
+4. `result_card.svg`
+5. `student_id_card_front.svg` and `student_id_card_back.svg`
+6. `staff_id_card_front.svg` and `staff_id_card_back.svg`
+7. WhatsApp image templates
+8. Remaining reports and slips
 
 ## What to upload for every SVG
 
